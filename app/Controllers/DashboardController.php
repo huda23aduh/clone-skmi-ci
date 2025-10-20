@@ -25,7 +25,7 @@ class DashboardController extends Controller
                         ->findAll();
 
         return view('dashboard/index', [
-            'title' => 'Dashboard',
+            'title' => 'MY Drive',
             'user' => $user,          // <<< pass user to view
             'folders' => $folders,
             'files' => $files
