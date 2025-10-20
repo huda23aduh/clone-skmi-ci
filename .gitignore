@@ -1,0 +1,45 @@
+# Node modules (if using frontend packages)
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn.lock
+
+# PHPStorm / IDE files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Composer vendor folder
+/vendor/
+
+# CodeIgniter writable folder
+writable/cache/
+writable/debugbar/
+writable/logs/
+writable/session/
+writable/uploads/
+writable/tmp/
+writable/uploads/*
+
+# Environment file
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# PHPUnit / test cache
+phpunit.xml
+phpunit.xml.dist
+build/
+
+# Ignore any temporary files
+*.swp
+*.bak
+*.tmp
