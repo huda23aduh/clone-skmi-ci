@@ -1,0 +1,1 @@
+docker exec -i mysql-clone-skmi mysqldump -u storage_user -p'storage_password' --no-tablespaces digital_storage > digital_storage.sql
