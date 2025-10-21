@@ -27,11 +27,18 @@ $routes->group('folder', ['namespace' => 'App\Controllers'], function($routes) {
   $routes->post('purge/(:num)', 'FolderController::purge/$1');
 });
 
-$routes->post('/file/delete/(:num)','TrashController::deleteFile/$1');
-$routes->post('/file/restore/(:num)','TrashController::restoreFile/$1');
-$routes->post('/file/purge/(:num)','TrashController::permanentlyDeleteFile/$1');
+$routes->group('file', ['namespace' => 'App\Controllers'], function($routes) {
+  $routes->post('delete/(:num)','TrashController::deleteFile/$1');
+  $routes->post('restore/(:num)','TrashController::restoreFile/$1');
+  $routes->post('purge/(:num)','TrashController::permanentlyDeleteFile/$1');
+  
+  $routes->post('upload', 'FileController::upload');
+  $routes->get('download/(:num)', 'FileController::download/$1');
+  $routes->post('compress', 'FileController::compress');
+  $routes->get('extract/(:num)', 'FileController::extract/$1');
+});
 
-$routes->post('/file/upload', 'FileController::upload');
-$routes->get('/file/download/(:num)', 'FileController::download/$1');
+
+
 
 

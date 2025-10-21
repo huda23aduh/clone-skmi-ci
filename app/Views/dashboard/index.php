@@ -74,6 +74,10 @@
         <div class="d-flex justify-content-between align-items-center">
             <span class="text-muted" id="selectedCount">0 items selected</span>
             <div class="btn-group">
+                <button type="button" class="btn btn-outline-primary btn-sm" id="bulkZipBtn">
+                    <i class="fas fa-file-archive me-1"></i> Compress (ZIP)
+                </button>
+
                 <button type="button" class="btn btn-danger btn-sm" id="bulkDeleteBtn">
                     <i class="fas fa-trash me-1"></i> Move to Trash
                 </button>
@@ -270,6 +274,15 @@
                                                 </button>
                                             </form>
                                         </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <?php if (strtolower(pathinfo($file['original_name'], PATHINFO_EXTENSION)) === 'zip'): ?>
+                                            <li>
+                                                <a class="dropdown-item" href="<?= base_url('file/extract/' . $file['id']) ?>">
+                                                    <i class="fas fa-file-zipper me-2"></i>Extract
+                                                </a>
+                                            </li>
+                                        <?php endif; ?>
+
                                     </ul>
                                 </div>
                             </td>
@@ -322,6 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectAllBtn = document.getElementById('selectAllBtn');
     const clearSelectionBtn = document.getElementById('clearSelectionBtn');
     const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+    const bulkZipBtn = document.getElementById('bulkZipBtn');
     const selectedCount = document.getElementById('selectedCount');
     const contentTable = document.getElementById('contentTable');
     
@@ -401,6 +415,44 @@ document.addEventListener('DOMContentLoaded', function() {
                         showToast('error', 'Error deleting items');
                     });
                 }
+            }
+        });
+    }
+
+    // Bulk ZIP button
+    if (bulkZipBtn) {
+        bulkZipBtn.addEventListener('click', function() {
+            const selectedItems = Array.from(itemCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => ({id: cb.value, type: cb.dataset.type}));
+
+            if (selectedItems.length === 0) {
+                showToast('warning', 'No items selected to compress');
+                return;
+            }
+
+            if (confirm(`Compress ${selectedItems.length} item(s) into a ZIP file?`)) {
+                fetch('<?= base_url('/file/compress') ?>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({items: selectedItems})
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('success', data.message);
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showToast('error', data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast('error', 'Error compressing files');
+                });
             }
         });
     }
