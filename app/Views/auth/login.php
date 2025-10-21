@@ -1,17 +1,3 @@
-<!-- <h3>Login</h3>
-<form method="post" action="<?= base_url('/login') ?>" class="mt-3">
-  <div class="mb-3">
-    <label>Email</label>
-    <input type="email" name="email" class="form-control" required>
-  </div>
-  <div class="mb-3">
-    <label>Password</label>
-    <input type="password" name="password" class="form-control" required>
-  </div>
-  <button type="submit" class="btn btn-primary">Login</button>
-  <a href="<?= base_url('/register') ?>" class="btn btn-link">Register</a>
-</form> -->
-
 <!doctype html>
 <html lang="en">
   <!--begin::Head-->
@@ -69,14 +55,14 @@
           <form action="<?= base_url('/login') ?>" method="post">
             <div class="input-group mb-1">
               <div class="form-floating">
-                <input id="loginEmail" type="email" name="email" class="form-control" value="" placeholder="" />
+                <input id="loginEmail" type="email" name="email" class="form-control" value="admin@example.com" placeholder="" />
                 <label for="loginEmail">Email</label>
               </div>
               <div class="input-group-text"><span class="bi bi-envelope"></span></div>
             </div>
             <div class="input-group mb-1">
               <div class="form-floating">
-                <input id="loginPassword" name="password" type="password" class="form-control" placeholder="" />
+                <input id="loginPassword" name="password" type="password" class="form-control" value="12341234" placeholder="" />
                 <label for="loginPassword">Password</label>
               </div>
               <div class="input-group-text"><span class="bi bi-lock-fill"></span></div>
