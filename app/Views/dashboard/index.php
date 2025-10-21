@@ -17,10 +17,10 @@
     </div>
     <div class="btn-group">
         <button type="button" class="btn btn-success" onclick="showUploadFileModal()">
-            <i class="fas fa-upload me-1"></i> Upload Files
+            <i class="fas fa-upload me-1"></i> 
         </button>
         <button type="button" class="btn btn-primary" onclick="showCreateFolderModal()">
-            <i class="fas fa-folder-plus me-1"></i> Create Folder
+            <i class="fas fa-folder-plus me-1"></i>
         </button>
     </div>
 </div>

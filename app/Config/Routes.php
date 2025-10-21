@@ -16,6 +16,7 @@ $routes->get('/recycle-bin', 'DashboardController::recycleBin');
 
 $routes->post('/upload','UploadController::uploadFile');
 
+$routes->get('/folder/view/(:num)', 'FolderController::view/$1');
 $routes->post('/folder/create','FolderController::create');
 $routes->post('/folder/delete/(:num)','TrashController::deleteFolder/$1');
 $routes->post('/folder/restore/(:num)','TrashController::restoreFolder/$1');

@@ -1,6 +1,7 @@
 <?php namespace App\Controllers;
 
 use App\Models\FolderModel;
+use App\Models\FileModel;
 use CodeIgniter\Controller;
 
 class FolderController extends Controller
@@ -41,5 +42,75 @@ class FolderController extends Controller
             
             return redirect()->back()->with('error', $e->getMessage());
         }
+    }
+
+    public function view($id)
+    {
+        helper('format');
+
+        $session = session();
+        $user = $session->get('user');
+
+        if (!$user) return redirect()->to('/login');
+
+        $folderModel = new FolderModel();
+        $fileModel   = new FileModel();
+
+        // Verify folder ownership
+        $currentFolder = $folderModel
+            ->where('id', $id)
+            ->where('user_id', $user['id'])
+            ->where('is_deleted', 0)
+            ->first();
+
+        if (!$currentFolder) {
+            return redirect()->to('/dashboard')->with('error', 'Folder not found or access denied');
+        }
+
+        // Get subfolders
+        $folders = $folderModel
+            ->where('user_id', $user['id'])
+            ->where('parent_id', $id)
+            ->where('is_deleted', 0)
+            ->findAll();
+
+        // Get files in this folder
+        $files = $fileModel
+            ->where('user_id', $user['id'])
+            ->where('folder_id', $id)
+            ->where('is_deleted', 0)
+            ->findAll();
+
+        // Optional: build breadcrumb trail
+        $breadcrumbs = $this->buildBreadcrumbs($folderModel, $currentFolder);
+
+        return view('folder/view', [
+            'title' => $currentFolder['name'],
+            'user' => $user,
+            'currentFolder' => $currentFolder,
+            'folders' => $folders,
+            'files' => $files,
+            'breadcrumbs' => $breadcrumbs,
+        ]);
+    }
+
+    /**
+     * Recursively build breadcrumb path to current folder
+     */
+    private function buildBreadcrumbs($folderModel, $folder)
+    {
+        $breadcrumbs = [];
+        $current = $folder;
+
+        while ($current) {
+            $breadcrumbs[] = [
+                'id' => $current['id'],
+                'name' => $current['name'],
+            ];
+            if (empty($current['parent_id'])) break;
+            $current = $folderModel->find($current['parent_id']);
+        }
+
+        return array_reverse($breadcrumbs);
     }
 }
