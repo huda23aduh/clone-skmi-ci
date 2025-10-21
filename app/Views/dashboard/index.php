@@ -1,495 +1,482 @@
 <?= $this->extend('layout') ?>
-
 <?= $this->section('content') ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Manager Dashboard</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #3c8dbc;
-            --secondary-color: #f4f4f4;
-            --border-color: #ddd;
-        }
-        
-        body {
-            background-color: #f9f9f9;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .welcome-message {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .btn-action {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-weight: 500;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .btn-outline-primary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .file-manager-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        
-        .card-header {
-            background-color: var(--secondary-color);
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .card-title {
-            margin: 0;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-        
-        .table-controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .table-controls select, .table-controls input {
-            padding: 5px 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-        }
-        
-        .file-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .file-table th {
-            background-color: var(--secondary-color);
-            padding: 12px 15px;
-            text-align: left;
-            font-weight: 600;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .file-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .file-table tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .file-table tr:hover {
-            background-color: rgba(0, 0, 0, 0.02);
-        }
-        
-        .file-icon {
-            margin-right: 8px;
-            color: #666;
-        }
-        
-        .folder-icon {
-            color: #ffc107;
-        }
-        
-        .file-actions {
-            display: flex;
-            gap: 5px;
-        }
-        
-        .btn-sm {
-            padding: 4px 8px;
-            font-size: 0.85rem;
-        }
-        
-        .modal-content {
-            border-radius: 8px;
-            border: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .modal-header {
-            background-color: var(--primary-color);
-            color: white;
-            border-bottom: none;
-        }
-        
-        .modal-footer {
-            border-top: 1px solid var(--border-color);
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(60, 141, 188, 0.25);
-        }
-        
-        @media (max-width: 768px) {
-            .header-section {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            
-            .table-controls {
-                flex-wrap: wrap;
-            }
-            
-            .file-table {
-                font-size: 0.9rem;
-            }
-            
-            .file-table th, .file-table td {
-                padding: 8px 10px;
-            }
-        }
-    </style>
-</head>
-<body>
+<!-- Include Components -->
+<?= $this->include('components/toast') ?>
+<?= $this->include('components/create_folder_modal') ?>
+<?= $this->include('components/upload_file_modal') ?>
+
+<!-- Header with Actions -->
+<div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <!-- Header Section -->
-        <div class="header-section">
-            <div class="action-buttons">
-                <button type="button" class="btn btn-primary btn-action" data-bs-toggle="modal" data-bs-target="#createFolderModal">
-                    <i class="fas fa-folder-plus"></i> 
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item active"><i class="fas fa-home me-1"></i> Root</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="btn-group">
+        <button type="button" class="btn btn-success" onclick="showUploadFileModal()">
+            <i class="fas fa-upload me-1"></i> Upload Files
+        </button>
+        <button type="button" class="btn btn-primary" onclick="showCreateFolderModal()">
+            <i class="fas fa-folder-plus me-1"></i> Create Folder
+        </button>
+    </div>
+</div>
+
+<!-- Search and Filter Card -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="selectAllCheckboxMain">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-secondary w-100" id="selectAllBtn">
+                    <i class="fas fa-check-square me-1"></i> Select All
                 </button>
-                <button type="button" class="btn btn-primary btn-action" data-bs-toggle="modal" data-bs-target="#uploadFileModal">
-                    <i class="fas fa-upload"></i>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Search files and folders...">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" id="typeFilter">
+                    <option value="all">All Items</option>
+                    <option value="folder">Folders Only</option>
+                    <option value="file">Files Only</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" id="sortBy">
+                    <option value="name_asc">Name (A-Z)</option>
+                    <option value="name_desc">Name (Z-A)</option>
+                    <option value="date_asc">Date (Oldest)</option>
+                    <option value="date_desc">Date (Newest)</option>
+                    <option value="size_asc">Size (Smallest)</option>
+                    <option value="size_desc">Size (Largest)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Actions (Hidden by default) -->
+<div class="card shadow-sm mb-4" id="bulkActions" style="display: none;">
+    <div class="card-body py-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="text-muted" id="selectedCount">0 items selected</span>
+            <div class="btn-group">
+                <button type="button" class="btn btn-danger btn-sm" id="bulkDeleteBtn">
+                    <i class="fas fa-trash me-1"></i> Move to Trash
                 </button>
-                <button type="button" class="btn btn-outline-primary btn-action" id="deleteSelectedBtn">
-                    <i class="fas fa-trash"></i> Delete Selected
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="clearSelectionBtn">
+                    <i class="fas fa-times me-1"></i> Clear
                 </button>
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- File Manager Card -->
-        <div class="file-manager-card">
-            <div class="card-header">
-                <h3 class="card-title">Root</h3>
-                <div class="table-controls">
-                    <select id="filterSelect" class="form-select form-select-sm">
-                        <option value="all">All Items</option>
-                        <option value="folder">Folders Only</option>
-                        <option value="file">Files Only</option>
-                    </select>
-                    <select id="sortSelect" class="form-select form-select-sm">
-                        <option value="name">Sort by Name</option>
-                        <option value="type">Sort by Type</option>
-                        <option value="size">Sort by Size</option>
-                        <option value="date">Sort by Date</option>
-                    </select>
-                    <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Search...">
-                </div>
-            </div>
-            
-            <div class="card-body p-0">
-                <table class="file-table">
-                    <thead>
-                        <tr>
-                            <th width="40">
-                                <input type="checkbox" id="selectAllCheckbox">
-                            </th>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Size</th>
-                            <th>Last Modified</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Folders -->
-                        <?php foreach ($folders as $f): ?>
-                        <tr class="file-item" data-type="folder" data-name="<?= esc($f['name']) ?>" data-date="<?= date('Y-m-d', strtotime($f['created_at'] ?? 'now')) ?>">
-                            <td>
-                                <input type="checkbox" class="item-checkbox" data-id="<?= $f['id'] ?>" data-type="folder">
+<!-- Content Card -->
+<div class="card shadow-sm">
+    <div class="card-header bg-light py-3">
+        <h5 class="card-title mb-0 d-flex align-items-center">
+            <i class="fas fa-folder-open me-2"></i>Root Directory
+            <span class="badge bg-secondary ms-2"><?= count($folders) + count($files) ?> items</span>
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th width="40" class="ps-3">
+                            <input type="checkbox" id="selectAllCheckboxMain">
+                        </th>
+                        <th>Name</th>
+                        <th width="120">Type</th>
+                        <th width="120">Size</th>
+                        <th width="180">Modified</th>
+                        <th width="120" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="contentTable">
+                    <!-- Folders -->
+                    <?php foreach ($folders as $folder): ?>
+                        <tr class="item-row" data-type="folder" data-name="<?= esc($folder['name']) ?>" data-date="<?= $folder['created_at'] ?? '' ?>" data-id="<?= $folder['id'] ?>">
+                            <td class="ps-3">
+                                <input type="checkbox" class="item-checkbox" value="<?= $folder['id'] ?>" data-type="folder">
                             </td>
                             <td>
-                                <i class="fas fa-folder folder-icon file-icon"></i>
-                                <?= esc($f['name']) ?>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-folder text-warning me-3 fs-5"></i>
+                                    <div>
+                                        <a href="<?= base_url('/folder/view/' . $folder['id']) ?>" class="text-decoration-none text-dark fw-semibold">
+                                            <?= esc($folder['name']) ?>
+                                        </a>
+                                    </div>
+                                </div>
                             </td>
-                            <td>Folder</td>
-                            <td><?= isset($f['size']) ? number_format($f['size']/1024, 2) . ' KB' : '--' ?></td>
-                            <td><?= date('Y-m-d H:i', strtotime($f['created_at'] ?? 'now')) ?></td>
-                            <td class="file-actions">
-                                <button class="btn btn-sm btn-outline-primary" title="Open">
-                                    <i class="fas fa-folder-open"></i>
-                                </button>
-                                <form method="post" action="<?= base_url('/folder/delete/' . $f['id']) ?>" style="display:inline;">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Move to Trash">
-                                        <i class="fas fa-trash"></i>
+                            <td>
+                                <span class="badge bg-light text-dark">Folder</span>
+                            </td>
+                            <td class="text-muted">-</td>
+                            <td class="text-muted small">
+                                <?= isset($folder['updated_at']) ? date('M j, Y g:i A', strtotime($folder['updated_at'])) : 'Unknown' ?>
+                            </td>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
                                     </button>
-                                </form>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" href="<?= base_url('/folder/view/' . $folder['id']) ?>">
+                                                <i class="fas fa-folder-open me-2"></i>Open
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0)" onclick="uploadToFolder(<?= $folder['id'] ?>)">
+                                                <i class="fas fa-upload me-2"></i>Upload Here
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="javascript:void(0)" onclick="createSubfolder(<?= $folder['id'] ?>)">
+                                                <i class="fas fa-folder-plus me-2"></i>Create Subfolder
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="fas fa-edit me-2"></i>Rename
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="fas fa-share-alt me-2"></i>Share
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form method="post" action="<?= base_url('/folder/delete/' . $folder['id']) ?>" class="d-inline">
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="fas fa-trash me-2"></i>Move to Trash
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
-                        <?php endforeach; ?>
-                        
-                        <!-- Files -->
-                        <?php foreach ($files as $f): ?>
-                        <tr class="file-item" data-type="file" data-name="<?= esc($f['original_name']) ?>" data-size="<?= $f['size'] ?>" data-date="<?= date('Y-m-d', strtotime($f['created_at'] ?? 'now')) ?>">
-                            <td>
-                                <input type="checkbox" class="item-checkbox" data-id="<?= $f['id'] ?>" data-type="file">
+                    <?php endforeach; ?>
+                    
+                    <!-- Files -->
+                    <?php foreach ($files as $file): ?>
+                        <tr class="item-row" data-type="file" data-name="<?= esc($file['original_name']) ?>" data-date="<?= $file['created_at'] ?? '' ?>" data-size="<?= $file['size'] ?>" data-id="<?= $file['id'] ?>">
+                            <td class="ps-3">
+                                <input type="checkbox" class="item-checkbox" value="<?= $file['id'] ?>" data-type="file">
                             </td>
                             <td>
+                                <div class="d-flex align-items-center">
+                                    <?php
+                                    $file_icon = 'fa-file text-muted';
+                                    $file_ext = pathinfo($file['original_name'], PATHINFO_EXTENSION);
+                                    
+                                    // Set appropriate icon based on file type
+                                    if (in_array($file_ext, ['pdf'])) {
+                                        $file_icon = 'fa-file-pdf text-danger';
+                                    } elseif (in_array($file_ext, ['doc', 'docx'])) {
+                                        $file_icon = 'fa-file-word text-primary';
+                                    } elseif (in_array($file_ext, ['xls', 'xlsx'])) {
+                                        $file_icon = 'fa-file-excel text-success';
+                                    } elseif (in_array($file_ext, ['ppt', 'pptx'])) {
+                                        $file_icon = 'fa-file-powerpoint text-warning';
+                                    } elseif (in_array($file_ext, ['zip', 'rar', 'tar', 'gz'])) {
+                                        $file_icon = 'fa-file-archive text-secondary';
+                                    } elseif (in_array($file_ext, ['jpg', 'jpeg', 'png', 'gif', 'bmp'])) {
+                                        $file_icon = 'fa-file-image text-info';
+                                    } elseif (in_array($file_ext, ['mp3', 'wav', 'ogg'])) {
+                                        $file_icon = 'fa-file-audio text-info';
+                                    } elseif (in_array($file_ext, ['mp4', 'avi', 'mov', 'mkv'])) {
+                                        $file_icon = 'fa-file-video text-danger';
+                                    }
+                                    ?>
+                                    <i class="fas <?= $file_icon ?> me-3 fs-5"></i>
+                                    <div>
+                                        <div class="fw-semibold text-truncate" style="max-width: 300px;">
+                                            <?= esc($file['original_name']) ?>
+                                        </div>
+                                        <small class="text-muted"><?= strtoupper($file_ext) ?> file</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark"><?= strtoupper($file_ext) ?></span>
+                            </td>
+                            <td class="text-muted">
                                 <?php
-                                $fileExtension = pathinfo($f['original_name'], PATHINFO_EXTENSION);
-                                $iconClass = 'fa-file';
-                                
-                                switch(strtolower($fileExtension)) {
-                                    case 'pdf': $iconClass = 'fa-file-pdf'; break;
-                                    case 'doc': 
-                                    case 'docx': $iconClass = 'fa-file-word'; break;
-                                    case 'xls':
-                                    case 'xlsx': $iconClass = 'fa-file-excel'; break;
-                                    case 'png':
-                                    case 'jpg':
-                                    case 'jpeg':
-                                    case 'gif': $iconClass = 'fa-file-image'; break;
-                                    case 'zip':
-                                    case 'rar': $iconClass = 'fa-file-archive'; break;
+                                if ($file['size'] == 0) {
+                                    echo '0 Bytes';
+                                } else {
+                                    $sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                                    $i = floor(log($file['size']) / log(1024));
+                                    echo round($file['size'] / pow(1024, $i), 2) . ' ' . $sizes[$i];
                                 }
                                 ?>
-                                <i class="fas <?= $iconClass ?> file-icon"></i>
-                                <?= esc($f['original_name']) ?>
                             </td>
-                            <td><?= strtoupper($fileExtension) ?> File</td>
-                            <td><?= number_format($f['size']/1024, 2) ?> KB</td>
-                            <td><?= date('Y-m-d H:i', strtotime($f['created_at'] ?? 'now')) ?></td>
-                            <td class="file-actions">
-                                <a href="<?= base_url('file/download/' . $f['id']) ?>" class="btn btn-sm btn-outline-primary" title="Download">
-                                    <i class="fas fa-download"></i>
-                                </a>
-                                <form method="post" action="<?= base_url('/file/delete/' . $f['id']) ?>" style="display:inline;">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Move to Trash">
-                                        <i class="fas fa-trash"></i>
+                            <td class="text-muted small">
+                                <?= isset($file['updated_at']) ? date('M j, Y g:i A', strtotime($file['updated_at'])) : 'Unknown' ?>
+                            </td>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
                                     </button>
-                                </form>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" href="<?= base_url('file/download/' . $file['id']) ?>">
+                                                <i class="fas fa-download me-2"></i>Download
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="<?= base_url('file/preview/' . $file['id']) ?>">
+                                                <i class="fas fa-eye me-2"></i>Preview
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="fas fa-edit me-2"></i>Rename
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="fas fa-share-alt me-2"></i>Share
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form method="post" action="<?= base_url('/file/delete/' . $file['id']) ?>" class="d-inline">
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="fas fa-trash me-2"></i>Move to Trash
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                    <?php endforeach; ?>
+                    
+                    <?php if (empty($folders) && empty($files)): ?>
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="py-4">
+                                    <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
+                                    <h5 class="text-muted">This folder is empty</h5>
+                                    <p class="text-muted mb-3">Get started by uploading your first file or creating a folder</p>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-success" onclick="showUploadFileModal()">
+                                            <i class="fas fa-upload me-1"></i> Upload Files
+                                        </button>
+                                        <button type="button" class="btn btn-primary" onclick="showCreateFolderModal()">
+                                            <i class="fas fa-folder-plus me-1"></i> Create Folder
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 
-    <!-- Create Folder Modal -->
-    <div class="modal fade" id="createFolderModal" tabindex="-1" aria-labelledby="createFolderModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createFolderModalLabel">Create New Folder</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form method="post" action="<?= base_url('/folder/create') ?>">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="folderName" class="form-label">Folder Name</label>
-                            <input type="text" class="form-control" id="folderName" name="name" placeholder="Enter folder name" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Create Folder</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+<script>
+// Helper functions for folder and file operations
+function uploadToFolder(folderId) {
+    showUploadFileModal(folderId);
+}
 
-    <!-- Upload File Modal -->
-    <div class="modal fade" id="uploadFileModal" tabindex="-1" aria-labelledby="uploadFileModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="uploadFileModalLabel">Upload File</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form method="post" action="<?= base_url('/file/upload') ?>" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="fileInput" class="form-label">Select File</label>
-                            <input class="form-control" type="file" id="fileInput" name="file" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="folderSelect" class="form-label">Destination Folder</label>
-                            <select class="form-select" id="folderSelect" name="folder_id">
-                                <option value="">-- Upload to Root --</option>
-                                <?php foreach($folders as $f): ?>
-                                    <option value="<?= $f['id'] ?>"><?= esc($f['name']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Upload File</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+function createSubfolder(parentId) {
+    showCreateFolderModal(parentId);
+}
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+// Bulk selection functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const typeFilter = document.getElementById('typeFilter');
+    const sortBy = document.getElementById('sortBy');
+    const selectAllCheckbox = document.getElementById('selectAllCheckboxMain');
+    const itemCheckboxes = document.querySelectorAll('.item-checkbox');
+    const bulkActions = document.getElementById('bulkActions');
+    const selectAllBtn = document.getElementById('selectAllBtn');
+    const clearSelectionBtn = document.getElementById('clearSelectionBtn');
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+    const selectedCount = document.getElementById('selectedCount');
+    const contentTable = document.getElementById('contentTable');
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Select All Checkbox
-            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
-            const itemCheckboxes = document.querySelectorAll('.item-checkbox');
-            
-            selectAllCheckbox.addEventListener('change', function() {
-                itemCheckboxes.forEach(checkbox => {
-                    checkbox.checked = selectAllCheckbox.checked;
-                });
+    // Update selected count
+    function updateSelectedCount() {
+        const selectedCountValue = document.querySelectorAll('.item-checkbox:checked').length;
+        selectedCount.textContent = `${selectedCountValue} item${selectedCountValue !== 1 ? 's' : ''} selected`;
+        bulkActions.style.display = selectedCountValue > 0 ? 'block' : 'none';
+    }
+    
+    // Select all functionality
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
             });
+            updateSelectedCount();
+        });
+    }
+    
+    // Individual checkbox change
+    itemCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateSelectedCount);
+    });
+    
+    // Select all button
+    if (selectAllBtn) {
+        selectAllBtn.addEventListener('click', function() {
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            if (selectAllCheckbox) selectAllCheckbox.checked = true;
+            updateSelectedCount();
+        });
+    }
+    
+    // Clear selection button
+    if (clearSelectionBtn) {
+        clearSelectionBtn.addEventListener('click', function() {
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            if (selectAllCheckbox) selectAllCheckbox.checked = false;
+            updateSelectedCount();
+        });
+    }
+    
+    // Bulk delete button
+    if (bulkDeleteBtn) {
+        bulkDeleteBtn.addEventListener('click', function() {
+            const selectedItems = Array.from(itemCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => ({id: cb.value, type: cb.dataset.type}));
             
-            // Delete Selected Button
-            const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
-            deleteSelectedBtn.addEventListener('click', function() {
-                const selectedItems = Array.from(itemCheckboxes).filter(cb => cb.checked);
-                
-                if (selectedItems.length === 0) {
-                    alert('Please select at least one item to delete.');
-                    return;
-                }
-                
+            if (selectedItems.length > 0) {
                 if (confirm(`Are you sure you want to move ${selectedItems.length} item(s) to trash?`)) {
-                    // In a real implementation, you would send a request to delete all selected items
-                    // For now, we'll just submit the forms individually
-                    selectedItems.forEach(checkbox => {
-                        const form = checkbox.closest('tr').querySelector('form');
-                        if (form) {
-                            form.submit();
+                    // Send request to server for bulk deletion
+                    fetch('<?= base_url('/bulk/delete') ?>', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({items: selectedItems})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('success', `Successfully moved ${selectedItems.length} item(s) to trash`);
+                            setTimeout(() => location.reload(), 1000);
+                        } else {
+                            showToast('error', data.message || 'Error deleting items');
                         }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('error', 'Error deleting items');
                     });
                 }
-            });
-            
-            // Filter Functionality
-            const filterSelect = document.getElementById('filterSelect');
-            const fileItems = document.querySelectorAll('.file-item');
-            
-            filterSelect.addEventListener('change', function() {
-                const filterValue = this.value;
-                
-                fileItems.forEach(item => {
-                    if (filterValue === 'all') {
-                        item.style.display = '';
-                    } else if (filterValue === 'folder' && item.dataset.type === 'folder') {
-                        item.style.display = '';
-                    } else if (filterValue === 'file' && item.dataset.type === 'file') {
-                        item.style.display = '';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Search Functionality
-            const searchInput = document.getElementById('searchInput');
-            
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                
-                fileItems.forEach(item => {
-                    const fileName = item.dataset.name.toLowerCase();
-                    if (fileName.includes(searchTerm)) {
-                        item.style.display = '';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Sort Functionality
-            const sortSelect = document.getElementById('sortSelect');
-            const tableBody = document.querySelector('.file-table tbody');
-            
-            sortSelect.addEventListener('change', function() {
-                const sortValue = this.value;
-                const rows = Array.from(tableBody.querySelectorAll('tr'));
-                
-                rows.sort((a, b) => {
-                    let aValue, bValue;
-                    
-                    switch(sortValue) {
-                        case 'name':
-                            aValue = a.dataset.name.toLowerCase();
-                            bValue = b.dataset.name.toLowerCase();
-                            return aValue.localeCompare(bValue);
-                            
-                        case 'type':
-                            aValue = a.dataset.type;
-                            bValue = b.dataset.type;
-                            return aValue.localeCompare(bValue);
-                            
-                        case 'size':
-                            aValue = parseFloat(a.dataset.size) || 0;
-                            bValue = parseFloat(b.dataset.size) || 0;
-                            return aValue - bValue;
-                            
-                        case 'date':
-                            aValue = new Date(a.dataset.date);
-                            bValue = new Date(b.dataset.date);
-                            return bValue - aValue;
-                            
-                        default:
-                            return 0;
-                    }
-                });
-                
-                // Re-append rows in sorted order
-                rows.forEach(row => tableBody.appendChild(row));
-            });
+            }
         });
-    </script>
-</body>
-</html>
+    }
+    
+    // Search and filter functionality
+    function filterAndSortContent() {
+        const rows = Array.from(document.querySelectorAll('.item-row'));
+        const searchTerm = searchInput.value.toLowerCase();
+        const filterType = typeFilter.value;
+        const sortValue = sortBy.value;
+        
+        // Filter rows
+        rows.forEach(row => {
+            const name = row.dataset.name.toLowerCase();
+            const type = row.dataset.type;
+            
+            const matchesSearch = name.includes(searchTerm);
+            const matchesType = filterType === 'all' || type === filterType;
+            
+            row.style.display = (matchesSearch && matchesType) ? '' : 'none';
+        });
+        
+        // Sort rows
+        const visibleRows = rows.filter(row => row.style.display !== 'none');
+        
+        visibleRows.sort((a, b) => {
+            switch(sortValue) {
+                case 'name_asc':
+                    return a.dataset.name.localeCompare(b.dataset.name);
+                case 'name_desc':
+                    return b.dataset.name.localeCompare(a.dataset.name);
+                case 'date_asc':
+                    return new Date(a.dataset.date) - new Date(b.dataset.date);
+                case 'date_desc':
+                    return new Date(b.dataset.date) - new Date(a.dataset.date);
+                case 'size_asc':
+                    return (parseInt(a.dataset.size) || 0) - (parseInt(b.dataset.size) || 0);
+                case 'size_desc':
+                    return (parseInt(b.dataset.size) || 0) - (parseInt(a.dataset.size) || 0);
+                default:
+                    return 0;
+            }
+        });
+        
+        // Reorder rows in table
+        visibleRows.forEach(row => contentTable.appendChild(row));
+    }
+    
+    // Event listeners for search and filter
+    if (searchInput) searchInput.addEventListener('input', filterAndSortContent);
+    if (typeFilter) typeFilter.addEventListener('change', filterAndSortContent);
+    if (sortBy) sortBy.addEventListener('change', filterAndSortContent);
+});
+
+// Toast function (if not defined elsewhere)
+function showToast(type, message, title = null) {
+    // Create toast element
+    const toastId = 'toast-' + Date.now();
+    const toastHtml = `
+        <div id="${toastId}" class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+    
+    const toastContainer = document.getElementById('toastContainer');
+    if (toastContainer) {
+        toastContainer.innerHTML += toastHtml;
+        const toastElement = new bootstrap.Toast(document.getElementById(toastId));
+        toastElement.show();
+    }
+}
+</script>
 
 <?= $this->endSection() ?>

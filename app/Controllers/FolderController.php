@@ -7,17 +7,39 @@ class FolderController extends Controller
 {
     public function create()
     {
-        $user = session('user'); if (!$user) return redirect()->to('/login');
-        $name = $this->request->getPost('name');
-        $parent_id = $this->request->getPost('parent_id') ?: null;
-
+        $session = session();
+        $user = $session->get('user');
+        
+        if (!$user) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON(['success' => false, 'message' => 'Not authenticated']);
+            }
+            return redirect()->to('/login');
+        }
+        
         $folderModel = new FolderModel();
-        $folderModel->insert([
+        
+        $data = [
+            'name' => $this->request->getPost('name'),
             'user_id' => $user['id'],
-            'name' => $name,
-            'parent_id' => $parent_id,
-        ]);
-
-        return redirect()->back()->with('success','Folder created');
+            'parent_id' => $this->request->getPost('parent_id') ?: null
+        ];
+        
+        try {
+            $folderModel->insert($data);
+            
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON(['success' => true, 'message' => 'Folder created successfully']);
+            }
+            
+            return redirect()->back()->with('success', 'Folder created successfully');
+            
+        } catch (\Exception $e) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON(['success' => false, 'message' => $e->getMessage()]);
+            }
+            
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }

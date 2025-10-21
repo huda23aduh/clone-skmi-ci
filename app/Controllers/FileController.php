@@ -9,42 +9,54 @@ class FileController extends Controller
     {
         $session = session();
         $user = $session->get('user');
-    
+        
         if (!$user) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON(['success' => false, 'message' => 'Not authenticated']);
+            }
             return redirect()->to('/login');
         }
-    
-        $file = $this->request->getFile('file');
-        $folder_id = $this->request->getPost('folder_id') ?: null;
-    
-        if (!$file || !$file->isValid()) {
-            return redirect()->back()->with('error', 'File upload failed.');
-        }
-    
-        // Preserve original extension
-        $ext = $file->getClientExtension();
-        $newName = bin2hex(random_bytes(16)) . '.' . $ext;
-    
-        // Move file
-        if (!$file->move(WRITEPATH . 'uploads', $newName)) {
-            return redirect()->back()->with('error', 'Failed to move uploaded file.');
-        }
-    
-        // Save file info
+        
         $fileModel = new FileModel();
-        $fileModel->insert([
-            'user_id'       => $user['id'],
-            'folder_id'     => $folder_id,
-            'original_name' => $file->getClientName(),
-            'storage_name'  => $newName,
-            'mime'          => $file->getClientMimeType(),
-            'size'          => $file->getSize(),
-            'is_deleted'    => 0,
-            'created_at'    => date('Y-m-d H:i:s'),
-            'updated_at'    => date('Y-m-d H:i:s'),
-        ]);
-    
-        return redirect()->to('/dashboard')->with('success', 'File uploaded successfully.');
+        $uploadedFiles = $this->request->getFiles();
+        
+        $uploadedCount = 0;
+        $errors = [];
+        
+        foreach ($uploadedFiles['files'] as $file) {
+            if ($file->isValid() && !$file->hasMoved()) {
+                try {
+                    $newName = $file->getRandomName();
+                    $file->move(WRITEPATH . 'uploads', $newName);
+                    
+                    $fileModel->insert([
+                        'original_name' => $file->getClientName(),
+                        'system_name' => $newName,
+                        'size' => $file->getSize(),
+                        'user_id' => $user['id'],
+                        'folder_id' => $this->request->getPost('folder_id') ?: null
+                    ]);
+                    
+                    $uploadedCount++;
+                    
+                } catch (\Exception $e) {
+                    $errors[] = $file->getClientName() . ': ' . $e->getMessage();
+                }
+            }
+        }
+        
+        if ($this->request->isAJAX()) {
+            if ($uploadedCount > 0 && empty($errors)) {
+                return $this->response->setJSON(['success' => true, 'uploaded_count' => $uploadedCount]);
+            } else {
+                return $this->response->setJSON([
+                    'success' => false, 
+                    'message' => 'Upload completed with errors: ' . implode(', ', $errors)
+                ]);
+            }
+        }
+        
+        // Handle non-AJAX requests...
     }
     
 

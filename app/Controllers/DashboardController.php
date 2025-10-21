@@ -8,6 +8,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        helper('format');
+        
         $session = session();
         $user = $session->get('user');
 
