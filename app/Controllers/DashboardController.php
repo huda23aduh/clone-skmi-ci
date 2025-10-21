@@ -19,13 +19,13 @@ class DashboardController extends Controller
         $fileModel   = new FileModel();
 
         $folders = $folderModel->where('user_id', $user['id'])
-                            ->where('parent_id IS NULL OR parent_id = 0')
                             ->where('is_deleted', 0)
+                            ->where('parent_id IS NULL OR parent_id = 0')
                             ->findAll();
 
         $files = $fileModel->where('user_id', $user['id'])
-                        ->where('folder_id IS NULL OR folder_id = 0')
                         ->where('is_deleted', 0)
+                        ->where('folder_id IS NULL OR folder_id = 0')
                         ->findAll();
 
         return view('dashboard/index', [

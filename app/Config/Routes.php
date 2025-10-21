@@ -16,10 +16,16 @@ $routes->get('/recycle-bin', 'DashboardController::recycleBin');
 
 $routes->post('/upload','UploadController::uploadFile');
 
-$routes->get('/folder/view/(:num)', 'FolderController::view/$1');
-$routes->post('/folder/create','FolderController::create');
-$routes->post('/folder/delete/(:num)','TrashController::deleteFolder/$1');
-$routes->post('/folder/restore/(:num)','TrashController::restoreFolder/$1');
+
+$routes->group('folder', ['namespace' => 'App\Controllers'], function($routes) {
+  $routes->get('view/(:num)', 'FolderController::view/$1');
+  $routes->post('create', 'FolderController::create');
+  $routes->post('delete/(:num)', 'FolderController::delete/$1');
+  $routes->post('restore/(:num)', 'FolderController::restore/$1');
+
+  // 👇 Add this line
+  $routes->post('purge/(:num)', 'FolderController::purge/$1');
+});
 
 $routes->post('/file/delete/(:num)','TrashController::deleteFile/$1');
 $routes->post('/file/restore/(:num)','TrashController::restoreFile/$1');

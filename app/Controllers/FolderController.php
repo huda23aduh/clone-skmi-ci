@@ -94,6 +94,46 @@ class FolderController extends Controller
         ]);
     }
 
+    public function purge($id)
+    {
+        $folderModel = new FolderModel();
+
+        // Fetch folder info (make sure it exists in deleted state)
+        $folder = $folderModel->where('id', $id)->where('is_deleted', 1)->first();
+
+        if (!$folder) {
+            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Folder not found or already deleted.");
+        }
+
+        // Delete from database permanently
+        $folderModel->delete($id, true); // 'true' = permanent deletion, skip soft delete
+
+        // Delete physical folder from disk if it still exists
+        $folderPath = WRITEPATH . 'uploads/' . $folder['path'];
+        if (is_dir($folderPath)) {
+            $this->deleteFolderRecursive($folderPath);
+        }
+
+        return redirect()->to('/recycle-bin')->with('success', 'Folder permanently deleted.');
+    }
+
+    // Helper: recursively delete physical folder
+    private function deleteFolderRecursive($dir)
+    {
+        if (!file_exists($dir)) return;
+        $files = array_diff(scandir($dir), ['.', '..']);
+        foreach ($files as $file) {
+            $path = "$dir/$file";
+            if (is_dir($path)) {
+                $this->deleteFolderRecursive($path);
+            } else {
+                unlink($path);
+            }
+        }
+        rmdir($dir);
+    }
+
+
     /**
      * Recursively build breadcrumb path to current folder
      */
