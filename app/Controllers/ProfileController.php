@@ -112,7 +112,7 @@ class ProfileController extends Controller
                     'metadata' => ['fields_updated' => array_keys($updateData)]
                 ]);
 
-                return redirect()->back()->with('success', 'Profile updated successfully.');
+                return redirect()->back()->with('success', lang('app.profile_updated'));
             } else {
                 return redirect()->back()->with('error', 'Failed to update profile.');
             }
@@ -221,6 +221,10 @@ class ProfileController extends Controller
                     // Set session language
                     session()->set('language', $language);
                     
+                    // Set locale for immediate effect
+                    $localeCode = $language === 'english' ? 'en' : 'id';
+                    $this->request->setLocale($localeCode);
+                    
                     // Log the activity
                     $this->activityLogModel->logActivity([
                         'user_id' => $user['id'],
@@ -229,7 +233,7 @@ class ProfileController extends Controller
                         'metadata' => ['language' => $language]
                     ]);
 
-                    return redirect()->back()->with('success', 'Language preference updated successfully.');
+                    return redirect()->back()->with('success', app_lang('app.language_updated'));
                 }
             }
 

@@ -7,12 +7,12 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-0 text-gray-800">
-                <i class="fas fa-user me-2"></i>My Profile
+                <i class="fas fa-user me-2"></i><?= app_lang('app.profile_title') ?>
             </h1>
-            <p class="text-muted mb-0">Manage your profile information and preferences</p>
+            <p class="text-muted mb-0"><?= app_lang('app.profile_description') ?></p>
         </div>
         <a href="<?= base_url('activity-log') ?>" class="btn btn-primary">
-            <i class="fas fa-history me-1"></i>View Activity Log
+            <i class="fas fa-history me-1"></i><?= app_lang('app.view_activity_log') ?>
         </a>
     </div>
 
@@ -23,7 +23,7 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light py-3">
                     <h5 class="card-title mb-0 d-flex align-items-center">
-                        <i class="fas fa-id-card me-2"></i>Profile Information
+                        <i class="fas fa-id-card me-2"></i><?= lang('app.profile_information') ?>
                     </h5>
                 </div>
                 <div class="card-body text-center">
@@ -78,7 +78,7 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light py-3">
                     <h5 class="card-title mb-0 d-flex align-items-center">
-                        <i class="fas fa-globe me-2"></i>Language Preference
+                        <i class="fas fa-globe me-2"></i><?= lang('app.language_preference') ?>
                     </h5>
                 </div>
                 <div class="card-body">
@@ -101,7 +101,7 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-light py-3">
                     <h5 class="card-title mb-0 d-flex align-items-center">
-                        <i class="fas fa-chart-bar me-2"></i>Activity Statistics
+                        <i class="fas fa-chart-bar me-2"></i><?= lang('app.activity_statistics') ?>
                     </h5>
                 </div>
                 <div class="card-body">
@@ -141,7 +141,7 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light py-3">
                     <h5 class="card-title mb-0 d-flex align-items-center">
-                        <i class="fas fa-edit me-2"></i>Edit Profile Information
+                        <i class="fas fa-edit me-2"></i><?= app_lang('app.edit_profile_info') ?>
                     </h5>
                 </div>
                 <div class="card-body">
@@ -150,13 +150,13 @@
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="name" class="form-label">Full Name</label>
+                                <label for="name" class="form-label"><?= app_lang('app.full_name') ?></label>
                                 <input type="text" class="form-control" id="name" name="name" 
                                        value="<?= old('name', $user['name'] ?? '') ?>" 
                                        placeholder="Enter your full name">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">Email Address</label>
+                                <label for="email" class="form-label"><?= app_lang('app.email_address') ?></label>
                                 <input type="email" class="form-control" id="email" name="email" 
                                        value="<?= old('email', $user['email'] ?? '') ?>" 
                                        placeholder="Enter your email address">
@@ -165,29 +165,29 @@
 
                         <hr class="my-4">
                         
-                        <h6 class="mb-3 text-muted">Change Password (Optional)</h6>
+                        <h6 class="mb-3 text-muted"><?= app_lang('app.change_password_optional') ?></h6>
                         
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="current_password" class="form-label">Current Password</label>
+                                <label for="current_password" class="form-label"><?= app_lang('app.current_password') ?></label>
                                 <input type="password" class="form-control" id="current_password" name="current_password"
-                                       placeholder="Current password">
+                                       placeholder="<?= app_lang('app.current_password') ?>">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="new_password" class="form-label">New Password</label>
+                                <label for="new_password" class="form-label"><?= app_lang('app.new_password') ?></label>
                                 <input type="password" class="form-control" id="new_password" name="new_password"
-                                       placeholder="New password" minlength="8">
+                                       placeholder="<?= app_lang('app.new_password') ?>" minlength="8">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="confirm_password" class="form-label">Confirm Password</label>
+                                <label for="confirm_password" class="form-label"><?= app_lang('app.confirm_password') ?></label>
                                 <input type="password" class="form-control" id="confirm_password" name="confirm_password"
-                                       placeholder="Confirm new password">
+                                       placeholder="<?= app_lang('app.confirm_password') ?>">
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-1"></i>Update Profile
+                                <i class="fas fa-save me-1"></i><?= app_lang('app.profile_update_profile') ?>
                             </button>
                         </div>
                     </form>
@@ -209,7 +209,7 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0 d-flex align-items-center">
-                        <i class="fas fa-chart-line me-2"></i>Activity Overview (Last 30 Days)
+                        <i class="fas fa-chart-line me-2"></i><?= app_lang('app.activity_overview') ?> (Last 30 Days)
                     </h5>
                     <div class="btn-group btn-group-sm">
                         <button type="button" class="btn btn-outline-primary active" data-period="30">30 Days</button>
@@ -226,7 +226,7 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-light py-3">
                     <h5 class="card-title mb-0 d-flex align-items-center">
-                        <i class="fas fa-history me-2"></i>Recent Activities
+                        <i class="fas fa-history me-2"></i><?= lang('app.recent_activities') ?>
                     </h5>
                 </div>
                 <div class="card-body p-0">
@@ -257,7 +257,7 @@
                     <?php else: ?>
                         <div class="text-center py-5">
                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                            <p class="text-muted">No recent activities found.</p>
+                            <p class="text-muted"><?= lang('app.no_activities') ?></p>
                         </div>
                     <?php endif; ?>
                 </div>
