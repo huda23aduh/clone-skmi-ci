@@ -137,6 +137,7 @@
                                 <?= isset($folder['updated_at']) ? date('M j, Y g:i A', strtotime($folder['updated_at'])) : 'Unknown' ?>
                             </td>
                             <td class="text-center">
+                            <div class="d-flex align-items-center justify-content-center gap-1">
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fas fa-ellipsis-v"></i>
@@ -178,6 +179,15 @@
                                         </li>
                                     </ul>
                                 </div>
+                                <button class="btn btn-sm btn-outline-warning flex-shrink-0 d-flex align-items-center justify-content-center star-btn" 
+                                        id="star-btn"
+                                        style="width: 32px; height: 32px;"
+                                        data-item-id="<?= $folder['id'] ?>" 
+                                        data-item-type="folder"
+                                        title="Add to starred">
+                                    <i class="far fa-star"></i>
+                                </button>
+                            </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -240,50 +250,60 @@
                                 <?= isset($file['updated_at']) ? date('M j, Y g:i A', strtotime($file['updated_at'])) : 'Unknown' ?>
                             </td>
                             <td class="text-center">
-                                <div class="dropdown">
-                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li>
-                                            <a class="dropdown-item" href="<?= base_url('file/download/' . $file['id']) ?>">
-                                                <i class="fas fa-download me-2"></i>Download
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="<?= base_url('file/preview/' . $file['id']) ?>">
-                                                <i class="fas fa-eye me-2"></i>Preview
-                                            </a>
-                                        </li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <a class="dropdown-item" href="#">
-                                                <i class="fas fa-edit me-2"></i>Rename
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="#">
-                                                <i class="fas fa-share-alt me-2"></i>Share
-                                            </a>
-                                        </li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <form method="post" action="<?= base_url('/file/delete/' . $file['id']) ?>" class="d-inline">
-                                                <button type="submit" class="dropdown-item text-danger">
-                                                    <i class="fas fa-trash me-2"></i>Move to Trash
-                                                </button>
-                                            </form>
-                                        </li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <?php if (strtolower(pathinfo($file['original_name'], PATHINFO_EXTENSION)) === 'zip'): ?>
+                                <div class="d-flex align-items-center justify-content-center gap-1">
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
-                                                <a class="dropdown-item" href="<?= base_url('file/extract/' . $file['id']) ?>">
-                                                    <i class="fas fa-file-zipper me-2"></i>Extract
+                                                <a class="dropdown-item" href="<?= base_url('file/download/' . $file['id']) ?>">
+                                                    <i class="fas fa-download me-2"></i>Download
                                                 </a>
                                             </li>
-                                        <?php endif; ?>
+                                            <li>
+                                                <a class="dropdown-item" href="<?= base_url('file/preview/' . $file['id']) ?>">
+                                                    <i class="fas fa-eye me-2"></i>Preview
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item" href="#">
+                                                    <i class="fas fa-edit me-2"></i>Rename
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#">
+                                                    <i class="fas fa-share-alt me-2"></i>Share
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <form method="post" action="<?= base_url('/file/delete/' . $file['id']) ?>" class="d-inline">
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <i class="fas fa-trash me-2"></i>Move to Trash
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <?php if (strtolower(pathinfo($file['original_name'], PATHINFO_EXTENSION)) === 'zip'): ?>
+                                                <li>
+                                                    <a class="dropdown-item" href="<?= base_url('file/extract/' . $file['id']) ?>">
+                                                        <i class="fas fa-file-zipper me-2"></i>Extract
+                                                    </a>
+                                                </li>
+                                            <?php endif; ?>
 
-                                    </ul>
+                                        </ul>
+                                    </div>
+                                        <button class="btn btn-sm btn-outline-warning flex-shrink-0 d-flex align-items-center justify-content-center star-btn" 
+                                            id="star-btn"
+                                            style="width: 32px; height: 32px;"
+                                            data-item-id="<?= $file['id'] ?>" 
+                                            data-item-type="file"
+                                            title="Add to starred">
+                                        <i class="far fa-star"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -338,6 +358,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const bulkZipBtn = document.getElementById('bulkZipBtn');
     const selectedCount = document.getElementById('selectedCount');
     const contentTable = document.getElementById('contentTable');
+
+    initializeStarButtons();
     
     // Update selected count
     function updateSelectedCount() {
@@ -453,6 +475,65 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error(err);
                     showToast('error', 'Error compressing files');
                 });
+            }
+        });
+    }
+
+    function initializeStarButtons() {
+        document.querySelectorAll('.star-btn').forEach(btn => {
+            const itemId = btn.dataset.itemId;
+            const itemType = btn.dataset.itemType;
+            
+            // Check initial star status
+            checkStarStatus(itemId, itemType, btn);
+            
+            // Add click event
+            btn.addEventListener('click', function() {
+                toggleStar(itemId, itemType, btn);
+            });
+        });
+    }
+
+    function checkStarStatus(itemId, itemType, button) {
+        fetch(`<?= base_url('/starred/check') ?>?item_id=${itemId}&item_type=${itemType}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.is_starred) {
+                    button.innerHTML = '<i class="fas fa-star"></i>';
+                    button.classList.add('active');
+                } else {
+                    button.innerHTML = '<i class="far fa-star"></i>';
+                    button.classList.remove('active');
+                }
+            });
+    }
+
+    function toggleStar(itemId, itemType, button) {
+        fetch('<?= base_url('/starred/toggle') ?>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                item_id: itemId,
+                item_type: itemType
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (data.is_starred) {
+                    button.innerHTML = '<i class="fas fa-star"></i>';
+                    button.classList.add('active');
+                    showToast('success', data.message);
+                } else {
+                    button.innerHTML = '<i class="far fa-star"></i>';
+                    button.classList.remove('active');
+                    showToast('warning', data.message);
+                }
+            } else {
+                showToast('error', data.message);
             }
         });
     }

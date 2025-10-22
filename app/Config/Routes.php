@@ -39,6 +39,12 @@ $routes->group('file', ['namespace' => 'App\Controllers'], function($routes) {
 });
 
 
+$routes->group('starred', ['namespace' => 'App\Controllers'], function($routes) {
+  $routes->get('/', 'DashboardController::starred');
+    $routes->post('toggle', 'StarredController::toggle');
+    $routes->get('check', 'StarredController::checkStarred');
+});
+
 
 
 

@@ -36,6 +36,21 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function starred()
+    {
+        $user = session()->get('user');
+        if (!$user) return redirect()->to('/login');
+
+        $starredModel = new \App\Models\StarredModel();
+        $starredItems = $starredModel->getUserStarredItems($user['id']);
+
+        return view('starred/view', [
+            'title' => 'Starred Items',
+            'user' => $user,
+            'starredItems' => $starredItems
+        ]);
+    }
+
 
     public function recycleBin()
     {

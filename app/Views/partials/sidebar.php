@@ -39,7 +39,7 @@
               </li>
 
               <li class="nav-item">
-                <a href="/" class="nav-link">
+                <a href="<?= base_url('/starred') ?>" class="nav-link">
                   <i class="nav-icon bi bi-star"></i>
                   <p>Priority File</p>
                 </a>
