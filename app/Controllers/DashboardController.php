@@ -9,6 +9,7 @@ class DashboardController extends Controller
     public function index()
     {
         helper('format');
+        helper('file');
         
         $session = session();
         $user = $session->get('user');
