@@ -5,10 +5,12 @@ namespace App\Controllers;
 use App\Models\ActivityLogModel;
 use App\Models\UserModel;
 use CodeIgniter\Controller;
-
+use App\Traits\Authenticable;
 
 class ActivityLogController extends Controller
 {
+    use Authenticable;
+
     protected $activityLogModel;
     protected $userModel;
     protected $perPage = 20;
@@ -24,24 +26,25 @@ class ActivityLogController extends Controller
      */
     public function index()
     {
-        $session = session();
-        $user = $session->get('user');
+        helper('date');
 
-        if (!$user) return redirect()->to('/login');
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user; // Returns redirect or JSON response
+        }
 
-        $userId = session()->get('user')['id'];
         $page = $this->request->getGet('page') ?? 1;
         $filter = $this->request->getGet('filter') ?? 'all';
         $search = $this->request->getGet('search') ?? '';
 
         // Get activities with filters
-        $activities = $this->getActivities($userId, $page, $filter, $search);
+        $activities = $this->getActivities($user['id'], $page, $filter, $search);
         
         // Get total count for pagination
-        $totalActivities = $this->getTotalActivitiesCount($userId, $filter, $search);
+        $totalActivities = $this->getTotalActivitiesCount($user['id'], $filter, $search);
         
         // Get activity statistics
-        $stats = $this->getActivityStatistics($userId);
+        $stats = $this->getActivityStatistics($user['id']);
 
         $data = [
             'title' => 'Activity Log',
@@ -154,12 +157,16 @@ class ActivityLogController extends Controller
      */
     public function getActivityData()
     {
-        $userId = session()->get('user_id');
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user; // Returns redirect or JSON response
+        }
+
         $page = $this->request->getGet('page') ?? 1;
         $filter = $this->request->getGet('filter') ?? 'all';
         $search = $this->request->getGet('search') ?? '';
 
-        $activities = $this->getActivities($userId, $page, $filter, $search);
+        $activities = $this->getActivities($user["id"], $page, $filter, $search);
 
         $formattedActivities = [];
         foreach ($activities as $activity) {
@@ -171,8 +178,8 @@ class ActivityLogController extends Controller
             'activities' => $formattedActivities,
             'pagination' => [
                 'currentPage' => (int)$page,
-                'totalPages' => ceil($this->getTotalActivitiesCount($userId, $filter, $search) / $this->perPage),
-                'hasMore' => ($page * $this->perPage) < $this->getTotalActivitiesCount($userId, $filter, $search)
+                'totalPages' => ceil($this->getTotalActivitiesCount($user["id"], $filter, $search) / $this->perPage),
+                'hasMore' => ($page * $this->perPage) < $this->getTotalActivitiesCount($user["id"], $filter, $search)
             ]
         ]);
     }
@@ -278,14 +285,17 @@ class ActivityLogController extends Controller
      */
     public function clearLogs()
     {
-        $userId = session()->get('user_id');
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user; // Returns redirect or JSON response
+        }
 
         if ($this->request->getMethod() === 'POST') {
             $days = $this->request->getPost('days') ?? 30;
             $cutoffDate = date('Y-m-d H:i:s', strtotime("-$days days"));
 
             $deleted = $this->activityLogModel
-                ->where('user_id', $userId)
+                ->where('user_id', $user["id"])
                 ->where('created_at <', $cutoffDate)
                 ->delete();
 
@@ -304,11 +314,15 @@ class ActivityLogController extends Controller
      */
     public function export()
     {
-        $userId = session()->get('user_id');
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user; // Returns redirect or JSON response
+        }
+        
         $format = $this->request->getGet('format') ?? 'csv';
 
         $activities = $this->activityLogModel
-            ->where('user_id', $userId)
+            ->where('user_id', $user["id"])
             ->orderBy('created_at', 'DESC')
             ->findAll();
 

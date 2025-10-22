@@ -3,9 +3,12 @@
 use CodeIgniter\Controller;
 use App\Models\FileModel;
 use App\Services\ActivityLogger;
+use App\Traits\Authenticable;
 
 class FileController extends Controller
 {
+    use Authenticable;
+
     protected $activityLogger;
 
     public function __construct()
@@ -15,14 +18,9 @@ class FileController extends Controller
 
     public function upload()
     {
-        $session = session();
-        $user = $session->get('user');
-        
-        if (!$user) {
-            if ($this->request->isAJAX()) {
-                return $this->response->setJSON(['success' => false, 'message' => 'Not authenticated']);
-            }
-            return redirect()->to('/login');
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user; // Returns redirect or JSON response
         }
         
         $fileModel = new FileModel();
@@ -41,7 +39,7 @@ class FileController extends Controller
                         'original_name' => $file->getClientName(),
                         'system_name' => $newName,
                         'size' => $file->getSize(),
-                        'user_id' => $user['id'],
+                        'user_id' => $user["id"],
                         'folder_id' => $this->request->getPost('folder_id') ?: null
                     ]);
                     
@@ -57,7 +55,7 @@ class FileController extends Controller
             if ($uploadedCount > 0 && empty($errors)) {
                 // Log the activity
                 $this->activityLogger->logFileUpload(
-                    $userId, 
+                    $user["id"], 
                     $fileId, 
                     $file->getClientName(), 
                     $file->getSize(), 
@@ -100,9 +98,9 @@ class FileController extends Controller
 
     public function compress()
     {
-        $user = session()->get('user');
-        if (!$user) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Unauthorized']);
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user; // Returns redirect or JSON response
         }
 
         $data = $this->request->getJSON(true);
@@ -208,8 +206,10 @@ class FileController extends Controller
 
     public function extract($id)
     {
-        $user = session()->get('user');
-        if (!$user) return redirect()->to('/login');
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user; // Returns redirect or JSON response
+        }
 
         $fileModel = new \App\Models\FileModel();
         $folderModel = new \App\Models\FolderModel();
@@ -242,7 +242,7 @@ class FileController extends Controller
         ]);
 
         // Insert extracted files recursively
-        $this->insertExtractedFiles($extractPath, $folderId, $user['id'], $fileModel, $folderModel);
+        $this->insertExtractedFiles($extractPath, $folderId, $user["id"], $fileModel, $folderModel);
 
         return redirect()->back()->with('success', 'ZIP extracted successfully');
     }

@@ -3,28 +3,31 @@
 use App\Models\FolderModel;
 use App\Models\FileModel;
 use CodeIgniter\Controller;
+use App\Traits\Authenticable;
 
 class DashboardController extends Controller
 {
+    use Authenticable;
+
     public function index()
     {
         helper('format');
         helper('file');
         
-        $session = session();
-        $user = $session->get('user');
-
-        if (!$user) return redirect()->to('/login');
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user; // Returns redirect or JSON response
+        }
 
         $folderModel = new FolderModel();
         $fileModel   = new FileModel();
 
-        $folders = $folderModel->where('user_id', $user['id'])
+        $folders = $folderModel->where('user_id', $user["id"])
                             ->where('is_deleted', 0)
                             ->where('parent_id IS NULL OR parent_id = 0')
                             ->findAll();
 
-        $files = $fileModel->where('user_id', $user['id'])
+        $files = $fileModel->where('user_id', $user["id"])
                         ->where('is_deleted', 0)
                         ->where('folder_id IS NULL OR folder_id = 0')
                         ->findAll();
@@ -39,11 +42,13 @@ class DashboardController extends Controller
 
     public function starred()
     {
-        $user = session()->get('user');
-        if (!$user) return redirect()->to('/login');
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user; // Returns redirect or JSON response
+        }
 
         $starredModel = new \App\Models\StarredModel();
-        $starredItems = $starredModel->getUserStarredItems($user['id']);
+        $starredItems = $starredModel->getUserStarredItems($user["id"]);
 
         return view('starred/view', [
             'title' => 'Starred Items',
@@ -55,16 +60,18 @@ class DashboardController extends Controller
 
     public function recycleBin()
     {
-        $user = session('user');
-        if (!$user) return redirect()->to('/login');
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user; // Returns redirect or JSON response
+        }
 
         $folderModel = new FolderModel();
         $fileModel = new FileModel();
 
         $data = [
             'title' => 'Recycle Bin',
-            'folders' => $folderModel->where('user_id', $user['id'])->where('is_deleted', 1)->findAll(),
-            'files' => $fileModel->where('user_id', $user['id'])->where('is_deleted', 1)->findAll(),
+            'folders' => $folderModel->where('user_id', $user["id"])->where('is_deleted', 1)->findAll(),
+            'files' => $fileModel->where('user_id', $user["id"])->where('is_deleted', 1)->findAll(),
         ];
 
         return view('dashboard/recycle_bin', $data);

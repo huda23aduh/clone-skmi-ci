@@ -2,14 +2,17 @@
 
 use CodeIgniter\Controller;
 use App\Models\StarredModel;
+use App\Traits\Authenticable;
 
 class StarredController extends Controller
 {
+    use Authenticable;
+
     public function toggle()
     {
-        $user = session()->get('user');
-        if (!$user) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Not authenticated']);
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user; // Returns redirect or JSON response
         }
 
         $data = $this->request->getJSON(true);
@@ -21,7 +24,7 @@ class StarredController extends Controller
         }
 
         $starredModel = new StarredModel();
-        $isStarred = $starredModel->toggleStar($user['id'], $itemId, $itemType);
+        $isStarred = $starredModel->toggleStar($user["id"], $itemId, $itemType);
 
         return $this->response->setJSON([
             'success' => true,
@@ -32,16 +35,16 @@ class StarredController extends Controller
 
     public function checkStarred()
     {
-        $user = session()->get('user');
-        if (!$user) {
-            return $this->response->setJSON(['success' => false]);
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user; // Returns redirect or JSON response
         }
 
         $itemId = $this->request->getGet('item_id');
         $itemType = $this->request->getGet('item_type');
 
         $starredModel = new StarredModel();
-        $isStarred = $starredModel->isStarred($user['id'], $itemId, $itemType);
+        $isStarred = $starredModel->isStarred($user["id"], $itemId, $itemType);
 
         return $this->response->setJSON([
             'success' => true,

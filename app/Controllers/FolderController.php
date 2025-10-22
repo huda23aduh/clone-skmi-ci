@@ -18,7 +18,7 @@ class FolderController extends Controller
     {
         $session = session();
         $user = $session->get('user');
-        
+
         if (!$user) {
             if ($this->request->isAJAX()) {
                 return $this->response->setJSON(['success' => false, 'message' => 'Not authenticated']);
@@ -35,15 +35,28 @@ class FolderController extends Controller
         ];
         
         try {
-            $folderModel->insert($data);
+            $folderId = $folderModel->insert($data);
             
             if ($this->request->isAJAX()) {
+                // Log the activity
+                $this->activityLogger->logFolderCreate(
+                    $user['id'], 
+                    $folderId, 
+                    $this->request->getPost('name'), 
+                    $this->request->getPost('parent_id') ?: null
+                );
+
                 return $this->response->setJSON(['success' => true, 'message' => 'Folder created successfully']);
             }
 
             // Log the activity
-            $this->activityLogger->logFolderCreate($userId, $folderId, $folderName, $parentId);
-            
+            $this->activityLogger->logFolderCreate(
+                $user['id'], 
+                $folderId, 
+                $this->request->getPost('name'), 
+                $this->request->getPost('parent_id') ?: null
+            );
+
             return redirect()->back()->with('success', 'Folder created successfully');
             
         } catch (\Exception $e) {
@@ -107,6 +120,9 @@ class FolderController extends Controller
 
     public function purge($id)
     {
+        $session = session();
+        $user = $session->get('user');
+        
         $folderModel = new FolderModel();
 
         // Fetch folder info (make sure it exists in deleted state)
