@@ -90,15 +90,15 @@
 </div>
 
 <!-- Content Card -->
-<div class="card shadow-sm">
+<div class="card shadow-sm d-flex flex-column" style="height: calc(100vh - 330px);">
     <div class="card-header bg-light py-3">
         <h5 class="card-title mb-0 d-flex align-items-center">
             <i class="fas fa-folder-open me-2"></i>Root Directory
             <span class="badge bg-secondary ms-2"><?= count($folders) + count($files) ?> items</span>
         </h5>
     </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
+    <div class="card-body p-0 w-100" style="overflow-y: auto; max-height: 100%;">
+        <div class="table-responsive w-100">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
