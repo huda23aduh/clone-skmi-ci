@@ -74,7 +74,7 @@
               </li>
 
               <li class="nav-item">
-                <a href="./generate/theme.html" class="nav-link">
+                <a href="<?= base_url('/logout') ?>" class="nav-link">
                   <i class="nav-icon bi bi-box-arrow-right"></i>
                   <p>Logout</p>
                 </a>
