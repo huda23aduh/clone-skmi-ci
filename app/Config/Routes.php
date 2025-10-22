@@ -56,8 +56,10 @@ $routes->group('activity-log', ['namespace' => 'App\Controllers'], function($rou
 
 $routes->group('control-center', ['namespace' => 'App\Controllers'], function($routes) {
   $routes->get('/', 'ControlCenterController::index');
+  $routes->get('members', 'ControlCenterController::getMembers');
+  $routes->post('members', 'ControlCenterController::createMember');
+  $routes->post('members/(:num)/toggle-status', 'ControlCenterController::toggleMemberStatus/$1');
+  $routes->delete('members/(:num)', 'ControlCenterController::deleteMember/$1');
 });
-
-
 
 
