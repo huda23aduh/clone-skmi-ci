@@ -59,6 +59,15 @@
                 </a>
               </li>
 
+
+              <li class="nav-item">
+                <a href="<?= base_url('/activity-log') ?>" class="nav-link">
+                  <i class="nav-icon bi bi-graph-up"></i>
+                  <p>Activity Log</p>
+                </a>
+              </li>
+
+
               <li class="nav-item">
                 <a href="./generate/theme.html" class="nav-link">
                   <i class="nav-icon bi bi-people"></i>
