@@ -20,12 +20,12 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li>
-                        <a class="dropdown-item" href="<?= base_url('activity-logs/export?format=csv') ?>">
+                        <a class="dropdown-item" href="<?= base_url('activity-log/export?format=csv') ?>">
                             <i class="fas fa-file-csv me-2"></i>Export as CSV
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="<?= base_url('activity-logs/export?format=json') ?>">
+                        <a class="dropdown-item" href="<?= base_url('activity-log/export?format=json') ?>">
                             <i class="fas fa-file-code me-2"></i>Export as JSON
                         </a>
                     </li>
@@ -120,7 +120,7 @@
     <!-- Filters Card -->
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <form method="get" action="<?= base_url('activity-logs') ?>" class="row g-3 align-items-end">
+            <form method="get" action="<?= base_url('activity-log') ?>" class="row g-3 align-items-end">
                 <div class="col-md-4">
                     <label class="form-label">Search Activities</label>
                     <div class="input-group">
@@ -196,7 +196,7 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <small class="text-muted">
                                             <i class="fas fa-clock me-1"></i>
-                                            <?= date('M j, Y g:i A', strtotime($activity['created_at'])) ?>
+                                            <?= formatDateTimeGMT7_24h($activity['created_at']) ?>
                                         </small>
                                         <small class="text-muted">
                                             <i class="fas fa-globe me-1"></i>
@@ -267,7 +267,7 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="post" action="<?= base_url('activity-logs/clear') ?>">
+            <form method="post" action="<?= base_url('activity-log/clear') ?>">
                 <?= csrf_field() ?>
                 <div class="modal-body">
                     <p>This will permanently delete activity logs older than the selected period.</p>
