@@ -96,9 +96,9 @@
     </div>
 </div>
 
-<?= $this->include('components/delete_user_modal') ?>
+<?= $this->include('control_center/components/delete_user_modal') ?>
 
-<?= $this->include('components/control_center_script') ?>
+<?= $this->include('control_center/components/control_center_script') ?>
 
 
 <?= $this->endSection() ?>
