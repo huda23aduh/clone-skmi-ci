@@ -56,6 +56,11 @@
       integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4="
       crossorigin="anonymous"
     />
+    <!-- jQuery -->
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
 <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
@@ -63,11 +68,6 @@
   <?= $this->include('partials/wrapper') ?>
 
   <!--begin::Script-->
-    <!-- jQuery -->
-    <script
-      src="https://code.jquery.com/jquery-3.7.1.min.js"
-      crossorigin="anonymous"
-    ></script>
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
     <script
       src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
