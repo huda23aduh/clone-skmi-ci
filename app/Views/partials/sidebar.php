@@ -62,7 +62,7 @@
 
               <li class="nav-item">
                 <a href="<?= base_url('/activity-log') ?>" class="nav-link">
-                  <i class="nav-icon bi bi-graph-up"></i>
+                  <i class="nav-icon bi bi-activity"></i>
                   <p>Activity Log</p>
                 </a>
               </li>
@@ -81,6 +81,15 @@
                   <p>Profile</p>
                 </a>
               </li>
+
+              <?php if (session()->get('user')["isAdmin"] === "1"): ?>
+                <li class="nav-item">
+                  <a href="<?= base_url('/control-center') ?>" class="nav-link">
+                    <i class="nav-icon bi bi-person-fill-gear"></i>
+                    <p>Control Center</p>
+                  </a>
+                </li>
+              <?php endif; ?>
 
               <li class="nav-item">
                 <a href="<?= base_url('/logout') ?>" class="nav-link">

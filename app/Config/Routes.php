@@ -54,5 +54,10 @@ $routes->group('activity-log', ['namespace' => 'App\Controllers'], function($rou
 });
 
 
+$routes->group('control-center', ['namespace' => 'App\Controllers'], function($routes) {
+  $routes->get('/', 'ControlCenterController::index');
+});
+
+
 
 
