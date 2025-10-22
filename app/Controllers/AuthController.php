@@ -62,6 +62,8 @@ class AuthController extends Controller
         session()->set('user', [
             'id' => $user['id'],
             'email' => $user['email'],
+            'isAdmin' => $user['isAdmin'],
+            'isActive' => $user['isActive'],
             'name' => $user['name'] ?? ''
         ]);
 
