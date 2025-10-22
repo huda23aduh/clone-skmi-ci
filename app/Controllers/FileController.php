@@ -2,9 +2,17 @@
 
 use CodeIgniter\Controller;
 use App\Models\FileModel;
+use App\Services\ActivityLogger;
 
 class FileController extends Controller
 {
+    protected $activityLogger;
+
+    public function __construct()
+    {
+        $this->activityLogger = new ActivityLogger();
+    }
+
     public function upload()
     {
         $session = session();
@@ -47,6 +55,15 @@ class FileController extends Controller
         
         if ($this->request->isAJAX()) {
             if ($uploadedCount > 0 && empty($errors)) {
+                // Log the activity
+                $this->activityLogger->logFileUpload(
+                    $userId, 
+                    $fileId, 
+                    $file->getClientName(), 
+                    $file->getSize(), 
+                    $folderId
+                );
+
                 return $this->response->setJSON(['success' => true, 'uploaded_count' => $uploadedCount]);
             } else {
                 return $this->response->setJSON([
@@ -55,8 +72,6 @@ class FileController extends Controller
                 ]);
             }
         }
-        
-        // Handle non-AJAX requests...
     }
     
 
@@ -76,6 +91,9 @@ class FileController extends Controller
         if (!file_exists($path)) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('File not found on server.');
         }
+
+        // Log the activity
+        $this->activityLogger->logFileDownload($userId, $fileId, $file['original_name']);
 
         return $this->response->download($path, null)->setFileName($file['original_name']);
     }

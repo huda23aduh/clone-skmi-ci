@@ -3,9 +3,17 @@
 use App\Models\FolderModel;
 use App\Models\FileModel;
 use CodeIgniter\Controller;
+use App\Services\ActivityLogger;
 
 class FolderController extends Controller
 {
+    protected $activityLogger;
+
+    public function __construct()
+    {
+        $this->activityLogger = new ActivityLogger();
+    }
+
     public function create()
     {
         $session = session();
@@ -32,6 +40,9 @@ class FolderController extends Controller
             if ($this->request->isAJAX()) {
                 return $this->response->setJSON(['success' => true, 'message' => 'Folder created successfully']);
             }
+
+            // Log the activity
+            $this->activityLogger->logFolderCreate($userId, $folderId, $folderName, $parentId);
             
             return redirect()->back()->with('success', 'Folder created successfully');
             
@@ -113,6 +124,9 @@ class FolderController extends Controller
         if (is_dir($folderPath)) {
             $this->deleteFolderRecursive($folderPath);
         }
+
+        // Log the activity
+        $this->activityLogger->logFolderDelete($userId, $folderId, $folder['name']);
 
         return redirect()->to('/recycle-bin')->with('success', 'Folder permanently deleted.');
     }

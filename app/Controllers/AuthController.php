@@ -3,10 +3,18 @@
 use App\Models\UserModel;
 use CodeIgniter\Controllers;
 use CodeIgniter\Controller;
+use App\Services\ActivityLogger;
 
 class AuthController extends Controller
 {
-  public function loginForm()
+    protected $activityLogger;
+
+    public function __construct()
+    {
+        $this->activityLogger = new ActivityLogger();
+    }
+
+    public function loginForm()
     {
         return view('auth/login', ['title' => 'Login']);
     }
@@ -57,12 +65,19 @@ class AuthController extends Controller
             'name' => $user['name'] ?? ''
         ]);
 
+         // Log login activity
+         $this->activityLogger->logLogin($user['id']);
+
         return redirect()->to('/dashboard');
     }
 
     public function logout()
     {
         session()->remove('user');
+
+        // Log logout activity before destroying session
+        $this->activityLogger->logLogout(session()->get('user')['id'] ?? null);
+
         return redirect()->to('/login');
     }
 }

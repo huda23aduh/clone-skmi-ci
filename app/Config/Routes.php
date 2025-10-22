@@ -46,5 +46,13 @@ $routes->group('starred', ['namespace' => 'App\Controllers'], function($routes) 
 });
 
 
+$routes->group('activity-log', ['namespace' => 'App\Controllers'], function($routes) {
+  $routes->get('/', 'ActivityLogController::index');
+  $routes->get('data', 'ActivityLogController::getActivityData');
+  $routes->post('clear', 'ActivityLogController::clearLogs');
+  $routes->get('export', 'ActivityLogController::export');
+});
+
+
 
 
