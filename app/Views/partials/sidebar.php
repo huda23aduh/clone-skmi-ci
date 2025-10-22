@@ -76,7 +76,7 @@
               </li>
 
               <li class="nav-item">
-                <a href="./generate/theme.html" class="nav-link">
+                <a href="<?= base_url('/profile') ?>" class="nav-link">
                   <i class="nav-icon bi bi-person-circle"></i>
                   <p>Profile</p>
                 </a>

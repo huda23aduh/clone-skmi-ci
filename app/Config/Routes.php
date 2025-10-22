@@ -62,4 +62,11 @@ $routes->group('control-center', ['namespace' => 'App\Controllers'], function($r
   $routes->delete('members/(:num)', 'ControlCenterController::deleteMember/$1');
 });
 
+$routes->group('profile', ['namespace' => 'App\Controllers'], function($routes) {
+  $routes->get('/', 'ProfileController::index');
+  $routes->post('update', 'ProfileController::updateProfile');
+  $routes->post('upload-image', 'ProfileController::uploadProfileImage');
+  $routes->post('update-language', 'ProfileController::updateLanguage');
+  $routes->get('activity-chart-data', 'ProfileController::getActivityChartData');
+});
 

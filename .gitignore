@@ -22,6 +22,9 @@ writable/uploads/
 writable/tmp/
 writable/uploads/*
 
+public/uploads/*
+
+
 # Environment file
 .env
 .env.local

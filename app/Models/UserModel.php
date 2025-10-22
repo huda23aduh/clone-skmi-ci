@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Models;
 
@@ -6,22 +6,88 @@ use CodeIgniter\Model;
 
 class UserModel extends Model
 {
-    protected $table = 'users';
-    protected $primaryKey = 'id';
-    protected $allowedFields = ['name', 'email', 'password', 'isAdmin', 'isActive', 'created_at', 'updated_at'];
+    protected $table            = 'users';
+    protected $primaryKey       = 'id';
+    protected $useAutoIncrement = true;
+    protected $returnType       = 'array';
+    protected $useSoftDeletes   = false;
+    protected $protectFields    = true;
+    protected $allowedFields    = ['email', 'password', 'name', 'updated_at', 'isAdmin', 'isActive', 'profile_image', 'language'];
+
     protected $useTimestamps = true;
-    protected $createdField = 'created_at';
-    protected $updatedField = 'updated_at';
+    protected $dateFormat    = 'datetime';
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
 
+    // Validation rules for profile update
     protected $validationRules = [
-        'email' => 'required|valid_email|is_unique[users.email]',
-        'name' => 'permit_empty|min_length[2]|max_length[255]',
-        'password' => 'required|min_length[8]'
+        'name' => 'permit_empty|max_length[255]',
+        'email' => 'permit_empty|valid_email|max_length[255]',
+        'language' => 'permit_empty|in_list[english,bahasa]'
     ];
 
-    protected $validationMessages = [
-        'email' => [
-            'is_unique' => 'This email is already registered.'
-        ]
-    ];
+    protected $validationMessages = [];
+    protected $skipValidation = false;
+
+    /**
+     * Update user profile
+     */
+    public function updateProfile($userId, $data)
+    {
+        // Remove empty fields
+        $updateData = array_filter($data, function($value) {
+            return $value !== null && $value !== '';
+        });
+
+        // If no data to update, return true
+        if (empty($updateData)) {
+            return true;
+        }
+
+        // Handle password update
+        if (isset($updateData['password'])) {
+            $updateData['password'] = password_hash($updateData['password'], PASSWORD_DEFAULT);
+        }
+
+        return $this->update($userId, $updateData);
+    }
+    
+
+    /**
+     * Get user by ID with safe data (exclude password)
+     */
+    public function getSafeUserData($userId)
+    {
+        $user = $this->find($userId);
+        if ($user) {
+            unset($user['password']);
+        }
+        return $user;
+    }
+
+    /**
+     * Update profile image
+     */
+    /**
+     */
+    public function updateProfileImage($userId, $imagePath)
+    {
+        try {
+            return $this->update($userId, [
+                'profile_image' => $imagePath,
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+        } catch (\Exception $e) {
+            log_message('error', 'Failed to update profile image: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Update language preference
+     */
+    public function updateLanguage($userId, $language)
+    {
+        return $this->update($userId, ['language' => $language]);
+    }
 }
