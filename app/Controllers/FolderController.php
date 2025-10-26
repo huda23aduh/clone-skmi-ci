@@ -163,6 +163,99 @@ class FolderController extends Controller
         rmdir($dir);
     }
 
+    /**
+     * Rename folder
+     */
+    public function rename($id = null)
+    {
+        $session = session();
+        $user = $session->get('user');
+
+        if (!$user) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Not authenticated'
+            ]);
+        }
+
+        if ($this->request->getMethod() === 'POST') {
+            $folderModel = new FolderModel();
+            
+            $folderId = $id ?: $this->request->getPost('folder_id');
+            $newName = $this->request->getPost('new_name');
+
+            if (empty($folderId)) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Folder ID is required'
+                ]);
+            }
+
+            $result = $folderModel->renameFolder($folderId, $user['id'], $newName);
+
+            if ($result['success']) {
+                // Log the activity
+                $folder = $folderModel->getUserFolder($folderId, $user['id']);
+                $this->activityLogger->logItemRename(
+                    $user['id'],
+                    $folderId,
+                    'folder',
+                    $folder['name'],
+                    $newName
+                );
+
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => $result['message']
+                ]);
+            } else {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => $result['message']
+                ]);
+            }
+        }
+
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Invalid request method'
+        ]);
+    }
+
+    /**
+     * Get folder info for rename modal
+     */
+    public function getFolderInfo($id)
+    {
+        $session = session();
+        $user = $session->get('user');
+
+        if (!$user) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Not authenticated'
+            ]);
+        }
+
+        $folderModel = new FolderModel();
+        $folder = $folderModel->getUserFolder($id, $user['id']);
+
+        if (!$folder) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Folder not found'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'folder' => [
+                'id' => $folder['id'],
+                'name' => $folder['name'],
+                'type' => 'folder'
+            ]
+        ]);
+    }
 
     /**
      * Recursively build breadcrumb path to current folder

@@ -5,6 +5,7 @@
 <?= $this->include('components/toast') ?>
 <?= $this->include('components/create_folder_modal') ?>
 <?= $this->include('components/upload_file_modal') ?>
+<?= $this->include('dashboard/components/rename_modal') ?>
 
 <!-- Header with Actions -->
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -121,7 +122,10 @@
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
-                                            <a class="dropdown-item" href="#">
+                                            <a class="dropdown-item rename-item" href="javascript:void(0)" 
+                                            data-item-id="<?= $folder['id'] ?>" 
+                                            data-item-type="folder"
+                                            data-item-name="<?= esc($folder['name']) ?>">
                                                 <i class="fas fa-edit me-2"></i>Rename
                                             </a>
                                         </li>
@@ -229,7 +233,10 @@
                                             </li>
                                             <li><hr class="dropdown-divider"></li>
                                             <li>
-                                                <a class="dropdown-item" href="#">
+                                                <a class="dropdown-item rename-item" href="javascript:void(0)" 
+                                                data-item-id="<?= $file['id'] ?>" 
+                                                data-item-type="file"
+                                                data-item-name="<?= esc($file['original_name']) ?>">
                                                     <i class="fas fa-edit me-2"></i>Rename
                                                 </a>
                                             </li>

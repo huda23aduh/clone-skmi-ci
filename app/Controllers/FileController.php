@@ -277,4 +277,88 @@ class FileController extends Controller
         }
     }
 
+    /**
+     * Rename file
+     */
+    public function rename($id = null)
+    {
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user;
+        }
+
+        if ($this->request->getMethod() === 'POST') {
+            $fileModel = new FileModel();
+            
+            $fileId = $id ?: $this->request->getPost('file_id');
+            $newName = $this->request->getPost('new_name');
+
+            if (empty($fileId) ) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'File ID is required'
+                ]);
+            }
+
+            $result = $fileModel->renameFile($fileId, $user['id'], $newName);
+
+            if ($result['success']) {
+                // Log the activity
+                $file = $fileModel->getUserFile($fileId, $user['id']);
+                $this->activityLogger->logItemRename(
+                    $user['id'],
+                    $fileId,
+                    'file',
+                    $file['original_name'],
+                    $newName
+                );
+
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => $result['message']
+                ]);
+            } else {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => $result['message']
+                ]);
+            }
+        }
+
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Invalid request method'
+        ]);
+    }
+
+    /**
+     * Get file info for rename modal
+     */
+    public function getFileInfo($id)
+    {
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user;
+        }
+
+        $fileModel = new FileModel();
+        $file = $fileModel->getUserFile($id, $user['id']);
+
+        if (!$file) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'File not found'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'file' => [
+                'id' => $file['id'],
+                'name' => $file['original_name'],
+                'type' => 'file'
+            ]
+        ]);
+    }
+
 }

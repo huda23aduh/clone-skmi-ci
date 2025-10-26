@@ -23,8 +23,12 @@ $routes->group('folder', ['namespace' => 'App\Controllers'], function($routes) {
   $routes->post('delete/(:num)', 'FolderController::delete/$1');
   $routes->post('restore/(:num)', 'FolderController::restore/$1');
 
-  // 👇 Add this line
+  
   $routes->post('purge/(:num)', 'FolderController::purge/$1');
+
+  $routes->post('rename/(:num)', 'FolderController::rename/$1');
+  $routes->post('rename', 'FolderController::rename');
+  $routes->get('info/(:num)', 'FolderController::getFolderInfo/$1');
 });
 
 $routes->group('file', ['namespace' => 'App\Controllers'], function($routes) {
@@ -36,6 +40,10 @@ $routes->group('file', ['namespace' => 'App\Controllers'], function($routes) {
   $routes->get('download/(:num)', 'FileController::download/$1');
   $routes->post('compress', 'FileController::compress');
   $routes->get('extract/(:num)', 'FileController::extract/$1');
+
+  $routes->post('rename/(:num)', 'FileController::rename/$1');
+  $routes->post('rename', 'FileController::rename');
+  $routes->get('info/(:num)', 'FileController::getFileInfo/$1');
 });
 
 

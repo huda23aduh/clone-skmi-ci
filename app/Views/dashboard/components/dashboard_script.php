@@ -51,6 +51,192 @@ document.addEventListener('DOMContentLoaded', () => {
     window.uploadToFolder = folderId => showUploadFileModal(folderId);
     window.createSubfolder = parentId => showCreateFolderModal(parentId);
 
+    /* ---------------- Rename Functionality ---------------- */
+    const initRenameFunctionality = () => {
+        const renameModal = new bootstrap.Modal(document.getElementById('renameModal'));
+        const renameForm = document.getElementById('renameForm');
+        const renameError = document.getElementById('renameError');
+        const confirmRenameBtn = document.getElementById('confirmRename');
+        const newNameInput = document.getElementById('newName');
+        
+        let currentItemId, currentItemType;
+
+        // Handle rename item clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('rename-item') || e.target.closest('.rename-item')) {
+                const renameBtn = e.target.classList.contains('rename-item') ? e.target : e.target.closest('.rename-item');
+                
+                currentItemId = renameBtn.getAttribute('data-item-id');
+                currentItemType = renameBtn.getAttribute('data-item-type');
+                const currentName = renameBtn.getAttribute('data-item-name');
+                
+                // Set modal title and input value
+                document.getElementById('renameModalLabel').textContent = `Rename ${currentItemType}`;
+                newNameInput.value = currentName;
+                document.getElementById('renameItemId').value = currentItemId;
+                document.getElementById('renameItemType').value = currentItemType;
+                
+                // Clear previous errors
+                renameError.style.display = 'none';
+                renameError.textContent = '';
+                
+                // Show modal
+                renameModal.show();
+                
+                // Focus and select the input text
+                setTimeout(() => {
+                    newNameInput.focus();
+                    newNameInput.select();
+                }, 500);
+            }
+        });
+
+        // Handle rename confirmation
+        confirmRenameBtn.addEventListener('click', function() {
+            const newName = newNameInput.value.trim();
+            
+            if (!newName) {
+                showRenameError('Please enter a name');
+                return;
+            }
+            
+            // Validate file extension for files
+            if (currentItemType === 'file') {
+                const originalName = newNameInput.defaultValue;
+                const originalExt = originalName.split('.').pop();
+                const newExt = newName.split('.').pop();
+                
+                if (originalExt !== newExt) {
+                    if (!confirm('Changing the file extension might make the file unusable. Are you sure you want to continue?')) {
+                        return;
+                    }
+                }
+            }
+            
+            performRename(currentItemId, currentItemType, newName);
+        });
+
+        // Handle Enter key in rename input
+        newNameInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                confirmRenameBtn.click();
+            }
+        });
+
+        // Clear error when modal is hidden
+        renameModal._element.addEventListener('hidden.bs.modal', function() {
+            renameError.style.display = 'none';
+            renameError.textContent = '';
+            confirmRenameBtn.disabled = false;
+            confirmRenameBtn.innerHTML = 'Rename';
+        });
+
+        // Perform the rename via AJAX
+        async function performRename(itemId, itemType, newName) {
+            const formData = new FormData();
+            formData.append('new_name', newName);
+            formData.append('item_id', itemId);
+            formData.append('item_type', itemType);
+            formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+            
+            // Show loading state
+            confirmRenameBtn.disabled = true;
+            confirmRenameBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Renaming...';
+            
+            const endpoint = itemType === 'file' ? `<?= base_url('/file/rename/') ?>${itemId}` : `<?= base_url('/folder/rename/') ?>${itemId}`;
+            
+            try {
+                const data = await fetchJSON(endpoint, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (data && data.success) {
+                    // Show success message
+                    showToast('success', data.message);
+                    
+                    // Close modal
+                    renameModal.hide();
+                    
+                    // Update the item name in the UI
+                    updateItemInUI(itemId, itemType, newName);
+                    
+                    // Reload the page after a short delay to reflect changes
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    showRenameError(data?.message || 'Failed to rename item');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showRenameError('An error occurred while renaming the item');
+            } finally {
+                // Reset button state
+                confirmRenameBtn.disabled = false;
+                confirmRenameBtn.innerHTML = 'Rename';
+            }
+        }
+
+        // Update item name in UI without full page reload
+        function updateItemInUI(itemId, itemType, newName) {
+            // Find the item row
+            const itemRow = document.querySelector(`.item-row[data-id="${itemId}"]`);
+            if (!itemRow) return;
+            
+            if (itemType === 'file') {
+                // Update file name
+                const fileNameElement = itemRow.querySelector('.fw-semibold');
+                const fileTypeElement = itemRow.querySelector('.text-muted small');
+                
+                if (fileNameElement) {
+                    fileNameElement.textContent = newName;
+                }
+                
+                // Update file extension in badge
+                const fileExt = newName.split('.').pop();
+                const badgeElement = itemRow.querySelector('.badge');
+                if (badgeElement) {
+                    badgeElement.textContent = fileExt.toUpperCase();
+                }
+                
+                // Update file type text
+                if (fileTypeElement) {
+                    fileTypeElement.textContent = `${fileExt.toUpperCase()} file`;
+                }
+                
+                // Update data attributes
+                itemRow.setAttribute('data-name', newName);
+                
+            } else if (itemType === 'folder') {
+                // Update folder name
+                const folderLink = itemRow.querySelector('a.text-decoration-none');
+                if (folderLink) {
+                    folderLink.textContent = newName;
+                }
+                
+                // Update data attributes
+                itemRow.setAttribute('data-name', newName);
+            }
+            
+            // Update the rename button data attribute
+            const renameBtn = document.querySelector(`.rename-item[data-item-id="${itemId}"]`);
+            if (renameBtn) {
+                renameBtn.setAttribute('data-item-name', newName);
+            }
+        }
+
+        function showRenameError(message) {
+            renameError.textContent = message;
+            renameError.style.display = 'block';
+            newNameInput.focus();
+        }
+    };
+
     /* ---------------- Star Buttons ---------------- */
     const initStarButtons = () => {
         document.querySelectorAll('.star-btn').forEach(btn => {
@@ -161,5 +347,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ---------------- Init ---------------- */
     initStarButtons();
+    initRenameFunctionality();
 });
 </script>

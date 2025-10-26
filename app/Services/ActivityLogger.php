@@ -246,4 +246,26 @@ class ActivityLogger
         $i = floor(log($bytes) / log(1024));
         return round($bytes / pow(1024, $i), 2) . ' ' . $sizes[$i];
     }
+
+    /**
+     * Log item rename activity
+     */
+    public function logItemRename($userId, $itemId, $itemType, $oldName, $newName)
+    {
+        $activityLogModel = new \App\Models\ActivityLogModel();
+        
+        return $activityLogModel->logActivity([
+            'user_id' => $userId,
+            'activity_type' => \App\Models\ActivityLogModel::TYPE_ITEM_RENAME,
+            'item_type' => $itemType,
+            'item_id' => $itemId,
+            'item_name' => $newName,
+            'description' => "Renamed {$itemType} from '{$oldName}' to '{$newName}'",
+            'metadata' => [
+                'old_name' => $oldName,
+                'new_name' => $newName,
+                'item_type' => $itemType
+            ]
+        ]);
+    }
 }
