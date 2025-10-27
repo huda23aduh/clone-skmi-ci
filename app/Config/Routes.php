@@ -86,6 +86,12 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->post('upload-image', 'ProfileController::uploadProfileImage');
     $routes->post('update-language', 'ProfileController::updateLanguage');
     $routes->get('activity-chart-data', 'ProfileController::getActivityChartData');
+
+    $routes->post('email/add', 'EmailController::addEmail');
+    $routes->post('email/set-primary/(:num)', 'EmailController::setPrimary/$1');
+    $routes->post('email/remove/(:num)', 'EmailController::removeEmail/$1');
+    $routes->get('emails', 'EmailController::getUserEmails');
+    $routes->get('verify-email/(:any)', 'EmailController::verifyEmail/$1');
   });
 });
 

@@ -51,7 +51,6 @@ class UserModel extends Model
 
         return $this->update($userId, $updateData);
     }
-    
 
     /**
      * Get user by ID with safe data (exclude password)
@@ -67,8 +66,6 @@ class UserModel extends Model
 
     /**
      * Update profile image
-     */
-    /**
      */
     public function updateProfileImage($userId, $imagePath)
     {
@@ -89,5 +86,42 @@ class UserModel extends Model
     public function updateLanguage($userId, $language)
     {
         return $this->update($userId, ['language' => $language]);
+    }
+
+    /**
+     * Get user by any email (primary or backup)
+     */
+    public function getUserByAnyEmail($email)
+    {
+        $userEmailModel = new UserEmailModel();
+        return $userEmailModel->getUserByEmail($email);
+    }
+
+    /**
+     * Create user with primary email
+     */
+    public function createUserWithEmail($userData, $email)
+    {
+        $this->db->transStart();
+
+        try {
+            // Create user in users table
+            $userId = $this->insert($userData);
+
+            if ($userId) {
+                // Add primary email to user_emails table
+                $userEmailModel = new UserEmailModel();
+                $userEmailModel->addUserEmail($userId, $email, true, true);
+            }
+
+            $this->db->transComplete();
+
+            return $this->db->transStatus() ? $userId : false;
+
+        } catch (\Exception $e) {
+            $this->db->transRollback();
+            log_message('error', 'Error creating user with email: ' . $e->getMessage());
+            return false;
+        }
     }
 }

@@ -137,6 +137,90 @@
 
         <!-- Right Column - Edit Forms & Activity -->
         <div class="col-lg-8">
+            <!-- Email Management Section -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light py-3">
+                    <h5 class="card-title mb-0 d-flex align-items-center">
+                        <i class="fas fa-envelope me-2"></i>Email Management
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Add New Email Form -->
+                    <div class="mb-4">
+                        <h6 class="mb-3">Add Backup Email</h6>
+                        <form action="<?= base_url('profile/email/add') ?>" method="post" id="addEmailForm">
+                            <?= csrf_field() ?>
+                            <div class="row g-2">
+                                <div class="col-md-8">
+                                    <input type="email" class="form-control" name="email" 
+                                           placeholder="Enter backup email address" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-plus me-1"></i>Add Email
+                                    </button>
+                                </div>
+                            </div>
+                            <small class="text-muted">
+                                A verification email will be sent to this address.
+                            </small>
+                        </form>
+                    </div>
+
+                    <!-- Email List -->
+                    <h6 class="mb-3">Your Email Addresses</h6>
+                    <div id="emailList">
+                        <?php if (!empty($userEmails)): ?>
+                            <div class="list-group">
+                                <?php foreach ($userEmails as $email): ?>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <?php if ($email['is_primary']): ?>
+                                                    <span class="badge bg-primary">Primary</span>
+                                                <?php elseif ($email['is_verified']): ?>
+                                                    <span class="badge bg-success">Verified</span>
+                                                <?php else: ?>
+                                                    <span class="badge bg-warning">Pending</span>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold"><?= esc($email['email']) ?></div>
+                                                <?php if (!$email['is_verified'] && !$email['is_primary']): ?>
+                                                    <small class="text-muted">Verification required</small>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group">
+                                            <?php if (!$email['is_primary'] && $email['is_verified']): ?>
+                                                <button type="button" class="btn btn-outline-primary btn-sm set-primary-btn" 
+                                                        data-email-id="<?= $email['id'] ?>" 
+                                                        data-email="<?= esc($email['email']) ?>">
+                                                    <i class="fas fa-star me-1"></i>Set Primary
+                                                </button>
+                                            <?php endif; ?>
+                                            
+                                            <?php if (!$email['is_primary']): ?>
+                                                <button type="button" class="btn btn-outline-danger btn-sm delete-email-btn" 
+                                                        data-email-id="<?= $email['id'] ?>" 
+                                                        data-email="<?= esc($email['email']) ?>">
+                                                    <i class="fas fa-trash me-1"></i>Delete
+                                                </button>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="text-center py-4 text-muted">
+                                <i class="fas fa-envelope fa-2x mb-2"></i>
+                                <p>No backup emails added yet.</p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
             <!-- Edit Profile Form -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light py-3">
@@ -159,7 +243,8 @@
                                 <label for="email" class="form-label"><?= app_lang('app.email_address') ?></label>
                                 <input type="email" class="form-control" id="email" name="email" 
                                        value="<?= old('email', $user['email'] ?? '') ?>" 
-                                       placeholder="Enter your email address">
+                                       placeholder="Enter your email address" readonly>
+                                <small class="text-muted">Primary email cannot be changed here. Use email management above.</small>
                             </div>
                         </div>
 

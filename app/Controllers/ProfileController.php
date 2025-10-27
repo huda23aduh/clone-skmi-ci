@@ -33,6 +33,10 @@ class ProfileController extends Controller
         // Get fresh user data
         $userData = $this->userModel->getSafeUserData($user['id']);
         
+        // Get user emails
+        $userEmailModel = new \App\Models\UserEmailModel();
+        $userEmails = $userEmailModel->getUserEmails($user['id']);
+        
         // Get activity statistics for graph
         $activityStats = $this->getActivityStatistics($user['id']);
         
@@ -40,8 +44,9 @@ class ProfileController extends Controller
         $recentActivities = $this->activityLogModel->getRecentActivities($user['id'], 5);
 
         $data = [
-            'title' => 'My Profile',
+            'title' => app_lang('app.profile_title'),
             'user' => $userData,
+            'userEmails' => $userEmails, // Add this line
             'activityStats' => $activityStats,
             'recentActivities' => $recentActivities,
             'languages' => [

@@ -12,31 +12,26 @@ document.addEventListener('DOMContentLoaded', function() {
             const fileSize = file.size / 1024 / 1024; // MB
             const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
             
-            // Validate file type
             if (!validTypes.includes(file.type)) {
-                showToast('Please select a valid image file (JPG, PNG, GIF, WebP).', 'error');
+                showToast('error', 'Please select a valid image file (JPG, PNG, GIF, WebP).');
                 input.value = '';
                 return;
             }
             
-            // Validate file size
             if (fileSize > 2) {
-                showToast('Image size should not exceed 2MB.', 'error');
+                showToast('error', 'Image size should not exceed 2MB.');
                 input.value = '';
                 return;
             }
             
-            // Show file name and upload button
             fileName.textContent = file.name;
             imagePreview.style.display = 'block';
             uploadBtn.style.display = 'block';
             
-            // Preview image
             const reader = new FileReader();
             reader.onload = function(e) {
                 let img = document.querySelector('.profile-image');
                 if (!img || img.tagName !== 'IMG') {
-                    // Replace placeholder with image
                     const placeholder = document.querySelector('.rounded-circle.bg-secondary');
                     if (placeholder) {
                         img = document.createElement('img');
@@ -63,24 +58,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const fileInput = document.getElementById('profileImageInput');
             if (!fileInput.files || !fileInput.files[0]) {
                 e.preventDefault();
-                showToast('Please select an image to upload.', 'error');
+                showToast('error', 'Please select an image to upload.');
                 return;
             }
             
-            // Show loading state
             const uploadBtn = document.getElementById('uploadImageBtn');
             const originalText = uploadBtn.innerHTML;
             uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Uploading...';
             uploadBtn.disabled = true;
-            
-            // The form will submit normally, we're just adding visual feedback
         });
     }
 
     // Make function global for inline onclick
     window.handleImageSelection = handleImageSelection;
 
-    // Password Validation (existing code)
+    // Password Validation
     const profileForm = document.getElementById('profileForm');
     if (profileForm) {
         profileForm.addEventListener('submit', function(e) {
@@ -91,26 +83,26 @@ document.addEventListener('DOMContentLoaded', function() {
             if (newPassword || confirmPassword || currentPassword) {
                 if (!currentPassword) {
                     e.preventDefault();
-                    showToast('Please enter your current password to change password.', 'error');
+                    showToast('error', 'Please enter your current password to change password.');
                     return;
                 }
 
                 if (newPassword !== confirmPassword) {
                     e.preventDefault();
-                    showToast('New password and confirm password do not match.', 'error');
+                    showToast('error', 'New password and confirm password do not match.');
                     return;
                 }
 
                 if (newPassword.length < 8) {
                     e.preventDefault();
-                    showToast('New password must be at least 8 characters long.', 'error');
+                    showToast('error', 'New password must be at least 8 characters long.');
                     return;
                 }
             }
         });
     }
 
-    // Activity Chart (existing code)
+    // Activity Chart
     let activityChart;
     const chartCtx = document.getElementById('activityChart');
     let currentPeriod = 30;
@@ -205,48 +197,305 @@ document.addEventListener('DOMContentLoaded', function() {
 
     loadChartData(currentPeriod);
 
-    // Toast notification function
-    function showToast(message, type = 'success') {
-        // Check if Bootstrap toast is available
-        if (typeof bootstrap === 'undefined') {
-            alert(message);
-            return;
-        }
-
-        const toastContainer = document.querySelector('.toast-container');
-        if (!toastContainer) {
-            // Create toast container if it doesn't exist
-            const container = document.createElement('div');
-            container.className = 'toast-container position-fixed top-0 end-0 p-3';
-            container.style.zIndex = '9999';
-            document.body.appendChild(container);
-        }
-
-        const toastId = 'toast-' + Date.now();
-        const bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
-        
-        const toastHTML = `
-            <div id="${toastId}" class="toast align-items-center text-white ${bgClass} border-0" role="alert">
-                <div class="d-flex">
-                    <div class="toast-body">
-                        ${message}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        `;
-        
-        document.querySelector('.toast-container').insertAdjacentHTML('beforeend', toastHTML);
-        const toastElement = document.getElementById(toastId);
-        const toast = new bootstrap.Toast(toastElement);
-        toast.show();
-        
-        toastElement.addEventListener('hidden.bs.toast', function() {
-            this.remove();
+    // Email management functionality
+    const addEmailForm = document.getElementById('addEmailForm');
+    if (addEmailForm) {
+        addEmailForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            addNewEmail(this);
         });
     }
 
-    // Make showToast globally available
-    window.showToast = showToast;
+    // Set primary email
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('set-primary-btn') || e.target.closest('.set-primary-btn')) {
+            const btn = e.target.classList.contains('set-primary-btn') ? e.target : e.target.closest('.set-primary-btn');
+            const emailId = btn.getAttribute('data-email-id');
+            const email = btn.getAttribute('data-email');
+            setPrimaryEmail(emailId, email, btn);
+        }
+    });
+
+    // Delete email
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('delete-email-btn') || e.target.closest('.delete-email-btn')) {
+            const btn = e.target.classList.contains('delete-email-btn') ? e.target : e.target.closest('.delete-email-btn');
+            const emailId = btn.getAttribute('data-email-id');
+            const email = btn.getAttribute('data-email');
+            deleteEmail(emailId, email, btn);
+        }
+    });
+
+    async function addNewEmail(form) {
+        const formData = new FormData(form);
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerHTML;
+        
+        try {
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Adding...';
+
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            const result = await response.json();
+
+            if (result.success) {
+                showToast('success', result.message);
+                form.reset();
+                
+                // Fetch updated email list from the server
+                await refreshEmailList();
+            } else {
+                showToast('error', result.message);
+            }
+        } catch (error) {
+            console.error('Error adding email:', error);
+            showToast('error', 'Error adding email');
+        } finally {
+            // Reset button state
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+        }
+    }
+
+    async function refreshEmailList() {
+        try {
+            const response = await fetch('/profile/emails', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                updateEmailListUI(result.emails);
+            } else {
+                console.error('Failed to refresh email list');
+                showToast('error', 'Failed to refresh email list');
+            }
+        } catch (error) {
+            console.error('Error refreshing email list:', error);
+            showToast('error', 'Error refreshing email list');
+            // Fallback: reload the page if AJAX fails
+            setTimeout(() => location.reload(), 1500);
+        }
+    }
+
+    function updateEmailListUI(emails) {
+        const emailList = document.getElementById('emailList');
+        
+        if (!emails || emails.length === 0) {
+            emailList.innerHTML = `
+                <div class="text-center py-4 text-muted">
+                    <i class="fas fa-envelope fa-2x mb-2"></i>
+                    <p>No backup emails added yet.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let emailListHTML = '<div class="list-group">';
+        
+        emails.forEach(email => {
+            // Convert string values to boolean if needed
+            const isPrimary = email.is_primary === true || email.is_primary === '1' || email.is_primary === 1;
+            const isVerified = email.is_verified === true || email.is_verified === '1' || email.is_verified === 1;
+            
+            emailListHTML += `
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            ${isPrimary ? 
+                                '<span class="badge bg-primary">Primary</span>' : 
+                                isVerified ? 
+                                '<span class="badge bg-success">Verified</span>' : 
+                                '<span class="badge bg-warning">Pending</span>'
+                            }
+                        </div>
+                        <div>
+                            <div class="fw-semibold">${escapeHtml(email.email)}</div>
+                            ${!isVerified && !isPrimary ? 
+                                '<small class="text-muted">Verification required</small>' : 
+                                ''
+                            }
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        ${!isPrimary && isVerified ? 
+                            `<button type="button" class="btn btn-outline-primary btn-sm set-primary-btn" 
+                                    data-email-id="${email.id}" 
+                                    data-email="${escapeHtml(email.email)}">
+                                <i class="fas fa-star me-1"></i>Set Primary
+                            </button>` : 
+                            ''
+                        }
+                        
+                        ${!isPrimary ? 
+                            `<button type="button" class="btn btn-outline-danger btn-sm delete-email-btn" 
+                                    data-email-id="${email.id}" 
+                                    data-email="${escapeHtml(email.email)}">
+                                <i class="fas fa-trash me-1"></i>Delete
+                            </button>` : 
+                            ''
+                        }
+                    </div>
+                </div>
+            `;
+        });
+        
+        emailListHTML += '</div>';
+        emailList.innerHTML = emailListHTML;
+    }
+
+    function createEmailItem(email) {
+        const div = document.createElement('div');
+        div.className = 'list-group-item d-flex justify-content-between align-items-center';
+        div.innerHTML = `
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    ${email.is_primary ? 
+                        '<span class="badge bg-primary">Primary</span>' : 
+                        email.is_verified ? 
+                        '<span class="badge bg-success">Verified</span>' : 
+                        '<span class="badge bg-warning">Pending</span>'
+                    }
+                </div>
+                <div>
+                    <div class="fw-semibold">${escapeHtml(email.email)}</div>
+                    ${!email.is_verified && !email.is_primary ? 
+                        '<small class="text-muted">Verification required</small>' : 
+                        ''
+                    }
+                </div>
+            </div>
+            <div class="btn-group">
+                ${!email.is_primary && email.is_verified ? 
+                    `<button type="button" class="btn btn-outline-primary btn-sm set-primary-btn" 
+                            data-email-id="${email.id}" 
+                            data-email="${escapeHtml(email.email)}">
+                        <i class="fas fa-star me-1"></i>Set Primary
+                    </button>` : 
+                    ''
+                }
+                
+                ${!email.is_primary ? 
+                    `<button type="button" class="btn btn-outline-danger btn-sm delete-email-btn" 
+                            data-email-id="${email.id}" 
+                            data-email="${escapeHtml(email.email)}">
+                        <i class="fas fa-trash me-1"></i>Delete
+                    </button>` : 
+                    ''
+                }
+            </div>
+        `;
+        
+        return div;
+    }
+
+    // Helper function to escape HTML
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    async function setPrimaryEmail(emailId, email, button) {
+        if (!confirm(`Set ${email} as your primary email?`)) {
+            return;
+        }
+
+        try {
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Setting...';
+
+            const response = await fetch(`/profile/email/set-primary/${emailId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': '<?= csrf_hash() ?>'
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showToast('success', result.message);
+                // Refresh the email list to show updated primary status
+                await refreshEmailList();
+            } else {
+                showToast('error', result.message);
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-star me-1"></i>Set Primary';
+            }
+        } catch (error) {
+            console.error('Error setting primary email:', error);
+            showToast('error', 'Error setting primary email');
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-star me-1"></i>Set Primary';
+        }
+    }
+
+    async function deleteEmail(emailId, email, button) {
+        if (!confirm(`Delete ${email}? This action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Deleting...';
+
+            const response = await fetch(`/profile/email/remove/${emailId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': '<?= csrf_hash() ?>'
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showToast('success', result.message);
+                // Remove the email item from the list
+                button.closest('.list-group-item').remove();
+                
+                // If no emails left, show empty state
+                const emailList = document.getElementById('emailList');
+                const emailItems = emailList.querySelectorAll('.list-group-item');
+                if (emailItems.length === 0) {
+                    emailList.innerHTML = `
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-envelope fa-2x mb-2"></i>
+                            <p>No backup emails added yet.</p>
+                        </div>
+                    `;
+                }
+            } else {
+                showToast('error', result.message);
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-trash me-1"></i>Delete';
+            }
+        } catch (error) {
+            console.error('Error deleting email:', error);
+            showToast('error', 'Error deleting email');
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-trash me-1"></i>Delete';
+        }
+    }
+    
 });
 </script>
