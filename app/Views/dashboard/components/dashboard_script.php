@@ -412,14 +412,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const initPreviewFunctionality = () => {
         // Handle preview clicks in dropdown menus
         document.addEventListener('click', function(e) {
-            console.log("bbb")
-
             if (e.target.classList.contains('preview-item') || e.target.closest('.preview-item')) {
                 const previewBtn = e.target.classList.contains('preview-item') ? e.target : e.target.closest('.preview-item');
                 const fileId = previewBtn.getAttribute('data-file-id');
 
-                console.log("aaa", fileId)
-                
                 if (fileId) {
                     openFilePreview(fileId);
                 }
@@ -428,12 +424,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Handle direct clicks on file names for preview
         document.addEventListener('click', function(e) {
-            const fileRow = e.target.closest('.item-row[data-type="file"]');
-            if (fileRow && !e.target.closest('.dropdown') && !e.target.closest('input[type="checkbox"]')) {
-                const fileId = fileRow.getAttribute('data-id');
-                openFilePreview(fileId);
+            // Only trigger preview if the click was inside .file-name-cell
+            const fileNameCell = e.target.closest('.file-name-cell');
+            if (fileNameCell) {
+                const fileRow = fileNameCell.closest('.item-row[data-type="file"]');
+                if (fileRow) {
+                    const fileId = fileRow.getAttribute('data-id');
+                    openFilePreview(fileId);
+                }
             }
         });
+
     };
 
     const openFilePreview = async (fileId) => {

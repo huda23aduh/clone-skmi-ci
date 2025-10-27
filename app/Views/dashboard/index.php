@@ -190,9 +190,10 @@
                                     ?>
                                     <i class="fas <?= $file_icon ?> me-3 fs-5"></i>
                                     <div>
-                                        <div class="fw-semibold text-truncate" style="max-width: 300px;">
+                                        <div class="fw-semibold text-truncate file-name-cell" style="max-width: 300px; cursor: pointer;">
                                             <?= esc($file['original_name']) ?>
                                         </div>
+
                                         <small class="text-muted"><?= strtoupper($file_ext) ?> file</small>
                                     </div>
                                 </div>
