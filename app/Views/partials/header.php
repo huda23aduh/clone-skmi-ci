@@ -40,7 +40,7 @@
             <li class="nav-item dropdown user-menu">
               <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                 <img
-                  src="<?= base_url('adminlte/assets/img/user2-160x160.jpg') ?>"
+                  src="<?= base_url($user['profile_image']) ?>" 
                   class="user-image rounded-circle shadow"
                   alt="User Image"
                 />
