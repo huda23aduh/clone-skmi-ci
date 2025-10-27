@@ -237,6 +237,65 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // --- View Toggle Logic ---
+    const toggleBtn = document.getElementById("toggleViewBtn");
+    const listContainer = document.getElementById("listContainer");
+    const gridView = document.getElementById("gridView");
+    const selectAllCheckbox = document.getElementById("selectAllCheckboxMain");
+    const bulkActions = document.getElementById("bulkActions");
+    const selectedCount = document.getElementById("selectedCount");
+
+    let currentView = localStorage.getItem("dashboardView") || "list";
+    applyView(currentView);
+
+    toggleBtn.addEventListener("click", () => {
+        currentView = currentView === "list" ? "grid" : "list";
+        localStorage.setItem("dashboardView", currentView);
+        applyView(currentView);
+    });
+
+    function applyView(view) {
+  if (view === "grid") {
+    listContainer.style.display = "none";
+    gridView.style.display = "flex";
+    toggleBtn.innerHTML = '<i class="fas fa-list"></i>';
+    toggleBtn.title = "Switch to list view";
+  } else {
+    listContainer.style.display = "block";
+    gridView.style.display = "none";
+    toggleBtn.innerHTML = '<i class="fas fa-th-large"></i>';
+    toggleBtn.title = "Switch to grid view";
+  }
+  updateCheckboxListeners();
+}
+
+    function updateCheckboxListeners() {
+        const itemCheckboxes = document.querySelectorAll(".item-checkbox");
+
+        itemCheckboxes.forEach(cb => {
+            cb.addEventListener("change", updateBulkActions);
+        });
+
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener("change", () => {
+                itemCheckboxes.forEach(cb => (cb.checked = selectAllCheckbox.checked));
+                updateBulkActions();
+            });
+        }
+    }
+
+    function updateBulkActions() {
+        const checkedItems = document.querySelectorAll(".item-checkbox:checked");
+        const count = checkedItems.length;
+
+        if (count > 0) {
+            bulkActions.style.display = "block";
+            selectedCount.textContent = `${count} item${count > 1 ? 's' : ''} selected`;
+        } else {
+            bulkActions.style.display = "none";
+        }
+    }
+
     /* ---------------- Star Buttons ---------------- */
     const initStarButtons = () => {
         document.querySelectorAll('.star-btn').forEach(btn => {
@@ -468,5 +527,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initRenameFunctionality();
     initPreviewFunctionality();
     initBulkDelete();
+    updateCheckboxListeners();
 });
 </script>

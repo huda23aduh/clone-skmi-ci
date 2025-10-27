@@ -18,10 +18,13 @@
     </div>
     <div class="btn-group">
         <button type="button" class="btn btn-success" onclick="showUploadFileModal()">
-            <i class="fas fa-upload me-1"></i> 
+            <i class="fas fa-upload me-1"></i>
         </button>
         <button type="button" class="btn btn-primary" onclick="showCreateFolderModal()">
             <i class="fas fa-folder-plus me-1"></i>
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="toggleViewBtn" title="Switch View">
+            <i class="fas fa-th-large"></i>
         </button>
     </div>
 </div>
@@ -60,7 +63,7 @@
         </h5>
     </div>
     <div class="card-body p-0 w-100" style="overflow-y: auto; max-height: 100%;">
-        <div class="table-responsive w-100">
+        <div class="table-responsive w-100" id="listContainer">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
@@ -300,6 +303,71 @@
                     <?php endif; ?>
                 </tbody>
             </table>
+        </div>
+        <!-- Grid View -->
+        <div id="gridView" class="row row-cols-2 row-cols-md-4 g-3 p-3" style="display: none;">
+            <?php foreach ($folders as $folder): ?>
+                <div class="col item-row" data-type="folder" data-id="<?= $folder['id'] ?>">
+                    <div class="card shadow-sm h-100 position-relative p-3">
+                        <input type="checkbox" class="form-check-input item-checkbox position-absolute top-0 end-0 m-2" 
+                            value="<?= $folder['id'] ?>" data-type="folder" style="transform: scale(1.3);">
+
+                        <div class="d-flex align-items-center mb-2 mt-2">
+                            <i class="fas fa-folder text-warning fa-2x me-2"></i>
+                            <div class="fw-semibold text-truncate"><?= esc($folder['name']) ?></div>
+                        </div>
+                        <div class="small text-muted mb-2">
+                            <?= isset($folder['updated_at']) ? date('M j, Y g:i A', strtotime($folder['updated_at'])) : 'Unknown' ?>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="<?= base_url('/folder/view/' . $folder['id']) ?>" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-folder-open"></i>
+                            </a>
+                            <button class="btn btn-sm btn-outline-warning star-btn" 
+                                data-item-id="<?= $folder['id'] ?>" data-item-type="folder">
+                                <i class="far fa-star"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+
+            <?php foreach ($files as $file): ?>
+                <?php
+                $file_ext = pathinfo($file['original_name'], PATHINFO_EXTENSION);
+                $file_icon = 'fa-file text-muted';
+                if (in_array($file_ext, ['pdf'])) $file_icon = 'fa-file-pdf text-danger';
+                elseif (in_array($file_ext, ['doc', 'docx'])) $file_icon = 'fa-file-word text-primary';
+                elseif (in_array($file_ext, ['xls', 'xlsx'])) $file_icon = 'fa-file-excel text-success';
+                elseif (in_array($file_ext, ['jpg','jpeg','png','gif'])) $file_icon = 'fa-file-image text-info';
+                elseif (in_array($file_ext, ['mp4','avi','mkv'])) $file_icon = 'fa-file-video text-danger';
+                ?>
+                <div class="col item-row" data-type="file" data-id="<?= $file['id'] ?>">
+                    <div class="card shadow-sm h-100 position-relative p-3">
+                        <input type="checkbox" class="form-check-input item-checkbox position-absolute top-0 end-0 m-2" 
+                            value="<?= $file['id'] ?>" data-type="file" style="transform: scale(1.3);">
+
+                        <div class="d-flex align-items-center mb-2 mt-2">
+                            <i class="fas <?= $file_icon ?> fa-2x me-2"></i>
+                            <div class="fw-semibold text-truncate" title="<?= esc($file['original_name']) ?>">
+                                <?= esc($file['original_name']) ?>
+                            </div>
+                        </div>
+                        <div class="small text-muted mb-2">
+                            <?= isset($file['updated_at']) ? date('M j, Y g:i A', strtotime($file['updated_at'])) : 'Unknown' ?>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="<?= base_url('file/download/' . $file['id']) ?>" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-download"></i>
+                            </a>
+                            <button class="btn btn-sm btn-outline-warning star-btn" 
+                                data-item-id="<?= $file['id'] ?>" data-item-type="file">
+                                <i class="far fa-star"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>
