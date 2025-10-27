@@ -61,6 +61,17 @@
       src="https://code.jquery.com/jquery-3.7.1.min.js"
       crossorigin="anonymous"
     ></script>
+
+    <!-- <style>
+      .table-responsive {
+          position: relative;
+      }
+
+      .dropdown-menu {
+          position: fixed !important;
+          z-index: 1060 !important;
+      }
+    </style> -->
   </head>
 
 <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
