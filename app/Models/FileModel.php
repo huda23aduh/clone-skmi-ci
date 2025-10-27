@@ -63,4 +63,19 @@ class FileModel extends Model
                    ->where('is_deleted', 0)
                    ->first();
     }
+
+    /**
+     * Get user's active files (not deleted)
+     */
+    public function getUserActiveFiles($userId, $folderId = null)
+    {
+        $builder = $this->where('user_id', $userId)
+                       ->where('is_deleted', 0);
+
+        if ($folderId !== null) {
+            $builder->where('folder_id', $folderId);
+        }
+
+        return $builder->findAll();
+    }
 }

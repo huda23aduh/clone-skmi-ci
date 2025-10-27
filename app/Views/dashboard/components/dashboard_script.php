@@ -290,26 +290,89 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.selectAllCheckbox) state.selectAllCheckbox.checked = false;
         updateSelectedCount();
     });
+    
+    const initBulkDelete = () => {
+        state.bulkDeleteBtn?.addEventListener('click', handleBulkDelete);
+    };
 
-    const bulkAction = async (url, confirmMsg) => {
+    const handleBulkDelete = async () => {
         const items = getSelectedItems();
-        if (!items.length) return showToast('warning', 'No items selected');
-        if (!confirm(confirmMsg.replace('{count}', items.length))) return;
+        if (!items.length) {
+            showToast('warning', 'No items selected');
+            return;
+        }
 
-        const data = await fetchJSON(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-            body: JSON.stringify({ items })
-        });
-        if (data?.success) {
-            showToast('success', data.message || 'Action completed');
-            setTimeout(() => location.reload(), 1000);
-        } else {
-            showToast('error', data?.message || 'Action failed');
+        try {
+            // Get detailed information about what will be deleted
+            const deleteInfo = await fetchJSON('<?= base_url('/bulk/delete-info') ?>', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                body: JSON.stringify({ items })
+            });
+
+            if (!deleteInfo?.success) {
+                showToast('error', 'Failed to get delete information');
+                return;
+            }
+
+            const { files, folders, total_items } = deleteInfo.counts;
+            
+            // Create detailed confirmation message
+            let confirmMessage = `You are about to move ${total_items} item(s) to trash:\n\n`;
+            
+            if (files > 0) {
+                confirmMessage += `• ${files} file(s)\n`;
+            }
+            if (folders > 0) {
+                confirmMessage += `• ${folders} folder(s) and their contents\n`;
+            }
+            
+            confirmMessage += `\nThis action will move all selected items to the recycle bin. You can restore them later if needed.\n\nAre you sure you want to continue?`;
+
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            // Show loading state
+            state.bulkDeleteBtn.disabled = true;
+            const originalText = state.bulkDeleteBtn.innerHTML;
+            state.bulkDeleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Deleting...';
+
+            // Perform the bulk delete
+            const result = await fetchJSON('<?= base_url('/bulk/delete') ?>', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                body: JSON.stringify({ items })
+            });
+
+            if (result?.success) {
+                showToast('success', result.message);
+                
+                // Clear selection
+                toggleAllCheckboxes(false);
+                if (state.selectAllCheckbox) state.selectAllCheckbox.checked = false;
+                updateSelectedCount();
+                
+                // Reload after delay to show the toast
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                showToast('error', result?.message || 'Delete failed');
+            }
+
+        } catch (error) {
+            console.error('Bulk delete error:', error);
+            showToast('error', 'Error during bulk delete');
+        } finally {
+            // Reset button state
+            state.bulkDeleteBtn.disabled = false;
+            state.bulkDeleteBtn.innerHTML = originalText;
         }
     };
 
-    state.bulkDeleteBtn?.addEventListener('click', () => bulkAction('<?= base_url('/bulk/delete') ?>', 'Move {count} item(s) to trash?'));
+    state.bulkDeleteBtn?.addEventListener('click', handleBulkDelete);
+    // state.bulkDeleteBtn?.addEventListener('click', () => bulkAction('<?= base_url('/bulk/delete') ?>', 'Move {count} item(s) to trash?'));
     state.bulkZipBtn?.addEventListener('click', () => bulkAction('<?= base_url('/file/compress') ?>', 'Compress {count} item(s) into a ZIP file?'));
 
     /* ---------------- Filter & Sort ---------------- */
@@ -403,5 +466,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initStarButtons();
     initRenameFunctionality();
     initPreviewFunctionality();
+    initBulkDelete();
 });
 </script>

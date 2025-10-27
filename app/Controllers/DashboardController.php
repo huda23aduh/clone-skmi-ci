@@ -74,6 +74,6 @@ class DashboardController extends Controller
             'files' => $fileModel->where('user_id', $user["id"])->where('is_deleted', 1)->findAll(),
         ];
 
-        return view('dashboard/recycle_bin', $data);
+        return view('recycle_bin/index', $data);
     }
 }

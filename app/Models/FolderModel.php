@@ -63,4 +63,21 @@ class FolderModel extends Model
                    ->where('is_deleted', 0)
                    ->first();
     }
+
+    /**
+     * Get user's active folders (not deleted)
+     */
+    public function getUserActiveFolders($userId, $parentId = null)
+    {
+        $builder = $this->where('user_id', $userId)
+                       ->where('is_deleted', 0);
+
+        if ($parentId !== null) {
+            $builder->where('parent_id', $parentId);
+        } else {
+            $builder->where('parent_id IS NULL');
+        }
+
+        return $builder->findAll();
+    }
 }
