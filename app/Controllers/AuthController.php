@@ -64,7 +64,8 @@ class AuthController extends Controller
             'email' => $user['email'],
             'isAdmin' => $user['isAdmin'],
             'isActive' => $user['isActive'],
-            'name' => $user['name'] ?? ''
+            'name' => $user['name'] ?? '',
+            'profile_image' => $user['profile_image'] ?? ''
         ]);
 
          // Log login activity
