@@ -320,9 +320,50 @@
                             <?= isset($folder['updated_at']) ? date('M j, Y g:i A', strtotime($folder['updated_at'])) : 'Unknown' ?>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <a href="<?= base_url('/folder/view/' . $folder['id']) ?>" class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-folder-open"></i>
-                            </a>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="<?= base_url('/folder/view/' . $folder['id']) ?>">
+                                            <i class="fas fa-folder-open me-2"></i>Open
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0)" onclick="uploadToFolder(<?= $folder['id'] ?>)">
+                                            <i class="fas fa-upload me-2"></i>Upload Here
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0)" onclick="createSubfolder(<?= $folder['id'] ?>)">
+                                            <i class="fas fa-folder-plus me-2"></i>Create Subfolder
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item rename-item" href="javascript:void(0)" 
+                                        data-item-id="<?= $folder['id'] ?>" 
+                                        data-item-type="folder"
+                                        data-item-name="<?= esc($folder['name']) ?>">
+                                            <i class="fas fa-edit me-2"></i>Rename
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-share-alt me-2"></i>Share
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="post" action="<?= base_url('/folder/delete/' . $folder['id']) ?>" class="d-inline">
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="fas fa-trash me-2"></i>Move to Trash
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                             <button class="btn btn-sm btn-outline-warning star-btn" 
                                 data-item-id="<?= $folder['id'] ?>" data-item-type="folder">
                                 <i class="far fa-star"></i>
@@ -357,9 +398,55 @@
                             <?= isset($file['updated_at']) ? date('M j, Y g:i A', strtotime($file['updated_at'])) : 'Unknown' ?>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <a href="<?= base_url('file/download/' . $file['id']) ?>" class="btn btn-sm btn-outline-secondary">
-                                <i class="fas fa-download"></i>
-                            </a>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="<?= base_url('file/download/' . $file['id']) ?>">
+                                            <i class="fas fa-download me-2"></i>Download
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item preview-item" href="javascript:void(0)" 
+                                        data-file-id="<?= $file['id'] ?>">
+                                            <i class="fas fa-eye me-2"></i>Preview
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item rename-item" href="javascript:void(0)" 
+                                        data-item-id="<?= $file['id'] ?>" 
+                                        data-item-type="file"
+                                        data-item-name="<?= esc($file['original_name']) ?>">
+                                            <i class="fas fa-edit me-2"></i>Rename
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-share-alt me-2"></i>Share
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="post" action="<?= base_url('/file/delete/' . $file['id']) ?>" class="d-inline">
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="fas fa-trash me-2"></i>Move to Trash
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <?php if (strtolower(pathinfo($file['original_name'], PATHINFO_EXTENSION)) === 'zip'): ?>
+                                        <li>
+                                            <a class="dropdown-item" href="<?= base_url('file/extract/' . $file['id']) ?>">
+                                                <i class="fas fa-file-zipper me-2"></i>Extract
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+
+                                </ul>
+                            </div>
                             <button class="btn btn-sm btn-outline-warning star-btn" 
                                 data-item-id="<?= $file['id'] ?>" data-item-type="file">
                                 <i class="far fa-star"></i>
