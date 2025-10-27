@@ -82,13 +82,15 @@
                 </a>
               </li>
 
-              <?php if (session()->get('user')["isAdmin"] === "1"): ?>
-                <li class="nav-item">
-                  <a href="<?= base_url('/control-center') ?>" class="nav-link">
-                    <i class="nav-icon bi bi-person-fill-gear"></i>
-                    <p>Control Center</p>
-                  </a>
-                </li>
+              <?php $user = session()->get('user'); ?>
+
+              <?php if ((session()->get('user')['isAdmin'] ?? null) === "1"): ?>
+                  <li class="nav-item">
+                    <a href="<?= base_url('/control-center') ?>" class="nav-link">
+                      <i class="nav-icon bi bi-person-fill-gear"></i>
+                      <p>Control Center</p>
+                    </a>
+                  </li>
               <?php endif; ?>
 
               <li class="nav-item">

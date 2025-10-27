@@ -1,3 +1,11 @@
+ <?php
+//  var_dump(session()->get('user'));
+//  die();
+//  if (! session()->has('user')) {
+//   die('AuthFilter triggered — no session found!');
+// }
+
+ ?>
  <!--begin::Header-->
  <nav class="app-header navbar navbar-expand bg-body">
         <!--begin::Container-->
@@ -47,8 +55,8 @@
                     alt="User Image"
                   />
                   <p>
-                    <?php echo session()->get('user')["name"]; ?>
-                    <!-- Alexander Pierce - Web Developer -->
+                  <?= esc(session()->get('user')['name'] ?? 'Guest') ?>
+                  <!-- Alexander Pierce - Web Developer -->
                     <small>Member since Nov. 2023</small>
                   </p>
                 </li>

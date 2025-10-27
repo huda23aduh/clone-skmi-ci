@@ -78,7 +78,8 @@ class AuthController extends Controller
         // Log logout activity before destroying session
         $this->activityLogger->logLogout(session()->get('user')['id'] ?? null);
 
-        session()->remove('user');
+        // session()->remove('user');
+        session()->destroy();
 
         return redirect()->to('/login');
     }
