@@ -39,13 +39,34 @@
             <!--begin::User Menu Dropdown-->
             <li class="nav-item dropdown user-menu">
               <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <img
-                  src="<?= base_url($user['profile_image']) ?>" 
-                  class="user-image rounded-circle shadow"
-                  alt="User Image"
-                />
-                <span class="d-none d-md-inline"> <?= esc($user['name'] ?? 'Guest') ?></span>
-              </a>
+                <?php 
+                // Get user data from session safely
+                $userSession = session()->get('user') ?? [];
+                $profileImage = $userSession['profile_image'] ?? '';
+                $userName = $userSession['name'] ?? 'Guest';
+                
+                // Check if profile image exists and is accessible
+                $imageExists = !empty($profileImage) && file_exists(FCPATH . $profileImage);
+                ?>
+                
+                <?php if ($imageExists): ?>
+                    <img
+                        src="<?= base_url($profileImage) ?>" 
+                        class="user-image rounded-circle shadow"
+                        alt="User Image"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="user-image-placeholder rounded-circle bg-secondary d-none" style="width: 32px; height: 32px;">
+                        <i class="fas fa-user text-white small"></i>
+                    </div>
+                <?php else: ?>
+                    <div class="user-image-placeholder rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                        <i class="fas fa-user text-white small"></i>
+                    </div>
+                <?php endif; ?>
+                
+                <span class="d-none d-md-inline"><?= esc($userName) ?></span>
+            </a>
               <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                 <!--begin::User Image-->
                 <li class="user-header text-bg-primary">
