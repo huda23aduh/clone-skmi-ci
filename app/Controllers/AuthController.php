@@ -58,6 +58,12 @@ class AuthController extends Controller
             return redirect()->back()->with('error','Invalid credentials');
         }
 
+        // Determine profile image
+        $profileImage = !empty($user['profile_image'])
+            ? $user['profile_image']
+            : 'default-image.png';
+
+
         // Set session
         session()->set('user', [
             'id' => $user['id'],
@@ -65,7 +71,7 @@ class AuthController extends Controller
             'isAdmin' => $user['isAdmin'],
             'isActive' => $user['isActive'],
             'name' => $user['name'] ?? '',
-            'profile_image' => $user['profile_image'] ?? ''
+            'profile_image' => $profileImage
         ]);
 
          // Log login activity
