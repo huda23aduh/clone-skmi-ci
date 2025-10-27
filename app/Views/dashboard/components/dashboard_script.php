@@ -497,9 +497,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const openFilePreview = async (fileId) => {
         try {
-            // Show loading
-            showToast('info', 'Loading preview...');
-            
             // Get file info first to check if preview is available
             const fileInfo = await fetchJSON(`/preview/info/${fileId}`);
             
