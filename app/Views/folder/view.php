@@ -35,6 +35,9 @@
         <button type="button" class="btn btn-primary" onclick="showCreateFolderModal(<?= $currentFolder['id'] ?>)">
             <i class="fas fa-folder-plus me-1"></i>
         </button>
+        <button type="button" class="btn btn-outline-secondary" id="toggleViewBtn" title="Switch View">
+            <i class="fas fa-th-large"></i>
+        </button>
     </div>
 </div>
 

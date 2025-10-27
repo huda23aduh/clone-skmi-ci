@@ -255,19 +255,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function applyView(view) {
-  if (view === "grid") {
-    listContainer.style.display = "none";
-    gridView.style.display = "flex";
-    toggleBtn.innerHTML = '<i class="fas fa-list"></i>';
-    toggleBtn.title = "Switch to list view";
-  } else {
-    listContainer.style.display = "block";
-    gridView.style.display = "none";
-    toggleBtn.innerHTML = '<i class="fas fa-th-large"></i>';
-    toggleBtn.title = "Switch to grid view";
-  }
-  updateCheckboxListeners();
-}
+        if (view === "grid") {
+            listContainer.style.display = "none";
+            gridView.style.display = "flex";
+            toggleBtn.innerHTML = '<i class="fas fa-list"></i>';
+            toggleBtn.title = "Switch to list view";
+        } else {
+            listContainer.style.display = "block";
+            gridView.style.display = "none";
+            toggleBtn.innerHTML = '<i class="fas fa-th-large"></i>';
+            toggleBtn.title = "Switch to grid view";
+        }
+        updateCheckboxListeners();
+    }
 
     function updateCheckboxListeners() {
         const itemCheckboxes = document.querySelectorAll(".item-checkbox");
@@ -431,7 +431,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     state.bulkDeleteBtn?.addEventListener('click', handleBulkDelete);
-    // state.bulkDeleteBtn?.addEventListener('click', () => bulkAction('<?= base_url('/bulk/delete') ?>', 'Move {count} item(s) to trash?'));
     state.bulkZipBtn?.addEventListener('click', () => bulkAction('<?= base_url('/file/compress') ?>', 'Compress {count} item(s) into a ZIP file?'));
 
     /* ---------------- Filter & Sort ---------------- */

@@ -47,8 +47,6 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->get('info/(:num)', 'FileController::getFileInfo/$1');
   });
   
-  // $routes->post('bulk/delete', 'BulkController::delete');
-  // $routes->post('bulk/delete-info', 'BulkController::getBulkDeleteInfo');
   // Bulk operations routes
   $routes->post('bulk/delete', 'BulkController::delete');
   $routes->post('bulk/restore', 'BulkController::restore');
