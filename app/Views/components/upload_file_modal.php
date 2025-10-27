@@ -17,9 +17,12 @@
                             <h5>Drag and drop files here</h5>
                             <p class="text-muted">or click to browse</p>
                             <input type="file" name="file" id="fileInput" multiple style="display: none;">
-                            <button type="button" class="btn btn-outline-primary mt-2" onclick="document.getElementById('fileInput').click()">
+                            <button type="button" 
+                                class="btn btn-outline-primary mt-2" 
+                                onclick="event.stopPropagation(); document.getElementById('fileInput').click();">
                                 <i class="fas fa-folder-open me-1"></i> Browse Files
                             </button>
+
                         </div>
                     </div>
                     
