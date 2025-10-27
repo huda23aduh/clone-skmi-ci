@@ -227,7 +227,8 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" href="<?= base_url('file/preview/' . $file['id']) ?>">
+                                                <a class="dropdown-item preview-item" href="javascript:void(0)" 
+                                                data-file-id="<?= $file['id'] ?>">
                                                     <i class="fas fa-eye me-2"></i>Preview
                                                 </a>
                                             </li>

@@ -345,8 +345,63 @@ document.addEventListener('DOMContentLoaded', () => {
     state.typeFilter?.addEventListener('change', filterAndSort);
     state.sortBy?.addEventListener('change', filterAndSort);
 
+    /* ---------------- Preview Functionality ---------------- */
+    const initPreviewFunctionality = () => {
+        // Handle preview clicks in dropdown menus
+        document.addEventListener('click', function(e) {
+            console.log("bbb")
+
+            if (e.target.classList.contains('preview-item') || e.target.closest('.preview-item')) {
+                const previewBtn = e.target.classList.contains('preview-item') ? e.target : e.target.closest('.preview-item');
+                const fileId = previewBtn.getAttribute('data-file-id');
+
+                console.log("aaa", fileId)
+                
+                if (fileId) {
+                    openFilePreview(fileId);
+                }
+            }
+        });
+
+        // Handle direct clicks on file names for preview
+        document.addEventListener('click', function(e) {
+            const fileRow = e.target.closest('.item-row[data-type="file"]');
+            if (fileRow && !e.target.closest('.dropdown') && !e.target.closest('input[type="checkbox"]')) {
+                const fileId = fileRow.getAttribute('data-id');
+                openFilePreview(fileId);
+            }
+        });
+    };
+
+    const openFilePreview = async (fileId) => {
+        try {
+            // Show loading
+            showToast('info', 'Loading preview...');
+            
+            // Get file info first to check if preview is available
+            const fileInfo = await fetchJSON(`/preview/info/${fileId}`);
+            
+            if (fileInfo && fileInfo.success) {
+                if (fileInfo.file.isPreviewable) {
+                    // Open preview in new tab
+                    window.open(fileInfo.file.previewUrl, '_blank');
+                } else {
+                    showToast('warning', 'Preview not available for this file type');
+                    // Fallback to download
+                    window.open(`/file/download/${fileId}`, '_blank');
+                }
+            } else {
+                showToast('error', 'File not found');
+            }
+        } catch (error) {
+            console.error('Preview error:', error);
+            showToast('error', 'Error opening preview');
+        }
+    };
+
     /* ---------------- Init ---------------- */
     initStarButtons();
     initRenameFunctionality();
+    initPreviewFunctionality();
 });
 </script>

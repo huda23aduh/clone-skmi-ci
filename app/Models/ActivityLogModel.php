@@ -48,6 +48,7 @@ class ActivityLogModel extends Model
     const TYPE_ITEM_SHARE = 'item_share';
     const TYPE_LOGIN = 'user_login';
     const TYPE_LOGOUT = 'user_logout';
+    const TYPE_FILE_PREVIEW = 'file_preview';
 
     /**
      * Log user activity

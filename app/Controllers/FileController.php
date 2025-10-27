@@ -35,13 +35,22 @@ class FileController extends Controller
                     $newName = $file->getRandomName();
                     $file->move(WRITEPATH . 'uploads', $newName);
                     
-                    $fileModel->insert([
+                    $fileId = $fileModel->insert([
                         'original_name' => $file->getClientName(),
-                        'system_name' => $newName,
+                        'storage_name' => $newName,
                         'size' => $file->getSize(),
                         'user_id' => $user["id"],
                         'folder_id' => $this->request->getPost('folder_id') ?: null
                     ]);
+
+                    // Log the activity
+                    $this->activityLogger->logFileUpload(
+                        $user["id"], 
+                        $fileId, 
+                        $file->getClientName(), 
+                        $file->getSize(), 
+                        $folderId ?? null
+                    );
                     
                     $uploadedCount++;
                     
@@ -53,14 +62,6 @@ class FileController extends Controller
         
         if ($this->request->isAJAX()) {
             if ($uploadedCount > 0 && empty($errors)) {
-                // Log the activity
-                $this->activityLogger->logFileUpload(
-                    $user["id"], 
-                    $fileId, 
-                    $file->getClientName(), 
-                    $file->getSize(), 
-                    $folderId
-                );
 
                 return $this->response->setJSON(['success' => true, 'uploaded_count' => $uploadedCount]);
             } else {
@@ -329,6 +330,23 @@ class FileController extends Controller
             'success' => false,
             'message' => 'Invalid request method'
         ]);
+    }
+
+    /**
+     * Serve files from writable directory
+     */
+    public function serveFile($path)
+    {
+        $filePath = WRITEPATH . 'uploads/' . $path;
+        
+        if (!file_exists($filePath)) {
+            return $this->response->setStatusCode(404);
+        }
+
+        $mimeType = mime_content_type($filePath);
+        return $this->response
+            ->setContentType($mimeType)
+            ->setBody(file_get_contents($filePath));
     }
 
     /**
