@@ -76,6 +76,9 @@ class FileController extends Controller
 
     public function download($id)
     {
+        $session = session();
+        $user = $session->get('user');
+
         $fileModel = new FileModel();
 
         $file = $fileModel->find($id);
@@ -92,7 +95,7 @@ class FileController extends Controller
         }
 
         // Log the activity
-        $this->activityLogger->logFileDownload($userId, $fileId, $file['original_name']);
+        $this->activityLogger->logFileDownload($user["id"], $id, $file['original_name']);
 
         return $this->response->download($path, null)->setFileName($file['original_name']);
     }
