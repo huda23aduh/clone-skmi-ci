@@ -53,25 +53,74 @@ class PreviewController extends Controller
         // Log preview activity
         $this->logPreviewActivity($user['id'], $fileId, $file['original_name']);
 
-        // Return appropriate preview based on file type
+        // Use dashboard layout instead of preview layout
+        $data = [
+            'title' => 'Preview: ' . $file['original_name'],
+            'file' => $file,
+            'fileType' => $fileType,
+            'fileExtension' => $fileExtension,
+            'fileUrl' => base_url('writable/uploads/' . $file['storage_name']),
+            'mimeType' => $this->getMimeType($fileExtension),
+            'breadcrumbs' => [
+                ['name' => 'Home', 'url' => base_url('/')],
+                ['name' => 'Preview: ' . $file['original_name'], 'url' => current_url()]
+            ]
+        ];
+
+        // Return appropriate preview based on file type using dashboard layout
         switch ($fileType) {
             case 'image':
-                return $this->previewImage($file, $filePath);
+                return view('preview/image_preview', $data);
             case 'pdf':
-                return $this->previewPdf($file, $filePath);
+                return view('preview/pdf_preview', $data);
             case 'text':
-                return $this->previewText($file, $filePath);
+                return view('preview/text_preview', $data);
             case 'audio':
-                return $this->previewAudio($file, $filePath);
+                return view('preview/audio_preview', $data);
             case 'video':
-                return $this->previewVideo($file, $filePath);
+                return view('preview/video_preview', $data);
             case 'document':
-                return $this->previewDocument($file, $filePath);
+                return view('preview/document_preview', $data);
             case 'code':
-                return $this->previewCode($file, $filePath);
+                return view('preview/code_preview', $data);
             default:
-                return $this->previewUnsupported($file, $filePath);
+                return $this->previewUnsupportedDashboard($data);
         }
+    }
+
+    /**
+     * Get MIME type for file
+     */
+    private function getMimeType($extension)
+    {
+        $mimeTypes = [
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'bmp' => 'image/bmp',
+            'webp' => 'image/webp',
+            'svg' => 'image/svg+xml',
+            'pdf' => 'application/pdf',
+            'txt' => 'text/plain',
+            'mp3' => 'audio/mpeg',
+            'wav' => 'audio/wav',
+            'ogg' => 'audio/ogg',
+            'm4a' => 'audio/mp4',
+            'mp4' => 'video/mp4',
+            'avi' => 'video/x-msvideo',
+            'mov' => 'video/quicktime',
+            'mkv' => 'video/x-matroska',
+            'webm' => 'video/webm',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'ppt' => 'application/vnd.ms-powerpoint',
+            'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        ];
+
+        return $mimeTypes[$extension] ?? 'application/octet-stream';
     }
 
     /**
