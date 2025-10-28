@@ -237,6 +237,207 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    /* ---------------- Share Link Functionality ---------------- */
+    const initShareLinkFunctionality = () => {
+        const shareModalElement = document.getElementById('shareLinkModal');
+        const shareModal = new bootstrap.Modal(shareModalElement);
+        const shareItemName = document.getElementById('shareItemName');
+        const shareLink = document.getElementById('shareLink');
+        const copyShareLinkBtn = document.getElementById('copyShareLinkBtn');
+        const generateShareLinkBtn = document.getElementById('generateShareLinkBtn');
+        const enablePasswordProtection = document.getElementById('enablePasswordProtection');
+        const passwordSection = document.getElementById('passwordSection');
+        const sharePassword = document.getElementById('sharePassword');
+        const confirmSharePassword = document.getElementById('confirmSharePassword');
+        
+        let currentItemId, currentItemType, currentItemName;
+
+        // Handle share link clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('share-link-item') || e.target.closest('.share-link-item')) {
+                const shareBtn = e.target.classList.contains('share-link-item') ? e.target : e.target.closest('.share-link-item');
+                
+                currentItemId = shareBtn.getAttribute('data-item-id');
+                currentItemType = shareBtn.getAttribute('data-item-type');
+                currentItemName = shareBtn.getAttribute('data-item-name');
+                
+                // Set modal content
+                shareItemName.value = currentItemName;
+                shareLink.value = 'Click "Generate Link" to create shareable link';
+                
+                // Reset form
+                enablePasswordProtection.checked = false;
+                passwordSection.style.display = 'none';
+                sharePassword.value = '';
+                confirmSharePassword.value = '';
+                
+                // Update generate button text
+                generateShareLinkBtn.innerHTML = '<i class="fas fa-key me-1"></i>Generate Link';
+                generateShareLinkBtn.disabled = false;
+                
+                // Show modal
+                shareModal.show();
+                
+                // Focus on generate button for better accessibility
+                setTimeout(() => {
+                    generateShareLinkBtn.focus();
+                }, 500);
+            }
+        });
+
+        // Toggle password protection
+        enablePasswordProtection.addEventListener('change', function() {
+            passwordSection.style.display = this.checked ? 'block' : 'none';
+            if (this.checked) {
+                setTimeout(() => {
+                    sharePassword.focus();
+                }, 300);
+            }
+        });
+
+        // Generate share link
+        generateShareLinkBtn.addEventListener('click', async function() {
+            const isPasswordProtected = enablePasswordProtection.checked;
+            let password = null;
+            
+            // Validate passwords if protection is enabled
+            if (isPasswordProtected) {
+                password = sharePassword.value.trim();
+                const confirmPassword = confirmSharePassword.value.trim();
+                
+                if (!password) {
+                    showToast('error', 'Please enter a password');
+                    sharePassword.focus();
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    showToast('error', 'Passwords do not match');
+                    confirmSharePassword.focus();
+                    return;
+                }
+                
+                if (password.length < 4) {
+                    showToast('error', 'Password must be at least 4 characters long');
+                    sharePassword.focus();
+                    return;
+                }
+            }
+            
+            // Show loading state
+            generateShareLinkBtn.disabled = true;
+            generateShareLinkBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Generating...';
+            
+            try {
+                // Generate shareable link (similar to preview)
+                const baseUrl = window.location.origin;
+                let shareableUrl;
+                
+                if (currentItemType === 'file') {
+                    // For files, use the preview URL
+                    shareableUrl = `${baseUrl}/preview/file/${currentItemId}`;
+                } else {
+                    // For folders, you might want to create a different endpoint
+                    shareableUrl = `${baseUrl}/folder/share/${currentItemId}`;
+                }
+                
+                // If password protected, you might want to generate a token
+                if (isPasswordProtected) {
+                    // Here you would typically make an API call to generate a secure share link
+                    // For now, we'll just append a parameter (in real app, use proper authentication)
+                    shareableUrl += `?token=${btoa(currentItemId + ':' + password)}`;
+                }
+                
+                // Update the share link field
+                shareLink.value = shareableUrl;
+                
+                showToast('success', 'Shareable link generated successfully');
+                
+                // Focus on copy button after generation
+                setTimeout(() => {
+                    copyShareLinkBtn.focus();
+                }, 300);
+                
+            } catch (error) {
+                console.error('Error generating share link:', error);
+                showToast('error', 'Error generating share link');
+            } finally {
+                // Reset button state
+                generateShareLinkBtn.disabled = false;
+                generateShareLinkBtn.innerHTML = '<i class="fas fa-key me-1"></i>Generate Link';
+            }
+        });
+
+        // Copy share link to clipboard
+        copyShareLinkBtn.addEventListener('click', function() {
+            if (!shareLink.value || shareLink.value === 'Click "Generate Link" to create shareable link') {
+                showToast('warning', 'Please generate a link first');
+                generateShareLinkBtn.focus();
+                return;
+            }
+            
+            navigator.clipboard.writeText(shareLink.value).then(() => {
+                showToast('success', 'Link copied to clipboard!');
+                
+                // Visual feedback
+                const originalHtml = copyShareLinkBtn.innerHTML;
+                copyShareLinkBtn.innerHTML = '<i class="fas fa-check"></i>';
+                copyShareLinkBtn.classList.remove('btn-outline-secondary');
+                copyShareLinkBtn.classList.add('btn-success');
+                
+                setTimeout(() => {
+                    copyShareLinkBtn.innerHTML = originalHtml;
+                    copyShareLinkBtn.classList.remove('btn-success');
+                    copyShareLinkBtn.classList.add('btn-outline-secondary');
+                }, 2000);
+                
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                showToast('error', 'Failed to copy link');
+            });
+        });
+
+        // Proper modal event handlers to prevent focus issues
+        shareModalElement.addEventListener('show.bs.modal', function() {
+            // Reset any previous states
+            document.body.classList.add('modal-open');
+        });
+
+        shareModalElement.addEventListener('hidden.bs.modal', function() {
+            // Ensure modal is properly closed
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            
+            // Remove backdrop if it exists
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => backdrop.remove());
+            
+            // Reset form
+            shareItemName.value = '';
+            shareLink.value = '';
+            enablePasswordProtection.checked = false;
+            passwordSection.style.display = 'none';
+            sharePassword.value = '';
+            confirmSharePassword.value = '';
+        });
+
+        // Handle escape key and backdrop click properly
+        shareModalElement.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                shareModal.hide();
+            }
+        });
+
+        // Close button handler
+        const closeButtons = shareModalElement.querySelectorAll('[data-bs-dismiss="modal"]');
+        closeButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                shareModal.hide();
+            });
+        });
+    };
+
     // --- View Toggle Logic ---
     const toggleBtn = document.getElementById("toggleViewBtn");
     const listContainer = document.getElementById("listContainer");
@@ -523,6 +724,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initRenameFunctionality();
     initPreviewFunctionality();
     initBulkDelete();
+    initShareLinkFunctionality();
     updateCheckboxListeners();
 });
 </script>

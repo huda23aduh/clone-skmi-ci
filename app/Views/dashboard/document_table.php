@@ -82,8 +82,11 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" href="#">
-                                                <i class="fas fa-share-alt me-2"></i>Share
+                                            <a class="dropdown-item share-link-item" href="javascript:void(0)" 
+                                            data-item-id="<?= $folder['id'] ?>" 
+                                            data-item-type="folder"
+                                            data-item-name="<?= esc($folder['name']) ?>">
+                                                <i class="fas fa-link me-2"></i>Share Link
                                             </a>
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
@@ -195,8 +198,11 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" href="#">
-                                                    <i class="fas fa-share-alt me-2"></i>Share
+                                                <a class="dropdown-item share-link-item" href="javascript:void(0)" 
+                                                data-item-id="<?= $file['id'] ?>" 
+                                                data-item-type="file"
+                                                data-item-name="<?= esc($file['original_name']) ?>">
+                                                    <i class="fas fa-link me-2"></i>Share Link
                                                 </a>
                                             </li>
                                             <li><hr class="dropdown-divider"></li>
@@ -299,8 +305,11 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-share-alt me-2"></i>Share
+                                        <a class="dropdown-item share-link-item" href="javascript:void(0)" 
+                                        data-item-id="<?= $folder['id'] ?>" 
+                                        data-item-type="folder"
+                                        data-item-name="<?= esc($folder['name']) ?>">
+                                            <i class="fas fa-link me-2"></i>Share Link
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
@@ -363,6 +372,14 @@
                                             <i class="fas fa-eye me-2"></i>Preview
                                         </a>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item share-link-item" href="javascript:void(0)" 
+                                        data-item-id="<?= $file['id'] ?>" 
+                                        data-item-type="file"
+                                        data-item-name="<?= esc($file['original_name']) ?>">
+                                            <i class="fas fa-link me-2"></i>Share Link
+                                        </a>
+                                    </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <a class="dropdown-item rename-item" href="javascript:void(0)" 
@@ -407,5 +424,8 @@
         </div>
     </div>
 </div>
+
+<?= $this->include('components/share_link_modal') ?>
+
 
 <?= $this->include('dashboard/components/dashboard_script') ?>
