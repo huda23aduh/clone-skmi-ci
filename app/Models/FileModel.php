@@ -8,6 +8,11 @@ class FileModel extends Model
     protected $primaryKey = 'id';
     protected $allowedFields = ['user_id','folder_id','original_name','storage_name','mime','size','is_deleted','deleted_at'];
 
+    // Add these properties for automatic timestamp management
+    protected $useTimestamps = true;
+    protected $createdField = 'created_at';
+    protected $updatedField = 'updated_at';
+
     /**
      * Rename file
      */
