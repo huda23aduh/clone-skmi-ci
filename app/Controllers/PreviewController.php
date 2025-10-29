@@ -82,10 +82,32 @@ class PreviewController extends Controller
             case 'document':
                 return view('preview/document_preview', $data);
             case 'code':
-                return view('preview/code_preview', $data);
+                return $this->previewCodeDashboard($data);
+                break;
             default:
                 return $this->previewUnsupportedDashboard($data);
         }
+    }
+
+    /**
+     * Preview code files with dashboard layout
+     */
+    private function previewCodeDashboard($data)
+    {
+        $filePath = WRITEPATH . 'uploads/' . $data['file']['storage_name'];
+        $content = file_get_contents($filePath);
+        $encoding = mb_detect_encoding($content, ['UTF-8', 'ISO-8859-1', 'ASCII'], true);
+        $content = mb_convert_encoding($content, 'UTF-8', $encoding);
+        
+        // Limit preview to first 500KB for performance
+        if (strlen($content) > 512000) {
+            $content = substr($content, 0, 512000) . "\n\n... (Preview truncated - file too large)";
+        }
+
+        $data['content'] = htmlspecialchars($content);
+        $data['language'] = $this->getCodeLanguage($data['fileExtension']);
+        
+        return view('preview/code_preview', $data);
     }
 
     /**
