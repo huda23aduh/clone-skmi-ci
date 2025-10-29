@@ -70,7 +70,13 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->post('clear', 'ActivityLogController::clearLogs');
     $routes->get('export', 'ActivityLogController::export');
   });
-  
+
+  $routes->group('summary', ['namespace' => 'App\Controllers'], function($routes) {
+    $routes->get('/', 'SummaryPageController::index');
+    $routes->get('data', 'SummaryPageController::getSummaryData');
+  });
+
+  $routes->get('debug/upload-limits', 'DebugController::uploadLimits');
   
   $routes->group('control-center', ['namespace' => 'App\Controllers'], function($routes) {
     $routes->get('/', 'ControlCenterController::index');

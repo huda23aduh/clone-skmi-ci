@@ -78,4 +78,139 @@ class FileModel extends Model
 
         return $builder->findAll();
     }
+
+    /**
+     * Get total number of user files
+     */
+    public function getUserFilesCount($userId)
+    {
+        return $this->where('user_id', $userId)
+                    ->where('deleted_at IS NULL')
+                    ->countAllResults();
+    }
+
+    /**
+     * Get total storage used by user (in bytes)
+     */
+    public function getTotalStorageUsed($userId)
+    {
+        $builder = $this->db->table('files');
+        $builder->selectSum('size');
+        $builder->where('user_id', $userId);
+        $builder->where('deleted_at IS NULL', null, false);
+        
+        $query = $builder->get();
+        $result = $query->getRow();
+        
+        return $result ? (int)$result->size : 0;
+    }
+
+    /**
+     * Get file type distribution
+     */
+    public function getFileTypeDistribution($userId)
+    {
+        $builder = $this->db->table('files');
+        $builder->select('original_name, size');
+        $builder->where('user_id', $userId);
+        $builder->where('deleted_at IS NULL', null, false);
+        
+        $query = $builder->get();
+        $files = $query->getResultArray();
+
+        $distribution = [];
+        
+        foreach ($files as $file) {
+            $extension = strtolower(pathinfo($file['original_name'], PATHINFO_EXTENSION));
+            $category = $this->categorizeFileType($extension);
+            
+            if (!isset($distribution[$category])) {
+                $distribution[$category] = [
+                    'count' => 0,
+                    'size' => 0
+                ];
+            }
+            
+            $distribution[$category]['count']++;
+            $distribution[$category]['size'] += $file['size'];
+        }
+
+        return $distribution;
+    }
+
+    /**
+     * Categorize file types
+     */
+    private function categorizeFileType($extension)
+    {
+        $categories = [
+            'images' => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'ico'],
+            'documents' => ['pdf', 'doc', 'docx', 'txt', 'rtf', 'odt'],
+            'spreadsheets' => ['xls', 'xlsx', 'csv', 'ods'],
+            'presentations' => ['ppt', 'pptx', 'odp'],
+            'archives' => ['zip', 'rar', '7z', 'tar', 'gz'],
+            'audio' => ['mp3', 'wav', 'ogg', 'm4a', 'flac'],
+            'video' => ['mp4', 'avi', 'mov', 'mkv', 'webm', 'flv'],
+            'code' => ['php', 'js', 'css', 'html', 'xml', 'json', 'py', 'java', 'cpp', 'c', 'sql'],
+            'others' => []
+        ];
+
+        foreach ($categories as $category => $extensions) {
+            if (in_array($extension, $extensions)) {
+                return $category;
+            }
+        }
+
+        return 'others';
+    }
+
+    /**
+     * Get uploads per month for a specific year
+     */
+    public function getUploadsPerMonth($userId, $year)
+    {
+        $builder = $this->db->table('files');
+        $builder->select("MONTH(created_at) as month, COUNT(*) as count");
+        $builder->where('user_id', $userId);
+        $builder->where('YEAR(created_at)', $year);
+        $builder->where('deleted_at IS NULL', null, false);
+        $builder->groupBy('MONTH(created_at)');
+        $builder->orderBy('month');
+        
+        $query = $builder->get();
+        $result = $query->getResultArray();
+    
+        $data = array_fill(1, 12, 0);
+        
+        foreach ($result as $row) {
+            $data[(int)$row['month']] = (int)$row['count'];
+        }
+    
+        return $data;
+    }    
+
+    /**
+     * Get storage usage per month for a specific year
+     */
+    public function getStorageUsagePerMonth($userId, $year)
+    {
+        $builder = $this->db->table('files');
+        $builder->select("MONTH(created_at) as month, SUM(size) as total_size");
+        $builder->where('user_id', $userId);
+        $builder->where('YEAR(created_at)', $year);
+        $builder->where('deleted_at IS NULL', null, false);
+        $builder->groupBy('MONTH(created_at)');
+        $builder->orderBy('month');
+        
+        $query = $builder->get();
+        $result = $query->getResultArray();
+    
+        $data = array_fill(1, 12, 0);
+        
+        foreach ($result as $row) {
+            $data[(int)$row['month']] = (int)$row['total_size'];
+        }
+    
+        return $data;
+    }
 }

@@ -53,7 +53,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="./generate/theme.html" class="nav-link">
+            <a href="/summary" class="nav-link">
               <i class="nav-icon bi bi-graph-up"></i>
               <p><?= lang('app.summary') ?></p>
             </a>

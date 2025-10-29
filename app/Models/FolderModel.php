@@ -80,4 +80,14 @@ class FolderModel extends Model
 
         return $builder->findAll();
     }
+    
+    /**
+     * Get total number of user folders
+     */
+    public function getUserFoldersCount($userId)
+    {
+        return $this->where('user_id', $userId)
+                    ->where('deleted_at IS NULL')
+                    ->countAllResults();
+    }
 }
