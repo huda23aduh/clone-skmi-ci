@@ -27,6 +27,7 @@ class ActivityLogController extends Controller
     public function index()
     {
         helper('date');
+        helper('format');
 
         $user = $this->getAuthenticatedUser();
         if (!is_array($user)) {

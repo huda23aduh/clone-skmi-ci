@@ -209,7 +209,7 @@
                                         <div class="mt-2">
                                             <small class="text-muted">
                                                 <?php if (isset($metadata['file_size'])): ?>
-                                                    Size: <?= formatFileSize($metadata['file_size']) ?>
+                                                    Size: <?= format_file_size($metadata['file_size']) ?>
                                                 <?php endif; ?>
                                                 <?php if (isset($metadata['extracted_files_count'])): ?>
                                                     • Extracted files: <?= $metadata['extracted_files_count'] ?>
