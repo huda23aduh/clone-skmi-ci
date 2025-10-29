@@ -10,7 +10,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="<?= base_url('/dashboard') ?>"><i class="fas fa-home me-1"></i> Root</a></li>
-                <li class="breadcrumb-item active"><i class="fas fa-star text-warning me-1"></i> Starred Items</li>
+                <li class="breadcrumb-item active"><i class="fas fa-star text-warning me-1"></i> <?= lang('app.priorityfiles') ?></li>
             </ol>
         </nav>
     </div>
@@ -20,7 +20,7 @@
 <div class="card shadow-sm">
     <div class="card-header bg-light py-3">
         <h5 class="card-title mb-0 d-flex align-items-center">
-            <i class="fas fa-star text-warning me-2"></i>Starred Items
+            <i class="fas fa-star text-warning me-2"></i><?= lang('app.priorityfiles') ?>
             <span class="badge bg-warning ms-2"><?= count($starredItems) ?> items</span>
         </h5>
     </div>
@@ -29,11 +29,11 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Name</th>
-                        <th width="120">Type</th>
-                        <th width="120">Size</th>
+                        <th><?= lang('app.name') ?></th>
+                        <th width="120"><?= lang('app.type') ?></th>
+                        <th width="120"><?= lang('app.size') ?></th>
                         <th width="180">Starred Date</th>
-                        <th width="120" class="text-center">Actions</th>
+                        <th width="120" class="text-center"><?= lang('app.actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>

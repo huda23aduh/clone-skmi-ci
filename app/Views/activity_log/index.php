@@ -6,27 +6,27 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-0 text-gray-800">
-                <i class="fas fa-history me-2"></i>Activity Log
+                <i class="fas fa-history me-2"></i><?= app_lang('app.activitylog') ?>
             </h1>
-            <p class="text-muted mb-0">Track your file management activities</p>
+            <p class="text-muted mb-0"><?= app_lang('app.trackyourfilemanagementactivities') ?></p>
         </div>
         <div class="btn-group">
             <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#clearLogsModal">
-                <i class="fas fa-broom me-1"></i>Clear Logs
+                <i class="fas fa-broom me-1"></i><?= app_lang('app.clearlog') ?>
             </button>
             <div class="dropdown">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                    <i class="fas fa-download me-1"></i>Export
+                    <i class="fas fa-download me-1"></i><?= app_lang('app.export') ?>
                 </button>
                 <ul class="dropdown-menu">
                     <li>
                         <a class="dropdown-item" href="<?= base_url('activity-log/export?format=csv') ?>">
-                            <i class="fas fa-file-csv me-2"></i>Export as CSV
+                            <i class="fas fa-file-csv me-2"></i><?= app_lang('app.exportascsv') ?>
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" href="<?= base_url('activity-log/export?format=json') ?>">
-                            <i class="fas fa-file-code me-2"></i>Export as JSON
+                            <i class="fas fa-file-code me-2"></i><?= app_lang('app.exportasjson') ?>
                         </a>
                     </li>
                 </ul>
@@ -42,7 +42,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Activities
+                                <?= app_lang('app.totalactivity') ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?= number_format($stats['total_activities']) ?>
@@ -62,7 +62,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Last 30 Days
+                                <?= app_lang('app.last30days') ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?= number_format($stats['last_30_days']) ?>
@@ -82,7 +82,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Today
+                                <?= app_lang('app.today') ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?= number_format($stats['today']) ?>
@@ -102,7 +102,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                File Uploads
+                                <?= app_lang('app.fileuploads') ?>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 <?= number_format($stats['file_uploads']) ?>
@@ -122,17 +122,17 @@
         <div class="card-body">
             <form method="get" action="<?= base_url('activity-log') ?>" class="row g-3 align-items-end">
                 <div class="col-md-4">
-                    <label class="form-label">Search Activities</label>
+                    <label class="form-label"><?= app_lang('app.searchactivities') ?></label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
                             <i class="fas fa-search text-muted"></i>
                         </span>
                         <input type="text" class="form-control border-start-0" name="search" 
-                               value="<?= esc($search) ?>" placeholder="Search by activity, file name, or description...">
+                               value="<?= esc($search) ?>" placeholder="<?= app_lang('app.searchbyactivitybyfilebyname') ?>...">
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Filter by Type</label>
+                    <label class="form-label"><?= app_lang('app.filterbytype') ?></label>
                     <select class="form-select" name="filter">
                         <?php foreach ($activityTypes as $value => $label): ?>
                             <option value="<?= $value ?>" <?= $filter === $value ? 'selected' : '' ?>>
@@ -143,7 +143,7 @@
                 </div>
                 <div class="col-md-4">
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-filter me-1"></i>Apply Filters
+                        <i class="fas fa-filter me-1"></i><?= app_lang('app.applyfilter') ?>
                     </button>
                 </div>
             </form>
@@ -154,8 +154,8 @@
     <div class="card shadow-sm">
         <div class="card-header bg-light py-3">
             <h5 class="card-title mb-0 d-flex align-items-center">
-                <i class="fas fa-list me-2"></i>Activity History
-                <span class="badge bg-secondary ms-2"><?= number_format($totalActivities) ?> activities</span>
+                <i class="fas fa-list me-2"></i><?= app_lang('app.activityhistory') ?>
+                <span class="badge bg-secondary ms-2"><?= number_format($totalActivities) ?> <?= app_lang('app.activities') ?></span>
             </h5>
         </div>
         <div class="card-body p-0">
@@ -243,12 +243,13 @@
             <?php else: ?>
                 <div class="text-center py-5">
                     <i class="fas fa-history fa-4x text-muted mb-3"></i>
-                    <h5 class="text-muted">No activities found</h5>
+                    <h5 class="text-muted"><?= app_lang('app.nodata') ?></h5>
                     <p class="text-muted mb-0">
                         <?php if (!empty($search) || $filter !== 'all'): ?>
-                            Try adjusting your search or filter criteria
+                            <?= app_lang('app.tryadjustingyoursearchorfiltercriteria') ?>
+                            <!-- Try adjusting your search or filter criteria -->
                         <?php else: ?>
-                            Your activity log will appear here as you use the system
+                            <?= app_lang('app.yourlogactivitywillappearhereasyouusethesystem') ?>
                         <?php endif; ?>
                     </p>
                 </div>

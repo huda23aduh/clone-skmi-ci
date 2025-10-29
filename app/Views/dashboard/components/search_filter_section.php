@@ -16,7 +16,7 @@
                     <span class="input-group-text bg-light border-end-0">
                         <i class="fas fa-search text-muted"></i>
                     </span>
-                    <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Search files and folders...">
+                    <input type="text" class="form-control border-start-0" id="searchInput" placeholder="<?= lang('app.searchfileandfolder') ?>...">
                 </div>
             </div>
             <div class="col-md-2">

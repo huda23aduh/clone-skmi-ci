@@ -7,9 +7,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-0 text-gray-800">
-                <i class="fas fa-cogs me-2"></i>Control Center
+                <i class="fas fa-cogs me-2"></i><?= app_lang('app.controlcenter') ?>
             </h1>
-            <p class="text-muted mb-0">Manage system members and settings</p>
+            <p class="text-muted mb-0"><?= app_lang('app.managemembersandsetting') ?></p>
         </div>
     </div>
 
@@ -17,7 +17,7 @@
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light py-3">
             <h5 class="card-title mb-0 d-flex align-items-center">
-                <i class="fas fa-users me-2"></i>Members Management
+                <i class="fas fa-users me-2"></i><?= app_lang('app.membersmanagement') ?>
             </h5>
         </div>
         <div class="card-body">
@@ -27,20 +27,20 @@
                     <form id="addMemberForm" class="row g-3">
                         <?= csrf_field() ?>
                         <div class="col-md-4">
-                            <label class="form-label">Name</label>
+                            <label class="form-label"><?= app_lang('app.name') ?></label>
                             <input type="text" class="form-control" name="name" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Email</label>
+                            <label class="form-label"><?= app_lang('app.email') ?></label>
                             <input type="email" class="form-control" name="email" required>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Password</label>
+                            <label class="form-label"><?= app_lang('app.password') ?></label>
                             <input type="password" class="form-control" name="password" required minlength="8">
                         </div>
                         <div class="col-md-1 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary w-100" id="addMemberBtn">
-                                <i class="fas fa-plus me-1"></i>Add
+                                <i class="fas fa-plus me-1"></i><?= app_lang('app.create') ?>
                             </button>
                         </div>
                     </form>
@@ -56,24 +56,24 @@
                             <i class="fas fa-search text-muted"></i>
                         </span>
                         <input type="text" class="form-control border-start-0" id="searchInput" 
-                               placeholder="Search members...">
+                               placeholder="<?= app_lang('app.searchmember') ?>...">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <select class="form-select" id="statusFilter">
-                        <option value="all">All Status</option>
-                        <option value="1">Active</option>
-                        <option value="0">Inactive</option>
+                        <option value="all"><?= app_lang('app.allstatus') ?></option>
+                        <option value="1"><?= app_lang('app.active') ?></option>
+                        <option value="0"><?= app_lang('app.inactive') ?></option>
                     </select>
                 </div>
                 <div class="col-md-3">
                     <select class="form-select" id="sortSelect">
-                        <option value="created_at_desc">Newest First</option>
-                        <option value="created_at_asc">Oldest First</option>
-                        <option value="name_asc">Name A-Z</option>
-                        <option value="name_desc">Name Z-A</option>
-                        <option value="email_asc">Email A-Z</option>
-                        <option value="email_desc">Email Z-A</option>
+                        <option value="created_at_desc"><?= app_lang('app.newestfirst') ?></option>
+                        <option value="created_at_asc"><?= app_lang('app.oldestfirst') ?></option>
+                        <option value="name_asc"><?= app_lang('app.name') ?> A-Z</option>
+                        <option value="name_desc"><?= app_lang('app.name') ?> Z-A</option>
+                        <option value="email_asc"><?= app_lang('app.email') ?> A-Z</option>
+                        <option value="email_desc"><?= app_lang('app.email') ?> Z-A</option>
                     </select>
                 </div>
                 <div class="col-md-2">

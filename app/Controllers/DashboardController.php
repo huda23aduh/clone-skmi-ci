@@ -36,7 +36,11 @@ class DashboardController extends Controller
             'title' => 'MY Drive',
             'user' => $user,          // <<< pass user to view
             'folders' => $folders,
-            'files' => $files
+            'files' => $files,
+            'languages' => [
+                'english' => 'English',
+                'bahasa' => 'Bahasa Indonesia'
+            ]
         ]);
     }
 

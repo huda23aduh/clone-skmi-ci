@@ -3,18 +3,18 @@
 <?= $this->include('components/toast') ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h3 class="mb-0"><i class="fas fa-trash-alt me-2 text-danger"></i>Recycle Bin</h3>
+  <h3 class="mb-0"><i class="fas fa-trash-alt me-2 text-danger"></i><?= lang('app.recyclebin') ?></h3>
   <div>
     <button id="restoreSelectedBtn" class="btn btn-success btn-sm me-2" disabled>
-      <i class="fas fa-undo-alt me-1"></i> Restore Selected
+      <i class="fas fa-undo-alt me-1"></i> <?= app_lang('app.restoreselected') ?>
     </button>
     <button id="deleteSelectedBtn" class="btn btn-danger btn-sm me-2" disabled>
-      <i class="fas fa-trash me-1"></i> Delete Permanently
+      <i class="fas fa-trash me-1"></i> <?= app_lang('app.deletepermanently') ?>
     </button>
     <form method="post" action="<?= base_url('/recycle-bin/empty_all') ?>" style="display:inline;">
       <button type="submit" class="btn btn-outline-danger btn-sm"
         onclick="return confirm('Permanently delete ALL items in Recycle Bin? This cannot be undone.')">
-        <i class="fas fa-ban me-1"></i> Empty Recycle Bin
+        <i class="fas fa-ban me-1"></i> <?= app_lang('app.emptyrecyclebin') ?>
       </button>
     </form>
   </div>
@@ -33,7 +33,7 @@
       <div class="col-md-2">
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="selectAllCheckboxMain">
-          <label class="form-check-label" for="selectAllCheckboxMain">Select All</label>
+          <label class="form-check-label" for="selectAllCheckboxMain"><?= app_lang('app.selectall') ?></label>
         </div>
       </div>
       <div class="col-md-4">
@@ -41,14 +41,14 @@
           <span class="input-group-text bg-light border-end-0">
             <i class="fas fa-search text-muted"></i>
           </span>
-          <input type="text" class="form-control border-start-0" id="searchInput" placeholder="Search deleted items...">
+          <input type="text" class="form-control border-start-0" id="searchInput" placeholder="<?= app_lang('app.searchdeleteditems') ?>...">
         </div>
       </div>
       <div class="col-md-3">
         <select class="form-select" id="typeFilter">
-          <option value="all">All Items</option>
-          <option value="folder">Folders Only</option>
-          <option value="file">Files Only</option>
+          <option value="all"><?= app_lang('app.allitems') ?></option>
+          <option value="folder"><?= app_lang('app.folderonly') ?></option>
+          <option value="file"><?= app_lang('app.fileonly') ?></option>
         </select>
       </div>
     </div>
@@ -62,11 +62,11 @@
       <thead class="table-light">
         <tr>
           <th style="width: 40px;"></th>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Size</th>
+          <th><?= app_lang('app.name') ?></th>
+          <th><?= app_lang('app.type') ?></th>
+          <th><?= app_lang('app.size') ?></th>
           <th>Deleted At</th>
-          <th>Actions</th>
+          <th><?= app_lang('app.actions') ?></th>
         </tr>
       </thead>
       <tbody>
@@ -134,7 +134,7 @@
           <tr>
             <td colspan="6" class="text-center py-4 text-muted">
               <i class="fas fa-inbox fa-3x mb-3"></i>
-              <p class="mb-0">Recycle Bin is empty</p>
+              <p class="mb-0"><?= app_lang('app.nodata') ?></p>
             </td>
           </tr>
         <?php endif; ?>

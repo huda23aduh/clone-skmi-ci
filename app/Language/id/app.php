@@ -4,6 +4,13 @@ return [
     // General
     'app_name' => 'Manajer File',
     'welcome' => 'Selamat Datang',
+    'today' => 'Hari ini',
+    'last30days' => '30 hari terakhir',
+    'name' => 'Nama',
+    'email' => 'Email',
+    'password' => 'Kata Sandi',
+    'size' => 'Ukuran',
+    'type' => 'Jenis',
     'save' => 'Simpan',
     'cancel' => 'Batal',
     'delete' => 'Hapus',
@@ -17,14 +24,37 @@ return [
     'status' => 'Status',
     'active' => 'Aktif',
     'inactive' => 'Nonaktif',
+    'allitems' => 'Semua Item',
+    'folderonly' => 'Folder Saja',
+    'fileonly' => 'File Saja',
+    'selectall' => 'Pilih Semua',
+    'nodata' => 'Tidak ada data',
+    'export' => 'Ekspor',
+    'exportascsv' => 'Ekspor sebagai CSV',
+    'exportasjson' => 'Ekspor sebagai JSON',
+    'searchfileandfolder' => 'Cari file dan folder',
+    'searchdeleteditems' => 'Cari file yang terhapus',
     
     // Navigation
     'dashboard' => 'Dasbor',
+    'mydrive' => 'Drive Saya',
+    'priorityfiles' => 'File Prioritas',
+    'recyclebin' => 'Tempat Sampah',
+    'summary' => 'Kesimpulan',
+    'activitylog' => 'Riwayat Aktivitas',
+    'members' => 'Anggota',
+    'controlcenter' => 'Pusat Kontrol',
     'profile' => 'Profil',
     'settings' => 'Pengaturan',
     'logout' => 'Keluar',
     'login' => 'Masuk',
     'register' => 'Daftar',
+   
+    // Recycle bin Page
+    'emptyrecyclebin' => 'Empty Recycle Bin',
+    'deletepermanently' => 'Hapus Permanen',
+    'restoreselected' => 'Pulihkan Terpilih',
+    'recyclebinisempty' => 'Sampah kosong',
     
     // Profile Page
     'profile_title' => 'Profil Saya',
@@ -49,11 +79,23 @@ return [
     
     // Activity Log
     'activity_log' => 'Log Aktivitas',
+    'trackyourfilemanagementactivities' => 'Lacak Aktivitas Manajemen File Anda',
+    'fileuploads' => 'File Uploads',
+    'activities' => 'Aktivitas',
+    'activityhistory' => 'Riwayat aktifitas',
+    'clearlog' => 'Bersihkan Log',
+    'totalactivity' => 'Total Aktivitas',
     'activity_overview' => 'Ringkasan Aktivitas',
     'recent_activities' => 'Aktivitas Terbaru',
     'view_full_log' => 'Lihat Log Lengkap',
     'view_activity_log' => 'Lihat Aktivitas Log',
     'no_activities' => 'Tidak ada aktivitas terbaru ditemukan.',
+    'searchactivities' => 'Cari Aktivitas',
+    'filterbytype' => 'Filter Jenis',
+    'applyfilter' => 'Terapkan Filter',
+    'searchbyactivitybyfilebyname' => 'cari berdasarkan aktivitas, file, atau nama pengguna',
+    'yourlogactivitywillappearhereasyouusethesystem' => 'Aktivitas log akan muncul disini' ,
+    'tryadjustingyoursearchorfiltercriteria' => 'Coba sesuaikan pencarian atau kriteria filter Anda',
     
     // Messages
     'profile_updated' => 'Profil berhasil diperbarui.',
@@ -95,6 +137,12 @@ return [
     'member_role' => 'Peran',
     'admin' => 'Administrator',
     'user' => 'Pengguna',
+    'searchmember' => 'Cari Anggota',
+    'allstatus' => 'Semua Status',
+    'newestfirst' => 'paling baru dulu',
+    'oldestfirst' => 'paling lama dulu',
+    'membersmanagement' => 'Manajemen anggota',
+    'managemembersandsetting' => 'Pengaturan dan Manajemen Anggota Sistem',
     
     // Activity Types
     'folder_create' => 'Folder Dibuat',
