@@ -499,30 +499,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ---------------- Star Buttons ---------------- */
     const initStarButtons = () => {
+        // Remove any existing click listeners first to prevent duplicates
+        document.querySelectorAll('.star-btn').forEach(btn => {
+            btn.replaceWith(btn.cloneNode(true));
+        });
+        
+        // Now add fresh event listeners
         document.querySelectorAll('.star-btn').forEach(btn => {
             const { itemId, itemType } = btn.dataset;
+            
+            // Update initial star status
             updateStarStatus(itemId, itemType, btn);
-            btn.addEventListener('click', () => toggleStar(itemId, itemType, btn));
+            
+            // Add click event listener with proper event delegation
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                
+                // Prevent multiple rapid clicks
+                if (this.classList.contains('processing')) return;
+                this.classList.add('processing');
+                
+                console.log('Star button clicked - single event');
+                toggleStar(itemId, itemType, this);
+                
+                // Remove processing class after delay
+                setTimeout(() => {
+                    this.classList.remove('processing');
+                }, 1000);
+            });
         });
     };
 
     const updateStarStatus = async (id, type, button) => {
         const data = await fetchJSON(`<?= base_url('/starred/check') ?>?item_id=${id}&item_type=${type}`);
         if (!data) return;
-        button.innerHTML = data.is_starred ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
-        button.classList.toggle('active', data.is_starred);
+        
+        if (data.is_starred) {
+            button.innerHTML = '<i class="fas fa-star text-warning"></i>';
+            button.classList.add('btn-warning');
+            button.classList.remove('btn-outline-warning');
+        } else {
+            button.innerHTML = '<i class="far fa-star"></i>';
+            button.classList.remove('btn-warning');
+            button.classList.add('btn-outline-warning');
+        }
     };
 
     const toggleStar = async (id, type, button) => {
-        const data = await fetchJSON('<?= base_url('/starred/toggle') ?>', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-            body: JSON.stringify({ item_id: id, item_type: type })
-        });
-        if (!data) return;
-        button.innerHTML = data.is_starred ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
-        button.classList.toggle('active', data.is_starred);
-        showToast(data.is_starred ? 'success' : 'warning', data.message);
+        console.log('Toggle star called for:', id, type);
+        
+        // Show loading state
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        button.disabled = true;
+        
+        try {
+            const data = await fetchJSON('<?= base_url('/starred/toggle') ?>', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': '<?= csrf_hash() ?>'
+                },
+                body: JSON.stringify({ 
+                    item_id: id, 
+                    item_type: type 
+                })
+            });
+            
+            if (!data) return;
+            
+            // Update button appearance based on response
+            if (data.is_starred) {
+                button.innerHTML = '<i class="fas fa-star text-warning"></i>';
+                button.classList.add('btn-warning');
+                button.classList.remove('btn-outline-warning');
+                showToast('success', data.message || 'Item starred');
+            } else {
+                button.innerHTML = '<i class="far fa-star"></i>';
+                button.classList.remove('btn-warning');
+                button.classList.add('btn-outline-warning');
+                showToast('info', data.message || 'Star removed');
+            }
+            
+        } catch (error) {
+            console.error('Toggle star error:', error);
+            showToast('error', 'Failed to toggle star');
+            // Revert to original state on error
+            button.innerHTML = originalHTML;
+        } finally {
+            button.disabled = false;
+        }
     };
 
     /* ---------------- Selection / Bulk Actions ---------------- */
