@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (currentItemType === 'file') {
                     // For files, use the preview URL
-                    shareableUrl = `${baseUrl}/preview/file/${currentItemId}`;
+                    shareableUrl = `${baseUrl}/preview/${currentItemId}`;
                 } else {
                     // For folders, you might want to create a different endpoint
                     shareableUrl = `${baseUrl}/folder/share/${currentItemId}`;
