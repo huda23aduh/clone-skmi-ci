@@ -61,7 +61,7 @@ return [
     'clearlog' => 'Clear Log',
     'activities' => 'Activities',
     'totalactivity' => 'Total Activities',
-    'activityhistory' => 'Acitivity History',
+    'activityhistory' => 'Activity History',
     'searchactivities' => 'Search Activities',
     'filterbytype' => 'Filter By Type',
     'applyfilter' => 'Apply Filter',
@@ -142,7 +142,7 @@ return [
     'allstatus' => 'All Status',
     'newestfirst' => 'newest first',
     'oldestfirst' => 'oldest first',
-    'membersmanagement' => 'Members managament',
+    'membersmanagement' => 'Members management',
     'managemembersandsetting' => 'Manage member and settings',
     
     // Activity Types
@@ -163,4 +163,35 @@ return [
     'profile_update' => 'Profile Updated',
     'profile_image_update' => 'Profile Image Updated',
     'language_update' => 'Language Updated',
+
+    // Summary Page
+    'storage_summary' => 'Storage Summary',
+    'overview_storage_usage' => 'Overview of your storage usage and file statistics',
+    'total_folders' => 'Total Folders',
+    'storage_used' => 'Storage Used',
+    'of' => 'of',
+    'file_type_distribution' => 'File Type Distribution',
+    'uploads_in_year' => 'Uploads in {year}',
+    'storage_usage_in_year' => 'Storage Usage in {year}',
+    'total_storage_used' => 'Total Storage Used',
+    'across_all_members' => 'Across all members',
+    'avg_storage_per_member' => 'Avg Storage Per Member',
+    'average_usage' => 'Average usage',
+    
+    // Members Page
+    'member_management' => 'Member Management',
+    'manage_monitor_members' => 'Manage and monitor all members\' activities and storage usage',
+    'total_active_members' => 'Total Active Members',
+    'member_list' => 'Member List',
+    'search_members' => 'Search members...',
+    'join_date' => 'Join Date',
+    'last_login' => 'Last Login',
+    'storage_used' => 'Storage Used',
+    'member_activities' => 'Member Activities',
+    'last_days' => 'Last {days} Days',
+    'showing_entries' => 'Showing {start} to {end} of {total} entries',
+    'previous' => 'Previous',
+    'next' => 'Next',
+    'never' => 'Never',
+    'file_count' => '{count} files',
 ];

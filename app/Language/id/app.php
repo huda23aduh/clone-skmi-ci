@@ -40,7 +40,7 @@ return [
     'mydrive' => 'Drive Saya',
     'priorityfiles' => 'File Prioritas',
     'recyclebin' => 'Tempat Sampah',
-    'summary' => 'Kesimpulan',
+    'summary' => 'Ringkasan',
     'activitylog' => 'Riwayat Aktivitas',
     'members' => 'Anggota',
     'controlcenter' => 'Pusat Kontrol',
@@ -51,10 +51,10 @@ return [
     'register' => 'Daftar',
    
     // Recycle bin Page
-    'emptyrecyclebin' => 'Empty Recycle Bin',
+    'emptyrecyclebin' => 'Kosongkan Tempat Sampah',
     'deletepermanently' => 'Hapus Permanen',
     'restoreselected' => 'Pulihkan Terpilih',
-    'recyclebinisempty' => 'Sampah kosong',
+    'recyclebinisempty' => 'Tempat sampah kosong',
     
     // Profile Page
     'profile_title' => 'Profil Saya',
@@ -80,7 +80,7 @@ return [
     // Activity Log
     'activity_log' => 'Log Aktivitas',
     'trackyourfilemanagementactivities' => 'Lacak Aktivitas Manajemen File Anda',
-    'fileuploads' => 'File Uploads',
+    'fileuploads' => 'Unggah File',
     'activities' => 'Aktivitas',
     'activityhistory' => 'Riwayat aktifitas',
     'clearlog' => 'Bersihkan Log',
@@ -162,4 +162,35 @@ return [
     'profile_update' => 'Profil Diperbarui',
     'profile_image_update' => 'Foto Profil Diperbarui',
     'language_update' => 'Bahasa Diperbarui',
+
+    // Summary Page
+    'storage_summary' => 'Ringkasan Penyimpanan',
+    'overview_storage_usage' => 'Ringkasan penggunaan penyimpanan dan statistik file Anda',
+    'total_folders' => 'Total Folder',
+    'storage_used' => 'Penyimpanan Digunakan',
+    'of' => 'dari',
+    'file_type_distribution' => 'Distribusi Jenis File',
+    'uploads_in_year' => 'Unggahan di {year}',
+    'storage_usage_in_year' => 'Penggunaan Penyimpanan di {year}',
+    'total_storage_used' => 'Total Penyimpanan Digunakan',
+    'across_all_members' => 'Di semua anggota',
+    'avg_storage_per_member' => 'Rata-rata Penyimpanan per Anggota',
+    'average_usage' => 'Penggunaan rata-rata',
+    
+    // Members Page
+    'member_management' => 'Manajemen Anggota',
+    'manage_monitor_members' => 'Kelola dan pantau semua aktivitas dan penggunaan penyimpanan anggota',
+    'total_active_members' => 'Total Anggota Aktif',
+    'member_list' => 'Daftar Anggota',
+    'search_members' => 'Cari anggota...',
+    'join_date' => 'Tanggal Bergabung',
+    'last_login' => 'Login Terakhir',
+    'storage_used' => 'Penyimpanan Digunakan',
+    'member_activities' => 'Aktivitas Anggota',
+    'last_days' => '{days} Hari Terakhir',
+    'showing_entries' => 'Menampilkan {start} sampai {end} dari {total} entri',
+    'previous' => 'Sebelumnya',
+    'next' => 'Selanjutnya',
+    'never' => 'Tidak Pernah',
+    'file_count' => '{count} file',
 ];

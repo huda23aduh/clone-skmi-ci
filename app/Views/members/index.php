@@ -9,13 +9,13 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-0 text-gray-800">
-                <i class="fas fa-users me-2"></i>Member Management
+                <i class="fas fa-users me-2"></i><?= lang('app.member_management') ?>
             </h1>
-            <p class="text-muted mb-0">Manage and monitor all members' activities and storage usage</p>
+            <p class="text-muted mb-0"><?= lang('app.manage_monitor_members') ?></p>
         </div>
         <div class="btn-group">
             <a href="<?= base_url('/') ?>" class="btn btn-outline-primary">
-                <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                <i class="fas fa-arrow-left me-1"></i><?= lang('app.back_to_dashboard') ?>
             </a>
         </div>
     </div>
@@ -39,7 +39,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Total Active Members
+                                    <?= lang('app.total_active_members') ?>
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalMembers">0</div>
                             </div>
@@ -58,10 +58,10 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    Total Storage Used
+                                    <?= lang('app.total_storage_used') ?>
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalStorageUsed">0 MB</div>
-                                <div class="text-xs text-muted mt-1">Across all members</div>
+                                <div class="text-xs text-muted mt-1"><?= lang('app.across_all_members') ?></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-hdd fa-2x text-gray-300"></i>
@@ -78,7 +78,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                    Avg Storage Per Member
+                                    <?= lang('app.avg_storage_per_member') ?>
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="avgStoragePerMember">0 MB</div>
                                 <div class="text-xs text-muted mt-1">Average usage</div>
@@ -98,10 +98,10 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Total Files
+                                    <?= lang('app.total_files') ?>
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalFiles">0</div>
-                                <div class="text-xs text-muted mt-1">Across all members</div>
+                                <div class="text-xs text-muted mt-1"><?= lang('app.across_all_members') ?></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-file fa-2x text-gray-300"></i>
@@ -118,7 +118,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0 d-flex align-items-center">
-                            <i class="fas fa-list me-2"></i>Member List
+                            <i class="fas fa-list me-2"></i><?= lang('app.member_list') ?>
                         </h5>
                         <div class="d-flex gap-2">
                             <div class="input-group input-group-sm" style="width: 250px;">
@@ -134,12 +134,12 @@
                             <table class="table table-hover mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th class="ps-3">Member</th>
-                                        <th>Join Date</th>
-                                        <th>Last Login</th>
-                                        <th>Storage Used</th>
-                                        <th>Files</th>
-                                        <th class="text-center">Status</th>
+                                        <th class="ps-3"><?= lang('app.member') ?></th>
+                                        <th><?= lang('app.join_date') ?></th>
+                                        <th><?= lang('app.last_login') ?></th>
+                                        <th><?= lang('app.storage_used') ?></th>
+                                        <th><?= lang('app.files') ?></th>
+                                        <th class="text-center"><?= lang('app.status') ?></th>
                                     </tr>
                                 </thead>
                                 <tbody id="membersTableBody">
@@ -170,7 +170,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0 d-flex align-items-center">
-                            <i class="fas fa-chart-line me-2"></i>Member Activities (Last 30 Days)
+                            <i class="fas fa-chart-line me-2"></i><?= str_replace('{days}', '30', lang('app.member_activities')) ?>
                         </h5>
                         <div class="btn-group btn-group-sm">
                             <button type="button" class="btn btn-outline-primary active" data-days="7">7 Days</button>

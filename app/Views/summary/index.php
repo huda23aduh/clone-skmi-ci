@@ -9,9 +9,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-0 text-gray-800">
-                <i class="fas fa-chart-pie me-2"></i>Storage Summary
+                <i class="fas fa-chart-pie me-2"></i><?= lang('app.storage_summary') ?>
             </h1>
-            <p class="text-muted mb-0">Overview of your storage usage and file statistics</p>
+                <p class="text-muted mb-0"><?= lang('app.overview_storage_usage') ?></p>
         </div>
         <div class="btn-group">
             <a href="<?= base_url('/') ?>" class="btn btn-outline-primary">
@@ -39,7 +39,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Total Files
+                                    <?= lang('app.total_files') ?>
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalFiles">0</div>
                             </div>
@@ -58,7 +58,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    Total Folders
+                                    <?= lang('app.total_folders') ?>
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalFolders">0</div>
                             </div>
@@ -77,7 +77,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                    Storage Used
+                                    <?= lang('app.storage_used') ?>
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="storageUsed">0 MB</div>
                                 <div class="text-xs text-muted mt-1" id="storageMax">of 500 GB</div>
@@ -121,7 +121,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-light py-3">
                         <h5 class="card-title mb-0 d-flex align-items-center">
-                            <i class="fas fa-chart-pie me-2"></i>File Type Distribution
+                            <i class="fas fa-chart-pie me-2"></i><?= lang('app.file_type_distribution') ?>
                         </h5>
                     </div>
                     <div class="card-body">
@@ -137,7 +137,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-light py-3">
                         <h5 class="card-title mb-0 d-flex align-items-center">
-                            <i class="fas fa-chart-line me-2"></i>Uploads in <?= date('Y') ?>
+                            <i class="fas fa-chart-line me-2"></i><?= str_replace('{year}', date('Y'), lang('app.uploads_in_year')) ?>
                         </h5>
                     </div>
                     <div class="card-body">
@@ -153,7 +153,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-light py-3">
                         <h5 class="card-title mb-0 d-flex align-items-center">
-                            <i class="fas fa-chart-area me-2"></i>Storage Usage in <?= date('Y') ?>
+                            <i class="fas fa-chart-area me-2"></i><?= str_replace('{year}', date('Y'), lang('app.storage_usage_in_year')) ?>
                         </h5>
                     </div>
                     <div class="card-body">
