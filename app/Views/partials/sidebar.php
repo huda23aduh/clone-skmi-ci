@@ -69,7 +69,7 @@
 
 
           <li class="nav-item">
-            <a href="./generate/theme.html" class="nav-link">
+            <a href="/members" class="nav-link">
               <i class="nav-icon bi bi-people"></i>
               <p><?= lang('app.members') ?></p>
             </a>

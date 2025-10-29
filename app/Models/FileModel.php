@@ -213,4 +213,17 @@ class FileModel extends Model
     
         return $data;
     }
+
+    /**
+     * Get total storage used by all users
+     */
+    public function getTotalStorageUsedAllUsers()
+    {
+        $builder = $this->builder();
+        $builder->selectSum('size');
+        $builder->where('deleted_at IS NULL', null, false);
+        
+        $result = $builder->get()->getRow();
+        return $result ? (int)$result->size : 0;
+    }
 }

@@ -124,4 +124,112 @@ class UserModel extends Model
             return false;
         }
     }
+
+    /**
+     * Get total count of active members
+     */
+    public function getTotalMembersCount($search = '')
+    {
+        $builder = $this->builder();
+        
+        // Use isActive column instead of status
+        $builder->where('isActive', 1);
+        
+        if (!empty($search)) {
+            $builder->groupStart()
+                    ->like('name', $search)
+                    ->orLike('email', $search)
+                    ->groupEnd();
+        }
+        
+        return $builder->countAllResults();
+    }
+
+    /**
+     * Get members with storage statistics
+     */
+    public function getMembersWithStats($search = '', $limit = 10, $offset = 0)
+    {
+        $fileModel = new \App\Models\FileModel();
+        $fileTable = $fileModel->getTable();
+        
+        $builder = $this->builder();
+        $builder->select([
+            'users.id',
+            'users.name',
+            'users.email',
+            'users.created_at',
+            // 'users.last_login_at', // Correct column name
+            'users.isActive', // Add this column
+            'COALESCE(SUM(files.size), 0) as storage_used',
+            'COUNT(files.id) as file_count'
+        ]);
+        
+        $builder->join("{$fileTable} files", 'users.id = files.user_id AND files.deleted_at IS NULL', 'left');
+        
+        // Use isActive column instead of status
+        $builder->where('users.isActive', 1);
+        
+        if (!empty($search)) {
+            $builder->groupStart()
+                    ->like('users.name', $search)
+                    ->orLike('users.email', $search)
+                    ->groupEnd();
+        }
+        
+        $builder->groupBy('users.id, users.name, users.email, users.created_at,  users.isActive');
+        $builder->orderBy('users.created_at', 'DESC');
+        $builder->limit($limit, $offset);
+        
+        $result = $builder->get()->getResultArray();
+        
+        // Format the data
+        foreach ($result as &$row) {
+            $row['storage_used'] = (int)$row['storage_used'];
+            $row['file_count'] = (int)$row['file_count'];
+            $row['storage_used_display'] = $this->formatBytes($row['storage_used']);
+            $row['join_date'] = date('M j, Y', strtotime($row['created_at']));
+            // $row['last_login_display'] = $row['last_login_at'] ? $this->timeAgo($row['last_login_at']) : 'Never';
+            $row['status'] = $row['isActive'] ? 'Active' : 'Inactive';
+        }
+        
+        return $result;
+    }
+    /**
+     * Format bytes to human readable
+     */
+    private function formatBytes($bytes, $precision = 2)
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        
+        $bytes /= pow(1024, $pow);
+        
+        return round($bytes, $precision) . ' ' . $units[$pow];
+    }
+
+    /**
+     * Get time ago format
+     */
+    private function timeAgo($datetime)
+    {
+        $time = strtotime($datetime);
+        $now = time();
+        $diff = $now - $time;
+        
+        if ($diff < 60) {
+            return 'Just now';
+        } elseif ($diff < 3600) {
+            return floor($diff / 60) . ' minutes ago';
+        } elseif ($diff < 86400) {
+            return floor($diff / 3600) . ' hours ago';
+        } elseif ($diff < 2592000) {
+            return floor($diff / 86400) . ' days ago';
+        } else {
+            return date('M j, Y', $time);
+        }
+    }
 }

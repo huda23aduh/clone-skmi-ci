@@ -75,8 +75,6 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'SummaryPageController::index');
     $routes->get('data', 'SummaryPageController::getSummaryData');
   });
-
-  $routes->get('debug/upload-limits', 'DebugController::uploadLimits');
   
   $routes->group('control-center', ['namespace' => 'App\Controllers'], function($routes) {
     $routes->get('/', 'ControlCenterController::index');
@@ -84,6 +82,12 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->post('members', 'ControlCenterController::createMember');
     $routes->post('members/(:num)/toggle-status', 'ControlCenterController::toggleMemberStatus/$1');
     $routes->delete('members/(:num)', 'ControlCenterController::deleteMember/$1');
+  });
+
+  $routes->group('members', ['namespace' => 'App\Controllers'], function($routes) {
+    $routes->get('/', 'MemberPageController::index');
+    $routes->get('data', 'MemberPageController::getMembersData');
+    $routes->get('activities', 'MemberPageController::getActivitiesData');
   });
   
   $routes->group('profile', ['namespace' => 'App\Controllers'], function($routes) {
@@ -99,5 +103,8 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->get('emails', 'EmailController::getUserEmails');
     $routes->get('verify-email/(:any)', 'EmailController::verifyEmail/$1');
   });
+
+  $routes->get('debug/upload-limits', 'DebugController::uploadLimits');
+
 });
 

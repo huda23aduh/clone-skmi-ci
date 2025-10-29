@@ -103,4 +103,84 @@ class ActivityLogModel extends Model
                     ->orderBy('created_at', 'DESC')
                     ->findAll($limit);
     }
+
+    /**
+     * Get activities by period for chart
+     */
+    public function getActivitiesByPeriod($days = 30)
+    {
+        $startDate = date('Y-m-d', strtotime("-{$days} days"));
+        
+        $builder = $this->builder();
+        $builder->select([
+            'DATE(created_at) as date',
+            'activity_type',
+            'COUNT(*) as count'
+        ]);
+        
+        $builder->where('created_at >=', $startDate);
+        $builder->groupBy('DATE(created_at), activity_type');
+        $builder->orderBy('date', 'ASC');
+        
+        $result = $builder->get()->getResultArray();
+        
+        // Format data for chart
+        $activities = [];
+        $dateRange = $this->getDateRange($days);
+        
+        // Initialize with zero values
+        foreach ($dateRange as $date) {
+            $activities[$date] = [
+                'date' => $date,
+                'file_upload' => 0,
+                'file_download' => 0,
+                'file_preview' => 0,
+                'file_delete' => 0,
+                'folder_create' => 0,
+                'total' => 0
+            ];
+        }
+        
+        // Fill with actual data
+        foreach ($result as $row) {
+            $date = $row['date'];
+            $type = $this->getActivityTypeKey($row['activity_type']);
+            $count = (int)$row['count'];
+            
+            if (isset($activities[$date])) {
+                $activities[$date][$type] = $count;
+                $activities[$date]['total'] += $count;
+            }
+        }
+        
+        return array_values($activities);
+    }
+
+    /**
+     * Generate date range for chart
+     */
+    private function getDateRange($days)
+    {
+        $dates = [];
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $dates[] = date('Y-m-d', strtotime("-{$i} days"));
+        }
+        return $dates;
+    }
+
+    /**
+     * Convert activity type to chart key
+     */
+    private function getActivityTypeKey($activityType)
+    {
+        $mapping = [
+            ActivityLogModel::TYPE_FILE_UPLOAD => 'file_upload',
+            ActivityLogModel::TYPE_FILE_DOWNLOAD => 'file_download',
+            ActivityLogModel::TYPE_FILE_PREVIEW => 'file_preview',
+            ActivityLogModel::TYPE_FILE_DELETE => 'file_delete',
+            ActivityLogModel::TYPE_FOLDER_CREATE => 'folder_create',
+        ];
+        
+        return $mapping[$activityType] ?? 'other';
+    }
 }
