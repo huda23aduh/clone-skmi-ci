@@ -7,8 +7,8 @@
 
  ?>
  <!--begin::Header-->
- <nav class="app-header navbar navbar-expand bg-body">
-        <!--begin::Container-->
+ <nav class="app-header navbar navbar-expand bg-body fixed-top">
+ <!--begin::Container-->
         <div class="container-fluid">
           <!--begin::Start Navbar Links-->
           <ul class="navbar-nav">
