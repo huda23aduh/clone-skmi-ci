@@ -34,6 +34,12 @@ return [
     'exportasjson' => 'Ekspor sebagai JSON',
     'searchfileandfolder' => 'Cari file dan folder',
     'searchdeleteditems' => 'Cari file yang terhapus',
+    'itemsperpage' => 'Items per halaman',
+    'items' => 'items',
+    'showing' => 'menampilkan',
+    'to' => 'ke',
+    'of' => 'dari',
+    'entries' => 'entries',
     
     // Navigation
     'dashboard' => 'Dasbor',

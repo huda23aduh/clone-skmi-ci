@@ -121,7 +121,7 @@
     <div class="card shadow-sm mb-4">
         <div class="card-body">
             <form method="get" action="<?= base_url('activity-log') ?>" class="row g-3 align-items-end">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label"><?= app_lang('app.searchactivities') ?></label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0">
@@ -131,7 +131,7 @@
                                value="<?= esc($search) ?>" placeholder="<?= app_lang('app.searchbyactivitybyfilebyname') ?>...">
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label"><?= app_lang('app.filterbytype') ?></label>
                     <select class="form-select" name="filter">
                         <?php foreach ($activityTypes as $value => $label): ?>
@@ -141,7 +141,17 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <label class="form-label"><?= app_lang('app.itemsperpage') ?></label>
+                    <select class="form-select" name="per_page">
+                        <?php foreach ($perPageOptions as $option): ?>
+                            <option value="<?= $option ?>" <?= $perPage == $option ? 'selected' : '' ?>>
+                                <?= $option ?> <?= app_lang('app.items') ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-md-3">
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="fas fa-filter me-1"></i><?= app_lang('app.applyfilter') ?>
                     </button>
@@ -153,10 +163,19 @@
     <!-- Activities Card -->
     <div class="card shadow-sm">
         <div class="card-header bg-light py-3">
-            <h5 class="card-title mb-0 d-flex align-items-center">
-                <i class="fas fa-list me-2"></i><?= app_lang('app.activityhistory') ?>
-                <span class="badge bg-secondary ms-2"><?= number_format($totalActivities) ?> <?= app_lang('app.activities') ?></span>
-            </h5>
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 d-flex align-items-center">
+                    <i class="fas fa-list me-2"></i><?= app_lang('app.activityhistory') ?>
+                    <span class="badge bg-secondary ms-2"><?= number_format($totalActivities) ?> <?= app_lang('app.activities') ?></span>
+                </h5>
+                <div class="text-muted small">
+                    <?= app_lang('app.showing') ?> 
+                    <?= (($currentPage - 1) * $perPage) + 1 ?> - 
+                    <?= min($currentPage * $perPage, $totalActivities) ?> 
+                    <?= app_lang('app.of') ?> 
+                    <?= number_format($totalActivities) ?>
+                </div>
+            </div>
         </div>
         <div class="card-body p-0">
             <?php if (!empty($activities)): ?>
@@ -231,11 +250,17 @@
                     <div class="card-footer bg-light">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="text-muted small">
-                                Showing <?= (($currentPage - 1) * $perPage) + 1 ?> to 
-                                <?= min($currentPage * $perPage, $totalActivities) ?> of 
-                                <?= number_format($totalActivities) ?> entries
+                                <?= app_lang('app.showing') ?> 
+                                <?= (($currentPage - 1) * $perPage) + 1 ?> 
+                                <?= app_lang('app.to') ?> 
+                                <?= min($currentPage * $perPage, $totalActivities) ?> 
+                                <?= app_lang('app.of') ?> 
+                                <?= number_format($totalActivities) ?> 
+                                <?= app_lang('app.entries') ?>
                             </div>
-                            <?= $pager->links() ?>
+                            <div class="pagination">
+                            <?= $pager->links('default', 'custom_pagination') ?>
+                            </div>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -247,7 +272,6 @@
                     <p class="text-muted mb-0">
                         <?php if (!empty($search) || $filter !== 'all'): ?>
                             <?= app_lang('app.tryadjustingyoursearchorfiltercriteria') ?>
-                            <!-- Try adjusting your search or filter criteria -->
                         <?php else: ?>
                             <?= app_lang('app.yourlogactivitywillappearhereasyouusethesystem') ?>
                         <?php endif; ?>

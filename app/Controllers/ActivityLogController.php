@@ -13,7 +13,8 @@ class ActivityLogController extends Controller
 
     protected $activityLogModel;
     protected $userModel;
-    protected $perPage = 20;
+    protected $defaultPerPage = 20;
+    protected $perPageOptions = [5, 10, 20, 50, 100];
 
     public function __construct()
     {
@@ -37,9 +38,22 @@ class ActivityLogController extends Controller
         $page = $this->request->getGet('page') ?? 1;
         $filter = $this->request->getGet('filter') ?? 'all';
         $search = $this->request->getGet('search') ?? '';
+        
+        // Get per_page from session or request, fallback to default
+        $perPage = $this->request->getGet('per_page') ?? 
+                  session()->get('activity_log_per_page') ?? 
+                  $this->defaultPerPage;
+        
+        // Validate per_page value
+        if (!in_array($perPage, $this->perPageOptions)) {
+            $perPage = $this->defaultPerPage;
+        }
+        
+        // Store per_page in session for consistency
+        session()->set('activity_log_per_page', $perPage);
 
         // Get activities with filters
-        $activities = $this->getActivities($user['id'], $page, $filter, $search);
+        $activities = $this->getActivities($user['id'], $page, $filter, $search, $perPage);
         
         // Get total count for pagination
         $totalActivities = $this->getTotalActivitiesCount($user['id'], $filter, $search);
@@ -56,7 +70,8 @@ class ActivityLogController extends Controller
             'filter' => $filter,
             'search' => $search,
             'stats' => $stats,
-            'perPage' => $this->perPage,
+            'perPage' => $perPage,
+            'perPageOptions' => $this->perPageOptions,
             'activityTypes' => $this->getActivityTypes(),
         ];
 
@@ -66,8 +81,10 @@ class ActivityLogController extends Controller
     /**
      * Get activities with filters and pagination
      */
-    private function getActivities($userId, $page, $filter, $search)
+    private function getActivities($userId, $page, $filter, $search, $perPage = null)
     {
+        $perPage = $perPage ?? $this->defaultPerPage;
+        
         $builder = $this->activityLogModel
             ->where('user_id', $userId)
             ->orderBy('created_at', 'DESC');
@@ -86,7 +103,7 @@ class ActivityLogController extends Controller
                     ->groupEnd();
         }
 
-        return $builder->paginate($this->perPage, 'default', $page);
+        return $builder->paginate($perPage, 'default', $page);
     }
 
     /**
@@ -166,8 +183,14 @@ class ActivityLogController extends Controller
         $page = $this->request->getGet('page') ?? 1;
         $filter = $this->request->getGet('filter') ?? 'all';
         $search = $this->request->getGet('search') ?? '';
+        $perPage = $this->request->getGet('per_page') ?? $this->defaultPerPage;
 
-        $activities = $this->getActivities($user["id"], $page, $filter, $search);
+        // Validate per_page value
+        if (!in_array($perPage, $this->perPageOptions)) {
+            $perPage = $this->defaultPerPage;
+        }
+
+        $activities = $this->getActivities($user["id"], $page, $filter, $search, $perPage);
 
         $formattedActivities = [];
         foreach ($activities as $activity) {
@@ -179,8 +202,9 @@ class ActivityLogController extends Controller
             'activities' => $formattedActivities,
             'pagination' => [
                 'currentPage' => (int)$page,
-                'totalPages' => ceil($this->getTotalActivitiesCount($user["id"], $filter, $search) / $this->perPage),
-                'hasMore' => ($page * $this->perPage) < $this->getTotalActivitiesCount($user["id"], $filter, $search)
+                'totalPages' => ceil($this->getTotalActivitiesCount($user["id"], $filter, $search) / $perPage),
+                'hasMore' => ($page * $perPage) < $this->getTotalActivitiesCount($user["id"], $filter, $search),
+                'perPage' => $perPage
             ]
         ]);
     }

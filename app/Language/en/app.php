@@ -33,6 +33,12 @@ return [
     'exportascsv' => 'Export as CSV',
     'exportasjson' => 'Export as JSON',
     'searchfileandfolder' => 'Search Files and folders',
+    'itemsperpage' => 'Items per page',
+    'items' => 'items',
+    'showing' => 'Showing',
+    'to' => 'to',
+    'of' => 'of',
+    'entries' => 'entries',
     
     // Navigation
     'dashboard' => 'Dashboard',

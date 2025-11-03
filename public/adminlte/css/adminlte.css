@@ -18123,3 +18123,59 @@ fieldset legend {
   position: fixed !important;
   z-index: 1060 !important;
 }
+
+/*pagination*/
+.ci-pagination {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+}
+
+/* default button */
+.ci-pagination li a,
+.ci-pagination li span {
+  all: unset;
+  cursor: pointer;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  background: #fff;
+  color: #0d6efd;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all .15s ease;
+  box-sizing: border-box;
+}
+
+/* hover */
+.ci-pagination li a:hover {
+  background: #e7f1ff;
+  border-color: #0d6efd;
+}
+
+/* active page */
+.ci-pagination li.active span {
+  background: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+  cursor: default;
+}
+
+/* disabled */
+.ci-pagination li.disabled span {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* keyboard focus */
+.ci-pagination li a:focus-visible {
+  outline: 2px solid #0d6efd;
+  outline-offset: 2px;
+}
