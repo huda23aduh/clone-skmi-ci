@@ -61,13 +61,7 @@ $(document).ready(function() {
                 sort: sort
             },
             success: function(response) {
-                console.log('Full response:', response);
-                console.log('Response success:', response.success);
-                console.log('Response data:', response.data);
-                
                 if (response.success && response.data) {
-                    console.log('Members:', response.data.members);
-                    console.log('Pagination:', response.data.pagination);
                     renderMembersTable(response.data);
                 } else {
                     console.error('Failed response:', response);

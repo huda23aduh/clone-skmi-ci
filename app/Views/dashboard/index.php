@@ -21,5 +21,4 @@
 
 <?= $this->include('dashboard/components/dashboard_script') ?>
 
-
 <?= $this->endSection() ?>
