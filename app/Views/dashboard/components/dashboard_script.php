@@ -700,6 +700,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const bulkAction = async (url, confirmMsg) => {
+        const items = getSelectedItems();
+        if (!items.length) return showToast('warning', 'No items selected');
+        if (!confirm(confirmMsg.replace('{count}', items.length))) return;
+
+        const data = await fetchJSON(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            body: JSON.stringify({ items })
+        });
+        if (data?.success) {
+            showToast('success', data.message || 'Action completed');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showToast('error', data?.message || 'Action failed');
+        }
+    };
+
     state.bulkDeleteBtn?.addEventListener('click', handleBulkDelete);
     state.bulkZipBtn?.addEventListener('click', () => bulkAction('<?= base_url('/file/compress') ?>', 'Compress {count} item(s) into a ZIP file?'));
 

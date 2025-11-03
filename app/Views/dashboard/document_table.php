@@ -428,4 +428,3 @@
 <?= $this->include('components/share_link_modal') ?>
 
 
-<?= $this->include('dashboard/components/dashboard_script') ?>
