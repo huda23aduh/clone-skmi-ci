@@ -7,7 +7,7 @@
 <div class="card shadow-sm d-flex flex-column" style="height: calc(100vh - 330px);">
     <div class="card-header bg-light py-3">
         <h5 class="card-title mb-0 d-flex align-items-center">
-            <i class="fas fa-folder-open me-2"></i>Root Directory
+            <i class="fas fa-folder-open me-2"></i>
             <span class="badge bg-secondary ms-2"><?= count($folders) + count($files) ?> items</span>
         </h5>
     </div>
@@ -245,7 +245,9 @@
                                     <h5 class="text-muted">This folder is empty</h5>
                                     <p class="text-muted mb-3">Get started by uploading your first file or creating a folder</p>
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-success" onclick="showUploadFileModal()">
+                                        <button 
+                                            type="button" class="btn btn-success" 
+                                            onclick="showUploadFileModal(<?= isset($currentFolder['id']) ? $currentFolder['id'] : 'null' ?>)">
                                             <i class="fas fa-upload me-1"></i> Upload Files
                                         </button>
                                         <button type="button" class="btn btn-primary" onclick="showCreateFolderModal()">

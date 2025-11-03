@@ -67,6 +67,7 @@
 <script>
 // Global variables for file handling
 let selectedFilesArray = [];
+let currentFolderId = null 
 
 function showUploadFileModal(folderId = null) {
     // Reset form and state
@@ -83,6 +84,7 @@ function showUploadFileModal(folderId = null) {
     
     // Set folder if provided
     if (folderId) {
+        currentFolderId = folderId
         document.getElementById('uploadFolder').value = folderId;
     }
     
@@ -175,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Append folder_id
         const folderSelect = document.getElementById('uploadFolder');
-        formData.append('folder_id', folderSelect.value);
+        formData.append('folder_id', currentFolderId);
         
         const submitBtn = document.getElementById('uploadFileBtn');
         const originalText = submitBtn.innerHTML;
