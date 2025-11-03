@@ -250,7 +250,8 @@
                                             onclick="showUploadFileModal(<?= isset($currentFolder['id']) ? $currentFolder['id'] : 'null' ?>)">
                                             <i class="fas fa-upload me-1"></i> Upload Files
                                         </button>
-                                        <button type="button" class="btn btn-primary" onclick="showCreateFolderModal()">
+                                        <button type="button" class="btn btn-primary"
+                                            onclick="showCreateFolderModal(<?= isset($currentFolder['id']) ? $currentFolder['id'] : 'null' ?>)">
                                             <i class="fas fa-folder-plus me-1"></i> Create Folder
                                         </button>
                                     </div>
