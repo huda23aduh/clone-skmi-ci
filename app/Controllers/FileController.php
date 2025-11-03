@@ -28,6 +28,16 @@ class FileController extends Controller
         
         $uploadedCount = 0;
         $errors = [];
+       
+        // Fix: Properly handle the folder_id value
+        $folderId = $this->request->getPost('folder_id');
+        
+        // Convert string 'null' to actual NULL, and empty strings to NULL
+        if ($folderId === 'null' || $folderId === '' || $folderId === null) {
+            $folderId = null;
+        } else {
+            $folderId = (int) $folderId; // Ensure it's an integer
+        }
         
         foreach ($uploadedFiles['files'] as $file) {
             if ($file->isValid() && !$file->hasMoved()) {
@@ -40,7 +50,7 @@ class FileController extends Controller
                         'storage_name' => $newName,
                         'size' => $file->getSize(),
                         'user_id' => $user["id"],
-                        'folder_id' => $this->request->getPost('folder_id') ?: null
+                        'folder_id' => $folderId
                     ]);
 
                     // Log the activity
