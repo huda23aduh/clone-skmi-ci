@@ -521,7 +521,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (this.classList.contains('processing')) return;
                 this.classList.add('processing');
                 
-                console.log('Star button clicked - single event');
                 toggleStar(itemId, itemType, this);
                 
                 // Remove processing class after delay
@@ -548,8 +547,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const toggleStar = async (id, type, button) => {
-        console.log('Toggle star called for:', id, type);
-        
         // Show loading state
         const originalHTML = button.innerHTML;
         button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
@@ -761,7 +758,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target.classList.contains('preview-item') || e.target.closest('.preview-item')) {
                 const previewBtn = e.target.classList.contains('preview-item') ? e.target : e.target.closest('.preview-item');
                 const fileId = previewBtn.getAttribute('data-file-id');
-
+                
                 if (fileId) {
                     openFilePreview(fileId);
                 }

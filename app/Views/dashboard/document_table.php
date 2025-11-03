@@ -149,7 +149,7 @@
                                             <?= esc($file['original_name']) ?>
                                         </div>
 
-                                        <small class="text-muted"><?= strtoupper($file_ext) ?> file</small>
+                                        <small class="text-muted"><?= strtoupper($file_ext) ?> fileaa</small>
                                     </div>
                                 </div>
                             </td>
