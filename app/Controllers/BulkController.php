@@ -105,7 +105,7 @@ class BulkController extends Controller
         }
 
         // Set user session for TrashController
-        session()->set('user', ['id' => $userId]);
+        // session()->set('user', ['id' => $userId]);
 
         if ($itemType === 'file') {
             return $this->deleteFile($itemId);
@@ -249,7 +249,7 @@ class BulkController extends Controller
                 $errors = [];
 
                 // Set user session for TrashController
-                session()->set('user', ['id' => $user['id']]);
+                // session()->set('user', ['id' => $user['id']]);
 
                 foreach ($items as $item) {
                     $result = $this->restoreItem($item);
@@ -349,7 +349,7 @@ class BulkController extends Controller
                 $errors = [];
 
                 // Set user session for TrashController
-                session()->set('user', ['id' => $user['id']]);
+                // session()->set('user', ['id' => $user['id']]);
 
                 foreach ($items as $item) {
                     $result = $this->purgeItem($item);
