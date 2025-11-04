@@ -16,6 +16,7 @@ class PreviewController extends Controller
         'documents' => ['pdf', 'txt', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx'],
         'audio' => ['mp3', 'wav', 'ogg', 'm4a'],
         'video' => ['mp4', 'avi', 'mov', 'mkv', 'webm'],
+        'archive' => ['zip', 'rar', '7z', 'tar', 'gz', 'tgz'],
         'code' => ['php', 'js', 'css', 'html', 'xml', 'json', 'py', 'java', 'cpp', 'c', 'sql']
     ];
 
@@ -81,6 +82,8 @@ class PreviewController extends Controller
                 return view('preview/video_preview', $data);
             case 'document':
                 return view('preview/document_preview', $data);
+            case 'archive':
+                return $this->previewArchive($data);
             case 'code':
                 return $this->previewCodeDashboard($data);
                 break;
@@ -171,7 +174,54 @@ class PreviewController extends Controller
         if (in_array($extension, $this->supportedPreviewTypes['code'])) {
             return 'code';
         }
+        if (in_array($extension, $this->supportedPreviewTypes['archive'])) {
+            return 'archive';
+        }
+
         return 'unsupported';
+    }
+
+    private function previewArchive($data)
+    {
+        $filePath = WRITEPATH . 'uploads/' . $data['file']['storage_name'];
+        $extension = strtolower(pathinfo($data['file']['original_name'], PATHINFO_EXTENSION));
+        
+        $files = [];
+
+        if ($extension === 'zip') {
+            $zip = new \ZipArchive();
+            if ($zip->open($filePath) === TRUE) {
+                for ($i = 0; $i < $zip->numFiles; $i++) {
+                    $stat = $zip->statIndex($i);
+                    $files[] = [
+                        'name' => $stat['name'],
+                        'size' => $stat['size'],
+                        'compressed' => $stat['comp_size'],
+                    ];
+                }
+                $zip->close();
+            }
+        } 
+        elseif ($extension === 'rar' && class_exists('RarArchive')) {
+            $rar = \RarArchive::open($filePath);
+            foreach ($rar->getEntries() as $entry) {
+                $files[] = [
+                    'name' => $entry->getName(),
+                    'size' => $entry->getUnpackedSize(),
+                    'compressed' => null,
+                ];
+            }
+            $rar->close();
+        }
+        else {
+            // fallback using 7z
+            $output = shell_exec("7z l ".escapeshellarg($filePath));
+            $files = $this->parse7zListing($output);
+        }
+
+        $data['archiveFiles'] = $files;
+
+        return view('preview/archive_preview', $data);
     }
 
     /**
