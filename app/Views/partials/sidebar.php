@@ -104,5 +104,19 @@
       </nav>
     </div>
     <!--end::Sidebar Wrapper-->
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer p-3 text-center text-white small" id="storageFooter" style="
+        position:absolute;
+        bottom:0;
+        width:100%;
+        background:rgba(255,255,255,0.08);
+        backdrop-filter: blur(4px);
+    ">
+        Loading...
+    </div>
+
   </aside>
   <!--end::Sidebar-->
+
+<?= $this->include('partials/components/sidebar_footer_script') ?>
