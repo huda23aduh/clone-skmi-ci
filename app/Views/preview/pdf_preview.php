@@ -21,9 +21,14 @@
                     <h5 class="card-title mb-0 d-flex align-items-center">
                         <i class="fas fa-file-pdf me-2"></i>PDF Preview
                     </h5>
+                    &nbsp; 
+                    &nbsp; 
+                    <a href="<?= $fileUrl ?>" target="_blank">
+                        <i class="fa-solid fa-maximize"></i>                        
+                    </a>
                 </div>
-                <div class="card-body">
-                    <div class="text-center p-4">
+                <div class="card-body" style="padding:0;">
+                    <div class="text-center">
                         <iframe src="<?= $fileUrl ?>" 
                                 class="w-100 border rounded" 
                                 style="height: 70vh;"
