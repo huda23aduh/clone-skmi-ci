@@ -65,7 +65,7 @@
                 <input id="loginPassword" name="password" type="password" class="form-control" value="12341234" placeholder="" />
                 <label for="loginPassword">Password</label>
               </div>
-              <div class="input-group-text"><span class="bi bi-lock-fill"></span></div>
+              <span class="input-group-text" id="togglePassword"><i class="bi bi-eye-slash"></i></span>
             </div>
             <!--begin::Row-->
             <div class="row">
@@ -96,9 +96,9 @@
           </div> -->
           <!-- /.social-auth-links -->
           <!-- <p class="mb-1"><a href="forgot-password.html">I forgot my password</a></p> -->
-          <p class="mb-0">
+          <!-- <p class="mb-0">
             <a href="<?= base_url('/register') ?>" class="text-center"> Register</a>
-          </p>
+          </p> -->
         </div>
         <!-- /.login-card-body -->
       </div>
@@ -143,6 +143,19 @@
       });
     </script>
     <!--end::OverlayScrollbars Configure-->
+
+    <script>
+      const togglePassword = document.querySelector("#togglePassword");
+      const password = document.querySelector("#loginPassword");
+      const icon = togglePassword.querySelector("i");
+
+      togglePassword.onclick = () => {
+        password.type = password.type === "password" ? "text" : "password";
+        icon.classList.toggle("bi-eye");
+        icon.classList.toggle("bi-eye-slash");
+      };
+    </script>
+
     <!--end::Script-->
   </body>
   <!--end::Body-->
