@@ -60,7 +60,7 @@ class PreviewController extends Controller
             'file' => $file,
             'fileType' => $fileType,
             'fileExtension' => $fileExtension,
-            'fileUrl' => base_url('writable/uploads/' . $file['storage_name']),
+            'fileUrl' => base_url('uploads/' . $file['storage_name']),
             'mimeType' => $this->getMimeType($fileExtension),
             'breadcrumbs' => [
                 ['name' => 'Home', 'url' => base_url('/')],
@@ -253,7 +253,7 @@ class PreviewController extends Controller
         $data = [
             'title' => 'Preview: ' . $file['original_name'],
             'file' => $file,
-            'fileUrl' => base_url('writable/uploads/' . $file['storage_name']),
+            'fileUrl' => base_url('uploads/' . $file['storage_name']),
             'fileType' => 'image',
             'mimeType' => $mimeType
         ];
@@ -269,7 +269,7 @@ class PreviewController extends Controller
         $data = [
             'title' => 'Preview: ' . $file['original_name'],
             'file' => $file,
-            'fileUrl' => base_url('writable/uploads/' . $file['storage_name']),
+            'fileUrl' => base_url('uploads/' . $file['storage_name']),
             'fileType' => 'pdf'
         ];
 
@@ -318,7 +318,7 @@ class PreviewController extends Controller
         $data = [
             'title' => 'Preview: ' . $file['original_name'],
             'file' => $file,
-            'fileUrl' => base_url('writable/uploads/' . $file['storage_name']),
+            'fileUrl' => base_url('uploads/' . $file['storage_name']),
             'fileType' => 'audio',
             'mimeType' => $mimeType
         ];
@@ -345,7 +345,7 @@ class PreviewController extends Controller
         $data = [
             'title' => 'Preview: ' . $file['original_name'],
             'file' => $file,
-            'fileUrl' => base_url('writable/uploads/' . $file['storage_name']),
+            'fileUrl' => base_url('uploads/' . $file['storage_name']),
             'fileType' => 'video',
             'mimeType' => $mimeType
         ];
@@ -361,7 +361,7 @@ class PreviewController extends Controller
         $data = [
             'title' => 'Preview: ' . $file['original_name'],
             'file' => $file,
-            'fileUrl' => base_url('writable/uploads/' . $file['storage_name']),
+            'fileUrl' => base_url('uploads/' . $file['storage_name']),
             'fileType' => 'document'
         ];
 

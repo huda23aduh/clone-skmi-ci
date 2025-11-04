@@ -108,7 +108,19 @@ class ProfileController extends Controller
             }
 
             // Update profile
-            if ($this->userModel->updateProfile($user['id'], $updateData)) {
+            $userModel = new \App\Models\UserModel();
+
+            if ($userModel->updateProfile($user['id'], $updateData)) {
+                $updateData = $userModel->find($user['id']);
+
+                session()->set('user', [
+                    'id'            => $updateData['id'],
+                    'name'          => $updateData['name'],
+                    'email'         => $updateData['email'],
+                    'profile_image' => $updateData['profile_image'] ?? null,
+                    'language'      => $updateData['language'],
+                ]);
+
                 // Log the activity
                 $this->activityLogModel->logActivity([
                     'user_id' => $user['id'],

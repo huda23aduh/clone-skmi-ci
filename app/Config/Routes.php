@@ -55,7 +55,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
   
   $routes->get('preview/(:num)', 'PreviewController::preview/$1');
   $routes->get('preview/info/(:num)', 'PreviewController::getFileInfo/$1');
-  $routes->get('writable/uploads/(.+)', 'FileController::serveFile/$1');
+  $routes->get('uploads/(:any)', 'FileController::serveFile/$1');
   
   $routes->group('starred', ['namespace' => 'App\Controllers'], function($routes) {
     $routes->get('/', 'DashboardController::starred');
