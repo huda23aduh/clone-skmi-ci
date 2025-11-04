@@ -90,4 +90,23 @@ class FolderModel extends Model
                     ->where('deleted_at IS NULL')
                     ->countAllResults();
     }
+    
+    public function buildFolderPath($folderId)
+    {
+        $folderModel = new self();
+        $parts = [];
+
+        while ($folder = $folderModel->find($folderId)) {
+            $parts[] = $folder['name'];
+            $folderId = $folder['parent_id'];
+            
+            if ($folderId === null) {
+                break;
+            }
+        }
+
+        // Reverse to correct order
+        return implode('/', array_reverse($parts));
+    }
+
 }

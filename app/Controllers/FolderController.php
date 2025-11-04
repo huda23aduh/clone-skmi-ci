@@ -25,48 +25,44 @@ class FolderController extends Controller
             }
             return redirect()->to('/login');
         }
-        
+
         $folderModel = new FolderModel();
-        
-        $data = [
+        $parentId = $this->request->getPost('parent_id') ?: null;
+
+        // Insert first
+        $folderId = $folderModel->insert([
             'name' => $this->request->getPost('name'),
             'user_id' => $user['id'],
-            'parent_id' => $this->request->getPost('parent_id') ?: null
-        ];
-        
-        try {
-            $folderId = $folderModel->insert($data);
-            
-            if ($this->request->isAJAX()) {
-                // Log the activity
-                $this->activityLogger->logFolderCreate(
-                    $user['id'], 
-                    $folderId, 
-                    $this->request->getPost('name'), 
-                    $this->request->getPost('parent_id') ?: null
-                );
+            'parent_id' => $parentId,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
 
-                return $this->response->setJSON(['success' => true, 'message' => 'Folder created successfully']);
-            }
+        // Build full nested path
+        $path = $folderModel->buildFolderPath($folderId);
 
-            // Log the activity
-            $this->activityLogger->logFolderCreate(
-                $user['id'], 
-                $folderId, 
-                $this->request->getPost('name'), 
-                $this->request->getPost('parent_id') ?: null
-            );
+        // Update folder with computed path
+        $folderModel->update($folderId, [
+            'path' => $path
+        ]);
 
-            return redirect()->back()->with('success', 'Folder created successfully');
-            
-        } catch (\Exception $e) {
-            if ($this->request->isAJAX()) {
-                return $this->response->setJSON(['success' => false, 'message' => $e->getMessage()]);
-            }
-            
-            return redirect()->back()->with('error', $e->getMessage());
+        // Logging
+        $this->activityLogger->logFolderCreate(
+            $user['id'],
+            $folderId,
+            $this->request->getPost('name'),
+            $parentId
+        );
+
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Folder created successfully'
+            ]);
         }
+
+        return redirect()->back()->with('success', 'Folder created successfully');
     }
+
 
     public function view($id)
     {

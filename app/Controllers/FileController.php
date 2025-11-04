@@ -132,8 +132,16 @@ class FileController extends Controller
         $zipName = 'compressed_' . time() . '.zip';
         $zipPath = WRITEPATH . 'uploads/' . $zipName;
 
-        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== TRUE) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Failed to create zip']);
+        if (!is_dir(WRITEPATH . 'uploads')) {
+            mkdir(WRITEPATH . 'uploads', 0777, true);
+        }        
+
+        $result = $zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+        if ($result !== TRUE) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => "Failed to create zip. ZipArchive error code: $result"
+            ]);
         }
 
         foreach ($items as $item) {
@@ -149,14 +157,9 @@ class FileController extends Controller
             } elseif ($item['type'] === 'folder') {
                 $folder = $folderModel->find($item['id']);
                 if ($folder) {
-                    $folderPath = WRITEPATH . 'uploads/' . $folder['path'];
-
-                    // FIXED: Now we add folder name itself into the zip (not just contents)
-                    if (is_dir($folderPath)) {
-                        $this->addFolderToZipWithBase($zip, $folderPath, $folder['name']);
-                    }
+                    $this->addFolderToZipFromDB($zip, $folder['id'], $folder['name']);
                 }
-            }
+            }                  
         }
 
         $zip->close();
@@ -185,38 +188,26 @@ class FileController extends Controller
         ]);
     }
 
-    /**
-     * Recursively add a folder to zip INCLUDING its top-level folder name.
-     */
-    private function addFolderToZipWithBase($zip, $folderPath, $baseFolderName)
+    private function addFolderToZipFromDB($zip, $folderId, $basePath = '')
     {
-        $zip->addEmptyDir($baseFolderName);
+        $fileModel = new \App\Models\FileModel();
+        $folderModel = new \App\Models\FolderModel();
 
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($folderPath, \FilesystemIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::SELF_FIRST
-        );
-
-        // Normalize folder path to always have trailing slash
-        $folderPath = rtrim(realpath($folderPath), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-
-        foreach ($iterator as $file) {
-            $filePath = realpath($file->getPathname());
-            $relativePath = $baseFolderName . '/' . substr($filePath, strlen($folderPath));
-
-            // Skip hidden or system files
-            if (in_array(basename($filePath), ['.DS_Store', 'index.html', 'ndex.html'])) {
-                continue;
-            }
-
-            if ($file->isDir()) {
-                $zip->addEmptyDir($relativePath);
-            } else {
-                $zip->addFile($filePath, $relativePath);
+        // Add files in this folder
+        $files = $fileModel->where('folder_id', $folderId)->findAll();
+        foreach ($files as $file) {
+            $source = WRITEPATH . 'uploads/' . $file['storage_name'];
+            if (file_exists($source)) {
+                $zip->addFile($source, $basePath . '/' . $file['original_name']);
             }
         }
-    }
 
+        // Add subfolders
+        $subfolders = $folderModel->where('parent_id', $folderId)->findAll();
+        foreach ($subfolders as $child) {
+            $this->addFolderToZipFromDB($zip, $child['id'], $basePath . '/' . $child['name']);
+        }
+    }
 
     public function extract($id)
     {
