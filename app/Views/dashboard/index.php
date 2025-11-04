@@ -21,4 +21,6 @@
 
 <?= $this->include('dashboard/components/dashboard_script') ?>
 
+<?= $this->include('dashboard/components/right_click_action_trigger_script') ?>
+
 <?= $this->endSection() ?>
