@@ -6,7 +6,7 @@ class FolderModel extends Model
 {
     protected $table = 'folders';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['user_id','name','parent_id','path','is_deleted','deleted_at'];
+    protected $allowedFields = ['user_id','name','parent_id','path', 'is_public', 'public_token','is_deleted','deleted_at'];
 
     /**
      * Rename folder
@@ -109,4 +109,37 @@ class FolderModel extends Model
         return implode('/', array_reverse($parts));
     }
 
+    public function generatePublicToken()
+    {
+        return bin2hex(random_bytes(16));
+    }
+
+    public function getPublicFolder($token)
+    {
+        return $this->where('public_token', $token)
+                    ->where('is_public', 1)
+                    ->where('is_deleted', 0)
+                    ->first();
+    }
+
+    public function getPublicContents($folderId)
+    {
+        $fileModel = new FileModel();
+        $folderModel = new FolderModel();
+
+        $files = $fileModel->where('folder_id', $folderId)
+                          ->where('is_public', 1)
+                          ->where('is_deleted', 0)
+                          ->findAll();
+
+        $subfolders = $folderModel->where('parent_id', $folderId)
+                                 ->where('is_public', 1)
+                                 ->where('is_deleted', 0)
+                                 ->findAll();
+
+        return [
+            'files' => $files,
+            'folders' => $subfolders
+        ];
+    }
 }

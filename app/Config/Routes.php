@@ -17,6 +17,9 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
   
   $routes->post('/upload','UploadController::uploadFile');
   
+  $routes->get('public/file/(:any)', 'PublicController::accessFile/$1');
+  $routes->get('public/folder/(:any)', 'PublicController::accessFolder/$1');
+
   
   $routes->group('folder', ['namespace' => 'App\Controllers'], function($routes) {
     $routes->get('view/(:num)', 'FolderController::view/$1');
@@ -30,6 +33,9 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->post('rename/(:num)', 'FolderController::rename/$1');
     $routes->post('rename', 'FolderController::rename');
     $routes->get('info/(:num)', 'FolderController::getFolderInfo/$1');
+
+    $routes->post('share/(:num)', 'FolderController::togglePublic/$1');
+    $routes->get('shared', 'FolderController::getSharedFolders');
   });
   
   $routes->group('file', ['namespace' => 'App\Controllers'], function($routes) {
@@ -45,6 +51,9 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->post('rename/(:num)', 'FileController::rename/$1');
     $routes->post('rename', 'FileController::rename');
     $routes->get('info/(:num)', 'FileController::getFileInfo/$1');
+
+    $routes->post('share/(:num)', 'FileController::togglePublic/$1');
+    $routes->get('shared', 'FileController::getSharedFiles');
   });
   
   // Bulk operations routes

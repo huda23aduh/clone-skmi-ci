@@ -383,4 +383,52 @@ class FileController extends Controller
         ]);
     }
 
+    public function togglePublic($fileId)
+    {
+        $fileModel = new FileModel();
+        $file = $fileModel->find($fileId);
+
+        // Check ownership
+        if (!$file || $file->user_id != auth()->id()) {
+            return $this->response->setStatusCode(403)->setJSON([
+                'error' => 'Not authorized'
+            ]);
+        }
+
+        $isPublic = $this->request->getPost('is_public') ? 1 : 0;
+        $publicToken = null;
+
+        if ($isPublic) {
+            $publicToken = $fileModel->generatePublicToken();
+            // Ensure token is unique
+            while ($fileModel->where('public_token', $publicToken)->first()) {
+                $publicToken = $fileModel->generatePublicToken();
+            }
+        }
+
+        $fileModel->update($fileId, [
+            'is_public' => $isPublic,
+            'public_token' => $publicToken
+        ]);
+
+        return $this->response->setJSON([
+            'success' => true,
+            'is_public' => $isPublic,
+            'public_url' => $isPublic ? base_url("public/file/{$publicToken}") : null
+        ]);
+    }
+
+    public function getSharedFiles()
+    {
+        $fileModel = new FileModel();
+        $sharedFiles = $fileModel->where('user_id', auth()->id())
+                                ->where('is_public', 1)
+                                ->where('is_deleted', 0)
+                                ->findAll();
+
+        return $this->response->setJSON([
+            'files' => $sharedFiles
+        ]);
+    }
+
 }

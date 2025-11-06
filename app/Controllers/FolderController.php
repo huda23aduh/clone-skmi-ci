@@ -2,6 +2,7 @@
 
 use App\Models\FolderModel;
 use App\Models\FileModel;
+use App\Models\UserModel;
 use CodeIgniter\Controller;
 use App\Services\ActivityLogger;
 
@@ -71,38 +72,61 @@ class FolderController extends Controller
         $session = session();
         $user = $session->get('user');
 
-        if (!$user) return redirect()->to('/login');
-
         $folderModel = new FolderModel();
         $fileModel   = new FileModel();
+        $userModel   = new UserModel(); // Add this if you want owner info
 
-        // Verify folder ownership
+        // Verify folder access with owner info
         $currentFolder = $folderModel
-            ->where('id', $id)
-            ->where('user_id', $user['id'])
-            ->where('is_deleted', 0)
+            ->select('folders.*, users.name as owner_name, users.email as owner_email')
+            ->join('users', 'users.id = folders.user_id')
+            ->where('folders.id', $id)
+            ->where('folders.is_deleted', 0)
+            ->groupStart()
+                ->where('folders.user_id', $user['id'])
+                ->orWhere('folders.is_public', 1)
+            ->groupEnd()
             ->first();
 
         if (!$currentFolder) {
             return redirect()->to('/dashboard')->with('error', 'Folder not found or access denied');
         }
 
-        // Get subfolders
+        // Get subfolders with owner info
         $folders = $folderModel
-            ->where('user_id', $user['id'])
-            ->where('parent_id', $id)
-            ->where('is_deleted', 0)
+            ->select('folders.*, users.name as owner_name, users.email as owner_email')
+            ->join('users', 'users.id = folders.user_id')
+            ->groupStart()
+                ->where('folders.user_id', $user['id'])
+                ->orGroupStart()
+                    ->where('folders.is_public', 1)
+                    ->where('folders.user_id !=', $user['id'])
+                ->groupEnd()
+            ->groupEnd()
+            ->where('folders.parent_id', $id)
+            ->where('folders.is_deleted', 0)
             ->findAll();
 
-        // Get files in this folder
+        // Get files with owner info
         $files = $fileModel
-            ->where('user_id', $user['id'])
-            ->where('folder_id', $id)
-            ->where('is_deleted', 0)
+            ->select('files.*, users.name as owner_name, users.email as owner_email')
+            ->join('users', 'users.id = files.user_id')
+            ->groupStart()
+                ->where('files.user_id', $user['id'])
+                ->orGroupStart()
+                    ->where('files.is_public', 1)
+                    ->where('files.user_id !=', $user['id'])
+                ->groupEnd()
+            ->groupEnd()
+            ->where('files.folder_id', $id)
+            ->where('files.is_deleted', 0)
             ->findAll();
 
-        // Optional: build breadcrumb trail
-        $breadcrumbs = $this->buildBreadcrumbs($folderModel, $currentFolder);
+        // Build breadcrumb trail only for user's own folders
+        $breadcrumbs = [];
+        if ($currentFolder['user_id'] == $user['id']) {
+            $breadcrumbs = $this->buildBreadcrumbs($folderModel, $currentFolder);
+        }
 
         return view('folder/view', [
             'title' => $currentFolder['name'],
@@ -111,9 +135,10 @@ class FolderController extends Controller
             'folders' => $folders,
             'files' => $files,
             'breadcrumbs' => $breadcrumbs,
+            'isOwner' => $currentFolder['user_id'] == $user['id']
         ]);
     }
-
+    
     public function purge($id)
     {
         $session = session();
@@ -271,5 +296,59 @@ class FolderController extends Controller
         }
 
         return array_reverse($breadcrumbs);
+    }
+
+    public function togglePublic($folderId)
+    {
+        $session = session();
+        $user = $session->get('user');
+
+        $folderModel = new FolderModel();
+        $folder = $folderModel->find($folderId);
+
+        // Check ownership
+        if (!$folder || $folder["user_id"] != $user["id"]) {
+            return $this->response->setStatusCode(403)->setJSON([
+                'error' => 'Not authorized'
+            ]);
+        }
+
+        $isPublic = $this->request->getPost('is_public') ? 1 : 0;
+        $publicToken = null;
+
+        if ($isPublic) {
+            $publicToken = $folderModel->generatePublicToken();
+            // Ensure token is unique
+            while ($folderModel->where('public_token', $publicToken)->first()) {
+                $publicToken = $folderModel->generatePublicToken();
+            }
+        }
+
+        $folderModel->update($folderId, [
+            'is_public' => $isPublic,
+            'public_token' => $publicToken
+        ]);
+
+        return $this->response->setJSON([
+            'success' => true,
+            'is_public' => $isPublic,
+            'public_url' => $isPublic ? base_url("public/folder/{$publicToken}") : null
+        ]);
+    }
+
+    public function getSharedFolders()
+    {
+        $session = session();
+        $user = $session->get('user');
+        
+        $folderModel = new FolderModel();
+        $sharedFolders = $folderModel->where('user_id', $user["id"])
+                                    ->where('is_public', 1)
+                                    ->where('is_deleted', 0)
+                                    ->findAll();
+
+        return $this->response->setJSON([
+            'folders' => $sharedFolders
+        ]);
     }
 }

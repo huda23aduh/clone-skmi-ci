@@ -8,7 +8,7 @@ use App\Traits\Authenticable;
 class DashboardController extends Controller
 {
     use Authenticable;
-
+    
     public function index()
     {
         helper('format');
@@ -16,25 +16,39 @@ class DashboardController extends Controller
         
         $user = $this->getAuthenticatedUser();
         if (!is_array($user)) {
-            return $user; // Returns redirect or JSON response
+            return $user;
         }
-
+    
         $folderModel = new FolderModel();
         $fileModel   = new FileModel();
-
-        $folders = $folderModel->where('user_id', $user["id"])
-                            ->where('is_deleted', 0)
-                            ->where('parent_id IS NULL OR parent_id = 0')
-                            ->findAll();
-
-        $files = $fileModel->where('user_id', $user["id"])
+    
+        // Get folders: user's own OR public from others
+        $folders = $folderModel->groupStart()
+                            ->where('user_id', $user["id"]) // User's own items
+                            ->orGroupStart()
+                                ->where('is_public', 1)     // Public items
+                                ->where('user_id !=', $user["id"]) // From other users
+                            ->groupEnd()
+                        ->groupEnd()
                         ->where('is_deleted', 0)
-                        ->where('folder_id IS NULL OR folder_id = 0')
+                        ->where('parent_id IS NULL OR parent_id = 0')
                         ->findAll();
-
+    
+        // Get files: user's own OR public from others
+        $files = $fileModel->groupStart()
+                        ->where('user_id', $user["id"]) // User's own items
+                        ->orGroupStart()
+                            ->where('is_public', 1)     // Public items
+                            ->where('user_id !=', $user["id"]) // From other users
+                        ->groupEnd()
+                    ->groupEnd()
+                    ->where('is_deleted', 0)
+                    ->where('folder_id IS NULL OR folder_id = 0')
+                    ->findAll();
+    
         return view('dashboard/index', [
             'title' => 'MY Drive',
-            'user' => $user,          // <<< pass user to view
+            'user' => $user,
             'folders' => $folders,
             'files' => $files,
             'languages' => [

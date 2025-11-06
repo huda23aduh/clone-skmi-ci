@@ -6,7 +6,7 @@ class FileModel extends Model
 {
     protected $table = 'files';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['user_id','folder_id','original_name','storage_name','mime','size','is_deleted','deleted_at'];
+    protected $allowedFields = ['user_id','folder_id','original_name','storage_name','mime','size', 'is_public', 'public_token','is_deleted','deleted_at'];
 
     // Add these properties for automatic timestamp management
     protected $useTimestamps = true;
@@ -230,5 +230,18 @@ class FileModel extends Model
         
         $result = $builder->get()->getRow();
         return $result ? (int)$result->size : 0;
+    }
+
+    public function generatePublicToken()
+    {
+        return bin2hex(random_bytes(16));
+    }
+
+    public function getPublicFile($token)
+    {
+        return $this->where('public_token', $token)
+                    ->where('is_public', 1)
+                    ->where('is_deleted', 0)
+                    ->first();
     }
 }

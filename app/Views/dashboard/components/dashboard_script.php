@@ -803,11 +803,173 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    /* ---------------- Public Toggle Functionality ---------------- */
+    const initPublicToggleFunctionality = () => {
+        // Handle toggle public clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('toggle-public-item') || e.target.closest('.toggle-public-item')) {
+                const toggleBtn = e.target.classList.contains('toggle-public-item') ? e.target : e.target.closest('.toggle-public-item');
+                
+                const itemId = toggleBtn.getAttribute('data-item-id');
+                const itemType = toggleBtn.getAttribute('data-item-type');
+                const itemName = toggleBtn.getAttribute('data-item-name');
+                const isCurrentlyPublic = toggleBtn.getAttribute('data-is-public') === '1';
+                
+                togglePublicAccess(itemId, itemType, itemName, isCurrentlyPublic, toggleBtn);
+            }
+            
+            // Handle copy public link clicks
+            if (e.target.classList.contains('copy-public-link') || e.target.closest('.copy-public-link')) {
+                const copyBtn = e.target.classList.contains('copy-public-link') ? e.target : e.target.closest('.copy-public-link');
+                const publicUrl = copyBtn.getAttribute('data-public-url');
+                copyToClipboard(publicUrl);
+            }
+        });
+    };
+
+    const togglePublicAccess = async (itemId, itemType, itemName, isCurrentlyPublic, buttonElement) => {
+        const action = isCurrentlyPublic ? 'private' : 'public';
+        const confirmMessage = isCurrentlyPublic 
+            ? `Make "${itemName}" private? This will revoke public access.`
+            : `Make "${itemName}" public? Anyone with the link will be able to access it.`;
+
+        if (!confirm(confirmMessage)) {
+            return;
+        }
+
+        // Show loading state on the button
+        const originalHTML = buttonElement.innerHTML;
+        buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+        buttonElement.disabled = true;
+
+        try {
+            const endpoint = itemType === 'file' 
+                ? `<?= base_url('/file/share/') ?>${itemId}`
+                : `<?= base_url('/folder/share/') ?>${itemId}`;
+
+            const formData = new FormData();
+            formData.append('is_public', isCurrentlyPublic ? 0 : 1);
+            formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+
+            const data = await fetchJSON(endpoint, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            if (data && data.success) {
+                showToast('success', data.message || `${itemName} is now ${isCurrentlyPublic ? 'private' : 'public'}`);
+                
+                // Update UI immediately
+                updatePublicUI(itemId, itemType, !isCurrentlyPublic, data.public_url);
+                
+            } else {
+                showToast('error', data?.message || `Failed to make ${itemName} ${action}`);
+            }
+
+        } catch (error) {
+            console.error('Toggle public error:', error);
+            showToast('error', `Error making ${itemName} ${action}`);
+        } finally {
+            // Reset button state
+            buttonElement.innerHTML = originalHTML;
+            buttonElement.disabled = false;
+        }
+    };
+
+    const updatePublicUI = (itemId, itemType, isPublic, publicUrl = null) => {
+        // Update the toggle button in dropdown
+        const toggleButtons = document.querySelectorAll(`.toggle-public-item[data-item-id="${itemId}"]`);
+        toggleButtons.forEach(btn => {
+            btn.innerHTML = `<i class="fas ${isPublic ? 'fa-lock-open' : 'fa-link'} me-2"></i>${isPublic ? 'Make Private' : 'Make Public'}`;
+            btn.setAttribute('data-is-public', isPublic ? '1' : '0');
+        });
+
+        // Update the row data attribute
+        const itemRows = document.querySelectorAll(`.item-row[data-id="${itemId}"]`);
+        itemRows.forEach(row => {
+            row.setAttribute('data-is-public', isPublic ? '1' : '0');
+        });
+
+        // Update the public link icon next to the name
+        const nameElements = document.querySelectorAll(`.item-row[data-id="${itemId}"] .fa-link`);
+        
+        if (isPublic) {
+            // Add or show the public link icon
+            nameElements.forEach(icon => {
+                icon.style.display = 'inline-block';
+                icon.classList.remove('text-muted');
+                icon.classList.add('text-success');
+            });
+            
+            // If no icon exists, add one (for grid view)
+            const nameContainers = document.querySelectorAll(`.item-row[data-id="${itemId}"] .fw-semibold, .item-row[data-id="${itemId}"] a.text-decoration-none`);
+            nameContainers.forEach(container => {
+                if (!container.querySelector('.fa-link')) {
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-link text-success ms-1';
+                    icon.title = 'Publicly shared';
+                    container.appendChild(icon);
+                }
+            });
+            
+            // Add copy link button to dropdown if public URL is provided
+            if (publicUrl) {
+                toggleButtons.forEach(btn => {
+                    const dropdownMenu = btn.closest('.dropdown-menu');
+                    const existingCopyBtn = dropdownMenu.querySelector('.copy-public-link');
+                    
+                    if (!existingCopyBtn) {
+                        const copyItem = document.createElement('li');
+                        copyItem.innerHTML = `
+                            <a class="dropdown-item copy-public-link" href="javascript:void(0)" 
+                            data-public-url="${publicUrl}">
+                                <i class="fas fa-copy me-2"></i>Copy Public Link
+                            </a>
+                        `;
+                        
+                        // Insert after the toggle public button
+                        const toggleLi = btn.closest('li');
+                        toggleLi.parentNode.insertBefore(copyItem, toggleLi.nextSibling);
+                    } else {
+                        existingCopyBtn.setAttribute('data-public-url', publicUrl);
+                    }
+                });
+            }
+        } else {
+            // Hide or remove the public link icon
+            nameElements.forEach(icon => {
+                icon.style.display = 'none';
+            });
+            
+            // Remove copy link buttons from dropdown
+            toggleButtons.forEach(btn => {
+                const dropdownMenu = btn.closest('.dropdown-menu');
+                const copyBtn = dropdownMenu.querySelector('.copy-public-link');
+                if (copyBtn) {
+                    copyBtn.remove();
+                }
+            });
+        }
+    };
+
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('success', 'Public link copied to clipboard!');
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+            showToast('error', 'Failed to copy link');
+        });
+    };
+
     /* ---------------- Init ---------------- */
     initStarButtons();
     initRenameFunctionality();
     initPreviewFunctionality();
     initBulkDelete();
+    initPublicToggleFunctionality();
     initShareLinkFunctionality();
     updateCheckboxListeners();
 });

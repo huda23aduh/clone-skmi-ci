@@ -29,7 +29,7 @@
                 <tbody id="contentTable">
                     <!-- Folders -->
                     <?php foreach ($folders as $folder): ?>
-                        <tr class="item-row" data-type="folder" data-name="<?= esc($folder['name']) ?>" data-date="<?= $folder['created_at'] ?? '' ?>" data-id="<?= $folder['id'] ?>">
+                        <tr class="item-row" data-type="folder" data-name="<?= esc($folder['name']) ?>" data-date="<?= $folder['created_at'] ?? '' ?>" data-id="<?= $folder['id'] ?>" data-is-public="<?= $folder['is_public'] ?? 0 ?>">
                             <td class="ps-3">
                                 <input type="checkbox" class="item-checkbox" value="<?= $folder['id'] ?>" data-type="folder">
                             </td>
@@ -39,6 +39,9 @@
                                     <div>
                                         <a href="<?= base_url('/folder/view/' . $folder['id']) ?>" class="text-decoration-none text-dark fw-semibold">
                                             <?= esc($folder['name']) ?>
+                                            <?php if (($folder['is_public'] ?? 0) == 1): ?>
+                                                <i class="fas fa-link text-success ms-1" title="Publicly shared"></i>
+                                            <?php endif; ?>
                                         </a>
                                     </div>
                                 </div>
@@ -82,13 +85,23 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item share-link-item" href="javascript:void(0)" 
+                                            <a class="dropdown-item toggle-public-item" href="javascript:void(0)" 
                                             data-item-id="<?= $folder['id'] ?>" 
                                             data-item-type="folder"
-                                            data-item-name="<?= esc($folder['name']) ?>">
-                                                <i class="fas fa-link me-2"></i>Share Link
+                                            data-item-name="<?= esc($folder['name']) ?>"
+                                            data-is-public="<?= $folder['is_public'] ?? 0 ?>">
+                                                <i class="fas <?= ($folder['is_public'] ?? 0) == 1 ? 'fa-lock-open' : 'fa-link' ?> me-2"></i>
+                                                <?= ($folder['is_public'] ?? 0) == 1 ? 'Make Private' : 'Make Public' ?>
                                             </a>
                                         </li>
+                                        <?php if (($folder['is_public'] ?? 0) == 1 && !empty($folder['public_token'])): ?>
+                                        <li>
+                                            <a class="dropdown-item copy-public-link" href="javascript:void(0)" 
+                                            data-public-url="<?= base_url("public/folder/{$folder['public_token']}") ?>">
+                                                <i class="fas fa-copy me-2"></i>Copy Public Link
+                                            </a>
+                                        </li>
+                                        <?php endif; ?>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
                                             <form method="post" action="<?= base_url('/folder/delete/' . $folder['id']) ?>" class="d-inline">
@@ -114,7 +127,7 @@
                     
                     <!-- Files -->
                     <?php foreach ($files as $file): ?>
-                        <tr class="item-row" data-type="file" data-name="<?= esc($file['original_name']) ?>" data-date="<?= $file['created_at'] ?? '' ?>" data-size="<?= $file['size'] ?>" data-id="<?= $file['id'] ?>">
+                        <tr class="item-row" data-type="file" data-name="<?= esc($file['original_name']) ?>" data-date="<?= $file['created_at'] ?? '' ?>" data-size="<?= $file['size'] ?>" data-id="<?= $file['id'] ?>" data-is-public="<?= $file['is_public'] ?? 0 ?>">
                             <td class="ps-3">
                                 <input type="checkbox" class="item-checkbox" value="<?= $file['id'] ?>" data-type="file">
                             </td>
@@ -147,6 +160,9 @@
                                     <div>
                                         <div class="fw-semibold text-truncate file-name-cell" style="max-width: 300px; cursor: pointer;">
                                             <?= esc($file['original_name']) ?>
+                                            <?php if (($file['is_public'] ?? 0) == 1): ?>
+                                                <i class="fas fa-link text-success ms-1" title="Publicly shared"></i>
+                                            <?php endif; ?>
                                         </div>
 
                                         <small class="text-muted"><?= strtoupper($file_ext) ?> file</small>
@@ -198,13 +214,23 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item share-link-item" href="javascript:void(0)" 
+                                                <a class="dropdown-item toggle-public-item" href="javascript:void(0)" 
                                                 data-item-id="<?= $file['id'] ?>" 
                                                 data-item-type="file"
-                                                data-item-name="<?= esc($file['original_name']) ?>">
-                                                    <i class="fas fa-link me-2"></i>Share Link
+                                                data-item-name="<?= esc($file['original_name']) ?>"
+                                                data-is-public="<?= $file['is_public'] ?? 0 ?>">
+                                                    <i class="fas <?= ($file['is_public'] ?? 0) == 1 ? 'fa-lock-open' : 'fa-link' ?> me-2"></i>
+                                                    <?= ($file['is_public'] ?? 0) == 1 ? 'Make Private' : 'Make Public' ?>
                                                 </a>
                                             </li>
+                                            <?php if (($file['is_public'] ?? 0) == 1 && !empty($file['public_token'])): ?>
+                                            <li>
+                                                <a class="dropdown-item copy-public-link" href="javascript:void(0)" 
+                                                data-public-url="<?= base_url("public/file/{$file['public_token']}") ?>">
+                                                    <i class="fas fa-copy me-2"></i>Copy Public Link
+                                                </a>
+                                            </li>
+                                            <?php endif; ?>
                                             <li><hr class="dropdown-divider"></li>
                                             <li>
                                                 <form method="post" action="<?= base_url('/file/delete/' . $file['id']) ?>" class="d-inline">
@@ -265,14 +291,19 @@
         <!-- Grid View -->
         <div id="gridView" class="row row-cols-2 row-cols-md-4 g-3 p-3" style="display: none;">
             <?php foreach ($folders as $folder): ?>
-                <div class="col item-row" data-type="folder" data-id="<?= $folder['id'] ?>">
+                <div class="col item-row" data-type="folder" data-id="<?= $folder['id'] ?>" data-is-public="<?= $folder['is_public'] ?? 0 ?>">
                     <div class="card shadow-sm h-100 position-relative p-3">
                         <input type="checkbox" class="form-check-input item-checkbox position-absolute top-0 end-0 m-2" 
                             value="<?= $folder['id'] ?>" data-type="folder" style="transform: scale(1.3);">
 
                         <div class="d-flex align-items-center mb-2 mt-2">
                             <i class="fas fa-folder text-warning fa-2x me-2"></i>
-                            <div class="fw-semibold text-truncate"><?= esc($folder['name']) ?></div>
+                            <div class="fw-semibold text-truncate">
+                                <?= esc($folder['name']) ?>
+                                <?php if (($folder['is_public'] ?? 0) == 1): ?>
+                                    <i class="fas fa-link text-success ms-1" title="Publicly shared"></i>
+                                <?php endif; ?>
+                            </div>
                         </div>
                         <div class="small text-muted mb-2">
                             <?= isset($folder['updated_at']) ? date('M j, Y g:i A', strtotime($folder['updated_at'])) : 'Unknown' ?>
@@ -308,13 +339,23 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item share-link-item" href="javascript:void(0)" 
+                                        <a class="dropdown-item toggle-public-item" href="javascript:void(0)" 
                                         data-item-id="<?= $folder['id'] ?>" 
                                         data-item-type="folder"
-                                        data-item-name="<?= esc($folder['name']) ?>">
-                                            <i class="fas fa-link me-2"></i>Share Link
+                                        data-item-name="<?= esc($folder['name']) ?>"
+                                        data-is-public="<?= $folder['is_public'] ?? 0 ?>">
+                                            <i class="fas <?= ($folder['is_public'] ?? 0) == 1 ? 'fa-lock-open' : 'fa-link' ?> me-2"></i>
+                                            <?= ($folder['is_public'] ?? 0) == 1 ? 'Make Private' : 'Make Public' ?>
                                         </a>
                                     </li>
+                                    <?php if (($folder['is_public'] ?? 0) == 1 && !empty($folder['public_token'])): ?>
+                                    <li>
+                                        <a class="dropdown-item copy-public-link" href="javascript:void(0)" 
+                                        data-public-url="<?= base_url("public/folder/{$folder['public_token']}") ?>">
+                                            <i class="fas fa-copy me-2"></i>Copy Public Link
+                                        </a>
+                                    </li>
+                                    <?php endif; ?>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form method="post" action="<?= base_url('/folder/delete/' . $folder['id']) ?>" class="d-inline">
@@ -344,7 +385,7 @@
                 elseif (in_array($file_ext, ['jpg','jpeg','png','gif'])) $file_icon = 'fa-file-image text-info';
                 elseif (in_array($file_ext, ['mp4','avi','mkv'])) $file_icon = 'fa-file-video text-danger';
                 ?>
-                <div class="col item-row" data-type="file" data-id="<?= $file['id'] ?>">
+                <div class="col item-row" data-type="file" data-id="<?= $file['id'] ?>" data-is-public="<?= $file['is_public'] ?? 0 ?>">
                     <div class="card shadow-sm h-100 position-relative p-3">
                         <input type="checkbox" class="form-check-input item-checkbox position-absolute top-0 end-0 m-2" 
                             value="<?= $file['id'] ?>" data-type="file" style="transform: scale(1.3);">
@@ -353,6 +394,9 @@
                             <i class="fas <?= $file_icon ?> fa-2x me-2"></i>
                             <div class="fw-semibold text-truncate" title="<?= esc($file['original_name']) ?>">
                                 <?= esc($file['original_name']) ?>
+                                <?php if (($file['is_public'] ?? 0) == 1): ?>
+                                    <i class="fas fa-link text-success ms-1" title="Publicly shared"></i>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="small text-muted mb-2">
@@ -376,13 +420,23 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item share-link-item" href="javascript:void(0)" 
+                                        <a class="dropdown-item toggle-public-item" href="javascript:void(0)" 
                                         data-item-id="<?= $file['id'] ?>" 
                                         data-item-type="file"
-                                        data-item-name="<?= esc($file['original_name']) ?>">
-                                            <i class="fas fa-link me-2"></i>Share Link
+                                        data-item-name="<?= esc($file['original_name']) ?>"
+                                        data-is-public="<?= $file['is_public'] ?? 0 ?>">
+                                            <i class="fas <?= ($file['is_public'] ?? 0) == 1 ? 'fa-lock-open' : 'fa-link' ?> me-2"></i>
+                                            <?= ($file['is_public'] ?? 0) == 1 ? 'Make Private' : 'Make Public' ?>
                                         </a>
                                     </li>
+                                    <?php if (($file['is_public'] ?? 0) == 1 && !empty($file['public_token'])): ?>
+                                    <li>
+                                        <a class="dropdown-item copy-public-link" href="javascript:void(0)" 
+                                        data-public-url="<?= base_url("public/file/{$file['public_token']}") ?>">
+                                            <i class="fas fa-copy me-2"></i>Copy Public Link
+                                        </a>
+                                    </li>
+                                    <?php endif; ?>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <a class="dropdown-item rename-item" href="javascript:void(0)" 
@@ -390,11 +444,6 @@
                                         data-item-type="file"
                                         data-item-name="<?= esc($file['original_name']) ?>">
                                             <i class="fas fa-edit me-2"></i>Rename
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fas fa-share-alt me-2"></i>Share
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
@@ -427,7 +476,3 @@
         </div>
     </div>
 </div>
-
-<?= $this->include('components/share_link_modal') ?>
-
-
