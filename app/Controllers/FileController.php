@@ -385,11 +385,14 @@ class FileController extends Controller
 
     public function togglePublic($fileId)
     {
+        $session = session();
+        $user = $session->get('user');
+
         $fileModel = new FileModel();
         $file = $fileModel->find($fileId);
 
         // Check ownership
-        if (!$file || $file->user_id != auth()->id()) {
+        if (!$file || $file["user_id"] != $user["id"]) {
             return $this->response->setStatusCode(403)->setJSON([
                 'error' => 'Not authorized'
             ]);
@@ -421,7 +424,7 @@ class FileController extends Controller
     public function getSharedFiles()
     {
         $fileModel = new FileModel();
-        $sharedFiles = $fileModel->where('user_id', auth()->id())
+        $sharedFiles = $fileModel->where('user_id', $user["id"])
                                 ->where('is_public', 1)
                                 ->where('is_deleted', 0)
                                 ->findAll();
