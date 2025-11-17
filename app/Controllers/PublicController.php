@@ -43,7 +43,7 @@ class PublicController extends BaseController
 
     private function downloadFile($file)
     {
-        $filePath = WRITEPATH . 'uploads/' . $file->storage_name;
+        $filePath = WRITEPATH . 'uploads/' . $file["storage_name"];
 
         if (!file_exists($filePath)) {
             return $this->response->setStatusCode(404)->setJSON([
@@ -52,6 +52,6 @@ class PublicController extends BaseController
         }
 
         return $this->response->download($filePath, null)
-            ->setFileName($file->original_name);
+            ->setFileName($file["original_name"]);
     }
 }
