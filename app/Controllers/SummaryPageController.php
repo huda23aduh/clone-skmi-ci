@@ -54,7 +54,7 @@ class SummaryPageController extends Controller
             // Basic stats
             $totalFiles = $this->fileModel->getUserFilesCount($userId);
             $totalFolders = $this->folderModel->getUserFoldersCount($userId);
-            $totalStorageUsed = $this->fileModel->getTotalStorageUsed($userId);
+            $totalStorageUsed = $this->fileModel->getAllUsersStorageUsed();
             $maxCapacity = 500 * 1024 * 1024 * 1024; // 500GB in bytes
             $storagePercentage = $maxCapacity > 0 ? ($totalStorageUsed / $maxCapacity) * 100 : 0;
     

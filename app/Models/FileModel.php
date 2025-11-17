@@ -97,17 +97,32 @@ class FileModel extends Model
     /**
      * Get total storage used by user (in bytes)
      */
-    public function getTotalStorageUsed($userId)
+    public function getTotalStorageUsed($userId = null)
     {
         $builder = $this->db->table('files');
         $builder->selectSum('size');
-        $builder->where('user_id', $userId);
+        
+        if ($userId !== null && $userId !== "") {
+            $builder->where('user_id', $userId);
+        }
+        
         $builder->where('deleted_at IS NULL', null, false);
         
         $query = $builder->get();
         $result = $query->getRow();
         
         return $result ? (int)$result->size : 0;
+    }
+
+    // Or create separate methods for clarity
+    public function getUserStorageUsed($userId)
+    {
+        return $this->getTotalStorageUsed($userId);
+    }
+
+    public function getAllUsersStorageUsed()
+    {
+        return $this->getTotalStorageUsed(null);
     }
 
     /**
