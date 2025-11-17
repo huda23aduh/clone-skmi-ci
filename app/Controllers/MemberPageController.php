@@ -12,6 +12,9 @@ class MemberPageController extends Controller
 {
     use Authenticable;
 
+    protected $perPageOptions = [5, 10, 20, 50, 100];
+    protected $defaultPerPage = 20;
+
     protected $userModel;
     protected $fileModel;
     protected $activityLogModel;
@@ -28,22 +31,148 @@ class MemberPageController extends Controller
      */
     public function index()
     {
+        helper('date');
+        helper('format');
+
         $user = $this->getAuthenticatedUser();
         if (!is_array($user)) {
             return $user;
         }
 
-        // Check if user is admin (you might want to add this check)
-        // if (!$this->isAdmin($user)) {
-        //     return redirect()->to('/')->with('error', 'Access denied');
-        // }
+        $page = $this->request->getGet('page') ?? 1;
+        $search = $this->request->getGet('search') ?? '';
+        $filter = $this->request->getGet('filter') ?? 'all';
+
+        // Get per_page from session or request, fallback to default
+        $perPage = $this->request->getGet('per_page') ?? 
+                  session()->get('activity_log_per_page') ?? 
+                  $this->defaultPerPage;
+
+        // Validate per_page value
+        if (!in_array($perPage, $this->perPageOptions)) {
+            $perPage = $this->defaultPerPage;
+        }
+
+        // Store per_page in session for consistency
+        session()->set('activity_log_per_page', $perPage);
+
+        // Get activities with filters (using private methods like ActivityLogController)
+        $activities = $this->getActivities($user['id'], $page, $filter, $search, $perPage);
+        
+        // Get total count for pagination
+        $totalActivities = $this->getTotalActivitiesCount($user['id'], $filter, $search);
+        
+        // Get activity statistics
+        $stats = $this->getActivityStatistics($user['id']);
 
         $data = [
             'title' => 'Member Management',
+            'activities' => $activities,
+            'pager' => $this->activityLogModel->pager,
+            'currentPage' => (int)$page,
+            'totalActivities' => $totalActivities,
+            'filter' => $filter,
+            'search' => $search,
+            'stats' => $stats,
+            'perPage' => $perPage,
+            'perPageOptions' => $this->perPageOptions,
+            'activityTypes' => $this->getActivityTypes(),
             'user' => $user
         ];
 
         return view('members/index', $data);
+    }
+
+    /**
+     * Get activities with filters and pagination
+     */
+    private function getActivities($userId, $page, $filter, $search, $perPage = null)
+    {
+        $perPage = $perPage ?? $this->defaultPerPage;
+        
+        $builder = $this->activityLogModel
+            ->where('user_id', $userId)
+            ->orderBy('created_at', 'DESC');
+
+        // Apply type filter
+        if ($filter !== 'all') {
+            $builder->where('activity_type', $filter);
+        }
+
+        // Apply search filter
+        if (!empty($search)) {
+            $builder->groupStart()
+                    ->like('item_name', $search)
+                    ->orLike('description', $search)
+                    ->orLike('activity_type', $search)
+                    ->groupEnd();
+        }
+
+        return $builder->paginate($perPage, 'default', $page);
+    }
+
+    /**
+     * Get total activities count for pagination
+     */
+    private function getTotalActivitiesCount($userId, $filter, $search)
+    {
+        $builder = $this->activityLogModel->where('user_id', $userId);
+
+        if ($filter !== 'all') {
+            $builder->where('activity_type', $filter);
+        }
+
+        if (!empty($search)) {
+            $builder->groupStart()
+                    ->like('item_name', $search)
+                    ->orLike('description', $search)
+                    ->orLike('activity_type', $search)
+                    ->groupEnd();
+        }
+
+        return $builder->countAllResults();
+    }
+
+    /**
+     * Get activity statistics
+     */
+    private function getActivityStatistics($userId)
+    {
+        $thirtyDaysAgo = date('Y-m-d H:i:s', strtotime('-30 days'));
+
+        return [
+            'total_activities' => $this->activityLogModel->where('user_id', $userId)->countAllResults(),
+            'last_30_days' => $this->activityLogModel->where('user_id', $userId)
+                                                    ->where('created_at >=', $thirtyDaysAgo)
+                                                    ->countAllResults(),
+            'today' => $this->activityLogModel->where('user_id', $userId)
+                                            ->where('DATE(created_at)', date('Y-m-d'))
+                                            ->countAllResults(),
+            'file_uploads' => $this->activityLogModel->where('user_id', $userId)
+                                                    ->where('activity_type', ActivityLogModel::TYPE_FILE_UPLOAD)
+                                                    ->countAllResults(),
+        ];
+    }
+
+    /**
+     * Get activity types for filter dropdown
+     */
+    private function getActivityTypes()
+    {
+        return [
+            'all' => 'All Activities',
+            ActivityLogModel::TYPE_FILE_UPLOAD => 'File Uploads',
+            ActivityLogModel::TYPE_FILE_DOWNLOAD => 'File Downloads',
+            ActivityLogModel::TYPE_FILE_DELETE => 'File Deletions',
+            ActivityLogModel::TYPE_FILE_EXTRACT => 'File Extractions',
+            ActivityLogModel::TYPE_FILE_ZIP => 'ZIP Creations',
+            ActivityLogModel::TYPE_FOLDER_CREATE => 'Folder Creations',
+            ActivityLogModel::TYPE_FOLDER_DELETE => 'Folder Deletions',
+            ActivityLogModel::TYPE_ITEM_STAR => 'Starring Items',
+            ActivityLogModel::TYPE_ITEM_UNSTAR => 'Unstarring Items',
+            ActivityLogModel::TYPE_LOGIN => 'User Logins',
+            ActivityLogModel::TYPE_LOGOUT => 'User Logouts',
+        ];
     }
 
     /**

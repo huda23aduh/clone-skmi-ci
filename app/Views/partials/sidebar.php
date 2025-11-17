@@ -60,12 +60,12 @@
           </li>
 
 
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a href="<?= base_url('/activity-log') ?>" class="nav-link">
               <i class="nav-icon bi bi-activity"></i>
               <p><?= lang('app.activitylog') ?></p>
             </a>
-          </li>
+          </li> -->
 
 
           <li class="nav-item">
