@@ -59,14 +59,26 @@ class FileModel extends Model
     }
 
     /**
-     * Get file by ID with user verification
+     * Get file by ID with optional user verification
+     * If file is public, user_id check is skipped
      */
-    public function getUserFile($fileId, $userId)
+    public function getUserFile($fileId, $userId = null)
     {
-        return $this->where('id', $fileId)
-                   ->where('user_id', $userId)
-                   ->where('is_deleted', 0)
-                   ->first();
+        $builder = $this->where('id', $fileId)
+                    ->where('is_deleted', 0);
+
+        // Only check user_id if file is not public AND user_id is provided
+        if ($userId !== null) {
+            $builder->groupStart()
+                ->where('user_id', $userId)
+                ->orWhere('is_public', 1)
+                ->groupEnd();
+        } else {
+            // If no user_id provided, only get public files
+            $builder->where('is_public', 1);
+        }
+
+        return $builder->first();
     }
 
     /**
