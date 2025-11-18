@@ -720,19 +720,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ---------------- Filter & Sort ---------------- */
     const filterAndSort = () => {
-        const rows = Array.from(document.querySelectorAll('.item-row'));
+        console.log('filterAndSort called'); // Debug log
+        
         const search = state.searchInput.value.toLowerCase();
         const type = state.typeFilter.value;
         const sort = state.sortBy.value;
+        
+        console.log('Search:', search, 'Type:', type, 'Sort:', sort); // Debug log
 
-        rows.forEach(row => {
-            const name = row.dataset.name.toLowerCase();
-            const rowType = row.dataset.type;
-            row.style.display = (name.includes(search) && (type === 'all' || type === rowType)) ? '' : 'none';
+        // Handle both table and grid views with proper selectors
+        const tableRows = Array.from(document.querySelectorAll('#contentTable .item-row'));
+        const gridItems = Array.from(document.querySelectorAll('#gridView .col.item-row'));
+        
+        console.log('Table rows found:', tableRows.length); // Debug log
+        console.log('Grid items found:', gridItems.length); // Debug log
+
+        // Combine all items for counting
+        const allItems = [...tableRows, ...gridItems];
+        console.log('Total items:', allItems.length); // Debug log
+
+        allItems.forEach((item, index) => {
+            const name = item.dataset.name ? item.dataset.name.toLowerCase() : '';
+            const itemType = item.dataset.type || '';
+            const shouldShow = (name.includes(search) && (type === 'all' || type === itemType));
+            
+            console.log(`Item ${index}:`, { name, itemType, shouldShow }); // Debug log
+            
+            item.style.display = shouldShow ? '' : 'none';
         });
 
-        const visibleRows = rows.filter(row => row.style.display !== 'none');
-        visibleRows.sort((a, b) => {
+        // Update visible count
+        const visibleCount = allItems.filter(item => item.style.display !== 'none').length;
+        console.log('Visible count:', visibleCount); // Debug log
+        
+        const badgeElement = document.querySelector('.card-title .badge');
+        if (badgeElement) {
+            badgeElement.textContent = `${visibleCount} items`;
+        }
+
+        // Sort table rows (list view)
+        const visibleTableRows = tableRows.filter(row => row.style.display !== 'none');
+        console.log('Visible table rows:', visibleTableRows.length); // Debug log
+        
+        visibleTableRows.sort((a, b) => {
             switch (sort) {
                 case 'name_asc': return a.dataset.name.localeCompare(b.dataset.name);
                 case 'name_desc': return b.dataset.name.localeCompare(a.dataset.name);
@@ -743,8 +773,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 default: return 0;
             }
         });
+        visibleTableRows.forEach(row => state.contentTable.appendChild(row));
 
-        visibleRows.forEach(row => state.contentTable.appendChild(row));
+        // Sort grid items (grid view)
+        const visibleGridItems = gridItems.filter(item => item.style.display !== 'none');
+        console.log('Visible grid items:', visibleGridItems.length); // Debug log
+        
+        visibleGridItems.sort((a, b) => {
+            switch (sort) {
+                case 'name_asc': return a.dataset.name.localeCompare(b.dataset.name);
+                case 'name_desc': return b.dataset.name.localeCompare(a.dataset.name);
+                case 'date_asc': return new Date(a.dataset.date) - new Date(b.dataset.date);
+                case 'date_desc': return new Date(b.dataset.date) - new Date(a.dataset.date);
+                case 'size_asc': return (parseInt(a.dataset.size) || 0) - (parseInt(b.dataset.size) || 0);
+                case 'size_desc': return (parseInt(b.dataset.size) || 0) - (parseInt(a.dataset.size) || 0);
+                default: return 0;
+            }
+        });
+        const gridView = document.getElementById('gridView');
+        visibleGridItems.forEach(item => gridView.appendChild(item));
     };
 
     state.searchInput?.addEventListener('input', filterAndSort);
