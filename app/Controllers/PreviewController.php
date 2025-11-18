@@ -86,10 +86,75 @@ class PreviewController extends Controller
                 return $this->previewArchive($data);
             case 'code':
                 return $this->previewCodeDashboard($data);
+            case 'csv':
+                return $this->previewCsvDashboard($data);
                 break;
             default:
                 return $this->previewUnsupportedDashboard($data);
         }
+    }
+
+    // Add this method to your PreviewController
+    /**
+     * Preview CSV file with dashboard layout
+     */
+    private function previewCsvDashboard($data)
+    {
+        $filePath = WRITEPATH . 'uploads/' . $data['file']['storage_name'];
+        
+        // Read CSV data
+        $csvData = $this->readCsvFile($filePath);
+        
+        // Add CSV data to the view data
+        $data['csvData'] = $csvData;
+        $data['headers'] = !empty($csvData) ? array_keys($csvData[0]) : [];
+        
+        return view('preview/csv_preview', $data);
+    }
+
+    /**
+     * Read CSV file and return array data
+     */
+    private function readCsvFile($filePath, $maxRows = 1000)
+    {
+        if (!file_exists($filePath)) {
+            return [];
+        }
+
+        $csvData = [];
+        $handle = fopen($filePath, 'r');
+        
+        if ($handle !== false) {
+            // Get headers
+            $headers = fgetcsv($handle);
+            if ($headers === false) {
+                fclose($handle);
+                return [];
+            }
+            
+            // Clean headers (remove BOM if present and trim)
+            $headers = array_map(function($header) {
+                // Remove UTF-8 BOM if present
+                $header = preg_replace('/^\xEF\xBB\xBF/', '', $header);
+                return trim($header);
+            }, $headers);
+            
+            $rowCount = 0;
+            
+            // Read data rows
+            while (($row = fgetcsv($handle)) !== false && $rowCount < $maxRows) {
+                $rowData = [];
+                foreach ($headers as $index => $header) {
+                    $rowData[$header] = isset($row[$index]) ? $row[$index] : '';
+                }
+                $csvData[] = $rowData;
+                $rowCount++;
+            }
+            
+            fclose($handle);
+        }
+        
+        return $csvData;
     }
 
     /**
@@ -158,6 +223,9 @@ class PreviewController extends Controller
         }
         if (in_array($extension, ['pdf'])) {
             return 'pdf';
+        }
+        if ($extension === 'csv') { // Add CSV detection
+            return 'csv';
         }
         if (in_array($extension, ['txt'])) {
             return 'text';
