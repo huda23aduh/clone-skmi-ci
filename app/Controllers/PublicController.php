@@ -11,15 +11,14 @@ class PublicController extends BaseController
     {
         $fileModel = new FileModel();
         $file = $fileModel->getPublicFile($token);
-
+        
         if (!$file) {
             return $this->response->setStatusCode(404)->setJSON([
                 'error' => 'File not found or not publicly accessible'
             ]);
         }
 
-        // Serve the file for download/viewing
-        return $this->downloadFile($file);
+        return redirect()->to(site_url('preview/' . $file['id']));
     }
 
     public function accessFolder($token)
