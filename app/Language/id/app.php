@@ -55,6 +55,7 @@ return [
     'logout' => 'Keluar',
     'login' => 'Masuk',
     'register' => 'Daftar',
+    'back_to_dashboard' => 'kembali ke Dasbor',
    
     // Recycle bin Page
     'emptyrecyclebin' => 'Kosongkan Tempat Sampah',

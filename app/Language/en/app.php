@@ -54,6 +54,7 @@ return [
     'logout' => 'Logout',
     'login' => 'Login',
     'register' => 'Register',
+    'back_to_dashboard' => 'back to dashboard',
     
     // Recycle bin Page
     'emptyrecyclebin' => 'Empty Recycle Bin',
