@@ -298,7 +298,7 @@
                             <!-- Filters Card -->
                             <div class="card shadow-sm mb-4">
                                 <div class="card-body">
-                                    <form method="get" action="<?= base_url('activity-log') ?>" class="row g-3 align-items-end">
+                                    <form method="get" action="<?= base_url('members') ?>" class="row g-3 align-items-end">
                                         <div class="col-md-3">
                                             <label class="form-label"><?= app_lang('app.searchactivities') ?></label>
                                             <div class="input-group">
