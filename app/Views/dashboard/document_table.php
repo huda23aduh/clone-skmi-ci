@@ -291,18 +291,20 @@
         <!-- Grid View -->
         <div id="gridView" class="row row-cols-2 row-cols-md-4 g-3 p-3" style="display: none;">
             <?php foreach ($folders as $folder): ?>
-                <div class="col item-row" data-type="folder" data-id="<?= $folder['id'] ?>" data-is-public="<?= $folder['is_public'] ?? 0 ?>">
+                <div class="col item-row" data-type="folder" data-name="<?= esc($folder['name']) ?>" data-date="<?= $folder['created_at'] ?? '' ?>" data-id="<?= $folder['id'] ?>" data-is-public="<?= $folder['is_public'] ?? 0 ?>">
                     <div class="card shadow-sm h-100 position-relative p-3">
                         <input type="checkbox" class="form-check-input item-checkbox position-absolute top-0 end-0 m-2" 
                             value="<?= $folder['id'] ?>" data-type="folder" style="transform: scale(1.3);">
 
                         <div class="d-flex align-items-center mb-2 mt-2">
                             <i class="fas fa-folder text-warning fa-2x me-2"></i>
-                            <div class="fw-semibold text-truncate">
-                                <?= esc($folder['name']) ?>
-                                <?php if (($folder['is_public'] ?? 0) == 1): ?>
-                                    <i class="fas fa-link text-success ms-1" title="Publicly shared"></i>
-                                <?php endif; ?>
+                            <div>
+                                <a href="<?= base_url('/folder/view/' . $folder['id']) ?>" class="text-decoration-none text-dark fw-semibold text-truncate d-block">
+                                    <?= esc($folder['name']) ?>
+                                    <?php if (($folder['is_public'] ?? 0) == 1): ?>
+                                        <i class="fas fa-link text-success ms-1" title="Publicly shared"></i>
+                                    <?php endif; ?>
+                                </a>
                             </div>
                         </div>
                         <div class="small text-muted mb-2">
@@ -385,18 +387,21 @@
                 elseif (in_array($file_ext, ['jpg','jpeg','png','gif'])) $file_icon = 'fa-file-image text-info';
                 elseif (in_array($file_ext, ['mp4','avi','mkv'])) $file_icon = 'fa-file-video text-danger';
                 ?>
-                <div class="col item-row" data-type="file" data-id="<?= $file['id'] ?>" data-is-public="<?= $file['is_public'] ?? 0 ?>">
+                <div class="col item-row" data-type="file" data-name="<?= esc($file['original_name']) ?>" data-date="<?= $file['created_at'] ?? '' ?>" data-size="<?= $file['size'] ?>" data-id="<?= $file['id'] ?>" data-is-public="<?= $file['is_public'] ?? 0 ?>">
                     <div class="card shadow-sm h-100 position-relative p-3">
                         <input type="checkbox" class="form-check-input item-checkbox position-absolute top-0 end-0 m-2" 
                             value="<?= $file['id'] ?>" data-type="file" style="transform: scale(1.3);">
 
                         <div class="d-flex align-items-center mb-2 mt-2">
                             <i class="fas <?= $file_icon ?> fa-2x me-2"></i>
-                            <div class="fw-semibold text-truncate" title="<?= esc($file['original_name']) ?>">
-                                <?= esc($file['original_name']) ?>
-                                <?php if (($file['is_public'] ?? 0) == 1): ?>
-                                    <i class="fas fa-link text-success ms-1" title="Publicly shared"></i>
-                                <?php endif; ?>
+                            <div>
+                                <div class="fw-semibold text-truncate file-name-cell-grid" style="max-width: 150px; cursor: pointer;" title="<?= esc($file['original_name']) ?>">
+                                    <?= esc($file['original_name']) ?>
+                                    <?php if (($file['is_public'] ?? 0) == 1): ?>
+                                        <i class="fas fa-link text-success ms-1" title="Publicly shared"></i>
+                                    <?php endif; ?>
+                                </div>
+                                <small class="text-muted"><?= strtoupper($file_ext) ?> file</small>
                             </div>
                         </div>
                         <div class="small text-muted mb-2">
@@ -462,7 +467,6 @@
                                             </a>
                                         </li>
                                     <?php endif; ?>
-
                                 </ul>
                             </div>
                             <button class="btn btn-sm btn-outline-warning star-btn" 

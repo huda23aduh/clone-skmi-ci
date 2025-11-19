@@ -800,7 +800,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ---------------- Preview Functionality ---------------- */
     const initPreviewFunctionality = () => {
-        // Handle preview clicks in dropdown menus
+        // Handle preview clicks in dropdown menus (both list and grid views)
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('preview-item') || e.target.closest('.preview-item')) {
                 const previewBtn = e.target.classList.contains('preview-item') ? e.target : e.target.closest('.preview-item');
@@ -812,9 +812,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Handle direct clicks on file names for preview
+        // Handle direct clicks on file names for preview in LIST view
         document.addEventListener('click', function(e) {
-            // Only trigger preview if the click was inside .file-name-cell
+            // Only trigger preview if the click was inside .file-name-cell (list view)
             const fileNameCell = e.target.closest('.file-name-cell');
             if (fileNameCell) {
                 const fileRow = fileNameCell.closest('.item-row[data-type="file"]');
@@ -823,10 +823,47 @@ document.addEventListener('DOMContentLoaded', () => {
                     openFilePreview(fileId);
                 }
             }
+            
+            // Handle clicks on file names in GRID view
+            const fileNameCellGrid = e.target.closest('.file-name-cell-grid');
+            if (fileNameCellGrid) {
+                const fileCard = fileNameCellGrid.closest('.item-row[data-type="file"]');
+                if (fileCard) {
+                    const fileId = fileCard.getAttribute('data-id');
+                    openFilePreview(fileId);
+                }
+            }
         });
 
+        // Handle folder clicks in GRID view
+        document.addEventListener('click', function(e) {
+            // Check if click is on folder name in grid view (but not on action buttons)
+            if (e.target.closest('#gridView')) {
+                const folderLink = e.target.closest('a[href*="/folder/view/"]');
+                if (folderLink && !e.target.closest('.dropdown') && !e.target.closest('.star-btn')) {
+                    // Allow default behavior (navigation) for folder links
+                    return;
+                }
+                
+                // Prevent other clicks in grid cards from triggering unwanted behavior
+                const gridCard = e.target.closest('.card');
+                if (gridCard && !e.target.closest('a') && !e.target.closest('button') && !e.target.closest('input')) {
+                    const itemRow = gridCard.closest('.item-row');
+                    if (itemRow) {
+                        const itemType = itemRow.getAttribute('data-type');
+                        const itemId = itemRow.getAttribute('data-id');
+                        
+                        if (itemType === 'file') {
+                            // For files, open preview
+                            openFilePreview(itemId);
+                        }
+                        // For folders, the link already handles navigation
+                    }
+                }
+            }
+        });
     };
-
+    
     const openFilePreview = async (fileId) => {
         try {
             // Get file info first to check if preview is available
