@@ -81,4 +81,6 @@
     </div>
 </div>
 
+<?= $this->include('components/right_click_protection') ?>
+
 <?= $this->endSection() ?>

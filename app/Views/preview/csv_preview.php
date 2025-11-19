@@ -124,15 +124,6 @@
     </div>
 </div>
 
-<style>
-.table-responsive {
-    border: 1px solid #dee2e6;
-}
-.sticky-top {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-</style>
+<?= $this->include('components/right_click_protection') ?>
 
 <?= $this->endSection() ?>

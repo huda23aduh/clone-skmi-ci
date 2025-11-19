@@ -81,11 +81,6 @@
     </div>
 </div>
 
-<script>
-document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-    alert('Right-click is disabled on this page.');
-});
-</script>
+<?= $this->include('components/right_click_protection') ?>
 
 <?= $this->endSection() ?>
