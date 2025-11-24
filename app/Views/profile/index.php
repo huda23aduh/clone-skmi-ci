@@ -322,7 +322,7 @@
                                     <div class="flex-grow-1">
                                         <div class="d-flex justify-content-between align-items-center mb-1">
                                             <h6 class="mb-0 text-truncate" style="max-width: 70%;">
-                                                <?= esc($activity['description']) ?>
+                                                <?= esc(strlen($activity['description']) > 35 ? substr($activity['description'], 0, 35) . '...' : $activity['description']) ?>
                                             </h6>
                                             <small class="text-muted">
                                                 <i class="fas fa-clock me-1"></i>
@@ -331,7 +331,7 @@
                                         </div>
                                         <?php if ($activity['item_name']): ?>
                                             <small class="text-muted">
-                                                <i class="fas fa-file me-1"></i><?= esc($activity['item_name']) ?>
+                                                <i class="fas fa-file me-1"></i><?= esc(strlen($activity['item_name']) > 25 ? substr($activity['item_name'], 0, 25) . '...' : $activity['item_name']) ?>
                                             </small>
                                         <?php endif; ?>
                                     </div>
