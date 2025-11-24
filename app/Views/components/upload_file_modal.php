@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fileItem.innerHTML = `
                 <div>
                     <i class="fas fa-file me-2 text-muted"></i>
-                    <span class="file-name">${file.name}</span>
+                    <span class="file-name">${file.name.length > 25 ? file.name.substring(0, 25) + '...' : file.name}</span>
                     <small class="text-muted d-block">${formatFileSize(file.size)}</small>
                 </div>
                 <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeFile(${index})">

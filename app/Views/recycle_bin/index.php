@@ -75,7 +75,7 @@
             <td><input type="checkbox" class="selectItemCheckbox" data-id="<?= $item['id'] ?>" data-type="folder"></td>
             <td>
               <i class="fas fa-folder text-warning me-2"></i>
-              <span class="item-name"><?= esc($item['name']) ?></span>
+              <span class="item-name"><?= esc(strlen($item['name']) > 25 ? substr($item['name'], 0, 25) . '...' : $item['name']) ?></span>
             </td>
             <td><span class="badge bg-warning">Folder</span></td>
             <td>-</td>
@@ -100,7 +100,7 @@
             <td><input type="checkbox" class="selectItemCheckbox" data-id="<?= $item['id'] ?>" data-type="file"></td>
             <td>
               <i class="fas fa-file text-secondary me-2"></i>
-              <span class="item-name"><?= esc($item['original_name']) ?></span>
+              <span class="item-name"><?= esc(strlen($item['original_name']) > 25 ? substr($item['original_name'], 0, 25) . '...' : $item['original_name']) ?></span>
             </td>
             <td><span class="badge bg-secondary">File</span></td>
             <td>

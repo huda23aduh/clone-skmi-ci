@@ -184,7 +184,7 @@
                                 ?>
                             </td>
                             <td class="text-muted small">
-                                <?= isset($file['updated_at']) ? date('M j, Y g:i A', strtotime($file['updated_at'])) : 'Unknown' ?>
+                                <?= isset($file['updated_at']) ? formatDateTimeGMT7_24h($file['updated_at']) : 'Unknown' ?>
                             </td>
                             <td class="text-center">
                                 <div class="d-flex align-items-center justify-content-center gap-1">

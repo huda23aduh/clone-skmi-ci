@@ -11,6 +11,7 @@ class DashboardController extends Controller
     
     public function index()
     {
+        helper('date');
         helper('format');
         helper('file');
         
