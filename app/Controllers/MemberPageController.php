@@ -91,7 +91,7 @@ class MemberPageController extends Controller
         $perPage = $perPage ?? $this->defaultPerPage;
         
         $builder = $this->activityLogModel
-            ->where('user_id', $userId)
+            // ->where('user_id', $userId)
             ->orderBy('created_at', 'DESC');
 
         // Apply type filter
@@ -116,7 +116,8 @@ class MemberPageController extends Controller
      */
     private function getTotalActivitiesCount($userId, $filter, $search)
     {
-        $builder = $this->activityLogModel->where('user_id', $userId);
+        $builder = $this->activityLogModel;
+        // $builder = $this->activityLogModel->where('user_id', $userId);
 
         if ($filter !== 'all') {
             $builder->where('activity_type', $filter);
