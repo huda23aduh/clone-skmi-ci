@@ -199,11 +199,15 @@ class FileModel extends Model
     /**
      * Get uploads per month for a specific year
      */
-    public function getUploadsPerMonth($userId, $year)
+    public function getUploadsPerMonth($year, $userId = null)
     {
         $builder = $this->db->table('files');
         $builder->select("MONTH(created_at) as month, COUNT(*) as count");
-        $builder->where('user_id', $userId);
+        
+        if ($userId !== null) {
+            $builder->where('user_id', $userId);
+        }
+        
         $builder->where('YEAR(created_at)', $year);
         $builder->where('deleted_at IS NULL', null, false);
         $builder->groupBy('MONTH(created_at)');
@@ -211,24 +215,28 @@ class FileModel extends Model
         
         $query = $builder->get();
         $result = $query->getResultArray();
-    
+
         $data = array_fill(1, 12, 0);
         
         foreach ($result as $row) {
             $data[(int)$row['month']] = (int)$row['count'];
         }
-    
+
         return $data;
     }    
 
     /**
      * Get storage usage per month for a specific year
      */
-    public function getStorageUsagePerMonth($userId, $year)
+    public function getStorageUsagePerMonth($year, $userId = null)
     {
         $builder = $this->db->table('files');
         $builder->select("MONTH(created_at) as month, SUM(size) as total_size");
-        $builder->where('user_id', $userId);
+        
+        if ($userId !== null) {
+            $builder->where('user_id', $userId);
+        }
+        
         $builder->where('YEAR(created_at)', $year);
         $builder->where('deleted_at IS NULL', null, false);
         $builder->groupBy('MONTH(created_at)');
@@ -236,13 +244,13 @@ class FileModel extends Model
         
         $query = $builder->get();
         $result = $query->getResultArray();
-    
+
         $data = array_fill(1, 12, 0);
         
         foreach ($result as $row) {
             $data[(int)$row['month']] = (int)$row['total_size'];
         }
-    
+
         return $data;
     }
 

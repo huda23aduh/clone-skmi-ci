@@ -62,10 +62,10 @@ class SummaryPageController extends Controller
             $fileTypeDistribution = $this->fileModel->getFileTypeDistribution($userId);
     
             // Uploads per month for current year
-            $uploadsPerMonth = $this->fileModel->getUploadsPerMonth($userId, date('Y'));
+            $uploadsPerMonth = $this->fileModel->getUploadsPerMonth(date('Y'));
     
             // Storage usage per month for current year
-            $storagePerMonth = $this->fileModel->getStorageUsagePerMonth($userId, date('Y'));
+            $storagePerMonth = $this->fileModel->getStorageUsagePerMonth(date('Y'));
     
             return $this->response->setJSON([
                 'success' => true,
