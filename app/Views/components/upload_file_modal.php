@@ -29,7 +29,7 @@
                     <!-- Selected Files Preview -->
                     <div id="selectedFiles" class="mb-3" style="display: none;">
                         <h6>Selected Files:</h6>
-                        <div id="fileList" class="list-group"></div>
+                        <div id="fileList" class="list-group" style="max-height: 200px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem;"></div>
                     </div>
                     
                     <!-- Upload Options -->
