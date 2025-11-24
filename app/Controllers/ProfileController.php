@@ -25,6 +25,8 @@ class ProfileController extends Controller
      */
     public function index()
     {
+        helper('time_hlp'); 
+        
         $user = $this->getAuthenticatedUser();
         if (!is_array($user)) {
             return $user;

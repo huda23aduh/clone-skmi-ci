@@ -326,7 +326,7 @@
                                             </h6>
                                             <small class="text-muted">
                                                 <i class="fas fa-clock me-1"></i>
-                                                <?= $this->include('partials/time_ago', ['datetime' => $activity['created_at']]) ?>
+                                                <?= time_ago($activity['created_at']) ?>
                                             </small>
                                         </div>
                                         <?php if ($activity['item_name']): ?>

@@ -5,6 +5,7 @@ if (!isset($datetime) || empty($datetime)) {
     return;
 }
 
+// Convert to timestamp
 $time = strtotime($datetime);
 if ($time === false) {
     echo 'Invalid time';
@@ -27,4 +28,3 @@ if ($timeDiff < 60) {
 } else {
     echo date('M j, Y', $time);
 }
-?>
