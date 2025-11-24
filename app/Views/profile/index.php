@@ -290,17 +290,36 @@
                 </div>
             </div>
 
-            <!-- Activity Graph -->
+            <!-- Alternative: Simple Date Range Selection -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0 d-flex align-items-center">
-                        <i class="fas fa-chart-line me-2"></i><?= app_lang('app.activity_overview') ?> (Last 30 Days)
+                        <i class="fas fa-chart-line me-2"></i><?= app_lang('app.activity_overview') ?>
                     </h5>
-                    <div class="btn-group btn-group-sm">
+                    <div class="input-group input-group-sm" style="width: 300px;">
+                        <input type="date" class="form-control" id="startDate" placeholder="Start Date">
+                        <div class="input-group-append">
+                            <span class="input-group-text">to</span>
+                        </div>
+                        <input type="date" class="form-control" id="endDate" placeholder="End Date">
+                        &nbsp;
+                        &nbsp;
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button" id="applyDateRange">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="clearDateRange">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- <div class="btn-group btn-group-sm">
                         <button type="button" class="btn btn-outline-primary active" data-period="30">30 Days</button>
                         <button type="button" class="btn btn-outline-primary" data-period="7">7 Days</button>
                         <button type="button" class="btn btn-outline-primary" data-period="90">90 Days</button>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="card-body">
                     <canvas id="activityChart" height="120"></canvas>

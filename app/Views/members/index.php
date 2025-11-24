@@ -134,7 +134,7 @@
                             <table class="table table-hover mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th class="ps-3"><?= lang('app.member') ?></th>
+                                        <th class="ps-3"><?= lang('app.members') ?></th>
                                         <th><?= lang('app.join_date') ?></th>
                                         <th><?= lang('app.last_login') ?></th>
                                         <th><?= lang('app.storage_used') ?></th>

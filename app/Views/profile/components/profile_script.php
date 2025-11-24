@@ -1,6 +1,235 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Activity Chart Variables - Define at the top
+    let activityChart = null;
+    let chartCtx = null;
+
+    // Initialize chart context first
+    function initializeChartContext() {
+        const chartElement = document.getElementById('activityChart');
+        if (chartElement) {
+            chartCtx = chartElement.getContext('2d');
+            console.log('Chart context initialized');
+        } else {
+            console.error('Activity chart element not found');
+        }
+    }
+
+    // Load Activity Chart Function
+    function loadActivityChart(period = 30, startDate = null, endDate = null) {
+        // Make sure chart context is initialized
+        if (!chartCtx) {
+            initializeChartContext();
+        }
+
+        // Show loading state if chart context exists
+        if (chartCtx && chartCtx.canvas) {
+            chartCtx.clearRect(0, 0, chartCtx.canvas.width, chartCtx.canvas.height);
+            chartCtx.fillStyle = '#6c757d';
+            chartCtx.font = '14px Arial';
+            chartCtx.textAlign = 'center';
+            chartCtx.fillText('Loading chart data...', chartCtx.canvas.width / 2, chartCtx.canvas.height / 2);
+        }
+
+        // Build URL with parameters
+        let url = `<?= base_url('profile/activity-chart-data') ?>?period=${period}`;
+        if (startDate && endDate) {
+            url += `&start_date=${startDate}&end_date=${endDate}`;
+        }
+
+        console.log('Loading chart from URL:', url);
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateActivityChart(data.chart_data);
+                } else {
+                    console.error('Failed to load chart data:', data.message);
+                    showChartError('Failed to load chart data: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error loading chart data:', error);
+                showChartError('Error loading chart data');
+            });
+    }
+
+    function showChartError(message) {
+        if (!chartCtx || !chartCtx.canvas) return;
+        
+        chartCtx.clearRect(0, 0, chartCtx.canvas.width, chartCtx.canvas.height);
+        chartCtx.fillStyle = '#dc3545';
+        chartCtx.font = '14px Arial';
+        chartCtx.textAlign = 'center';
+        chartCtx.fillText(message, chartCtx.canvas.width / 2, chartCtx.canvas.height / 2);
+    }
+
+    function updateActivityChart(chartData) {
+        if (!chartCtx) {
+            console.error('Chart context not available');
+            return;
+        }
+
+        // Destroy existing chart if it exists
+        if (activityChart) {
+            activityChart.destroy();
+        }
+
+        activityChart = new Chart(chartCtx, {
+            type: 'line',
+            data: {
+                labels: chartData.map(item => {
+                    const date = new Date(item.date);
+                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                }),
+                datasets: [{
+                    label: 'Activities',
+                    data: chartData.map(item => item.count),
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#007bff',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        },
+                        grid: {
+                            drawBorder: false
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            }
+        });
+    }
+
+    // Simple Date Range Implementation
+    function initializeSimpleDateRange() {
+        console.log('Initializing date range...');
+        
+        // Initialize chart context first
+        initializeChartContext();
+        
+        // Set default dates (last 30 days)
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 29);
+        
+        // Format dates for input fields (YYYY-MM-DD)
+        const formatDateForInput = (date) => {
+            return date.toISOString().split('T')[0];
+        };
+        
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const applyButton = document.getElementById('applyDateRange');
+        const clearButton = document.getElementById('clearDateRange');
+        const dateRangeLabel = document.getElementById('dateRangeLabel');
+
+        if (startDateInput && endDateInput) {
+            startDateInput.value = formatDateForInput(startDate);
+            endDateInput.value = formatDateForInput(endDate);
+            
+            console.log('Date inputs found and set:', startDateInput.value, endDateInput.value);
+        } else {
+            console.error('Date input elements not found');
+            return;
+        }
+
+        // Apply button handler
+        if (applyButton) {
+            applyButton.addEventListener('click', function() {
+                console.log('Apply button clicked');
+                const startDateVal = startDateInput.value;
+                const endDateVal = endDateInput.value;
+                
+                if (startDateVal && endDateVal) {
+                    console.log('Loading chart with custom range:', startDateVal, endDateVal);
+                    
+                    // Update chart with custom date range
+                    loadActivityChart('custom', startDateVal, endDateVal);
+                    
+                    // Update label
+                    const startFormatted = new Date(startDateVal).toLocaleDateString('en', { month: 'short', day: 'numeric' });
+                    const endFormatted = new Date(endDateVal).toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' });
+                    if (dateRangeLabel) {
+                        dateRangeLabel.textContent = '(' + startFormatted + ' - ' + endFormatted + ')';
+                    }
+                    
+                    showToast('success', 'Chart updated with selected date range');
+                } else {
+                    showToast('error', 'Please select both start and end dates');
+                }
+            });
+        } else {
+            console.error('Apply button not found');
+        }
+
+        // Clear button handler
+        if (clearButton) {
+            clearButton.addEventListener('click', function() {
+                console.log('Clear button clicked');
+                // Reset to default (last 30 days)
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setDate(startDate.getDate() - 29);
+                
+                startDateInput.value = formatDateForInput(startDate);
+                endDateInput.value = formatDateForInput(endDate);
+                
+                // Load default chart
+                loadActivityChart(30);
+                
+                // Update label
+                if (dateRangeLabel) {
+                    dateRangeLabel.textContent = '(Last 30 Days)';
+                }
+                
+                showToast('info', 'Date range reset to last 30 days');
+            });
+        } else {
+            console.error('Clear button not found');
+        }
+
+        // Load initial chart data
+        loadActivityChart(30);
+    }
+
+    // Initialize date range functionality
+    initializeSimpleDateRange();
+
+    // Rest of your existing code (Profile Image, Email Management, etc.)
     // Profile Image Upload Handling
     function handleImageSelection(input) {
         const uploadBtn = document.getElementById('uploadImageBtn');
@@ -101,101 +330,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-    // Activity Chart
-    let activityChart;
-    const chartCtx = document.getElementById('activityChart');
-    let currentPeriod = 30;
-
-    function loadChartData(period = 30) {
-        fetch(`<?= base_url('profile/activity-chart-data') ?>?period=${period}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success && chartCtx) {
-                    updateActivityChart(data.chart_data);
-                }
-            })
-            .catch(error => console.error('Error loading chart data:', error));
-    }
-
-    function updateActivityChart(chartData) {
-        if (activityChart) {
-            activityChart.destroy();
-        }
-
-        activityChart = new Chart(chartCtx, {
-            type: 'line',
-            data: {
-                labels: chartData.map(item => {
-                    const date = new Date(item.date);
-                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                }),
-                datasets: [{
-                    label: 'Activities',
-                    data: chartData.map(item => item.count),
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: '#007bff',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        },
-                        grid: {
-                            drawBorder: false
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                },
-                interaction: {
-                    mode: 'nearest',
-                    axis: 'x',
-                    intersect: false
-                }
-            }
-        });
-    }
-
-    // Period buttons
-    document.querySelectorAll('[data-period]').forEach(button => {
-        button.addEventListener('click', function() {
-            const period = this.getAttribute('data-period');
-            currentPeriod = period;
-            
-            document.querySelectorAll('[data-period]').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            this.classList.add('active');
-            
-            loadChartData(period);
-        });
-    });
-
-    loadChartData(currentPeriod);
 
     // Email management functionality
     const addEmailForm = document.getElementById('addEmailForm');
@@ -356,51 +490,6 @@ document.addEventListener('DOMContentLoaded', function() {
         emailList.innerHTML = emailListHTML;
     }
 
-    function createEmailItem(email) {
-        const div = document.createElement('div');
-        div.className = 'list-group-item d-flex justify-content-between align-items-center';
-        div.innerHTML = `
-            <div class="d-flex align-items-center">
-                <div class="me-3">
-                    ${email.is_primary ? 
-                        '<span class="badge bg-primary">Primary</span>' : 
-                        email.is_verified ? 
-                        '<span class="badge bg-success">Verified</span>' : 
-                        '<span class="badge bg-warning">Pending</span>'
-                    }
-                </div>
-                <div>
-                    <div class="fw-semibold">${escapeHtml(email.email)}</div>
-                    ${!email.is_verified && !email.is_primary ? 
-                        '<small class="text-muted">Verification required</small>' : 
-                        ''
-                    }
-                </div>
-            </div>
-            <div class="btn-group">
-                ${!email.is_primary && email.is_verified ? 
-                    `<button type="button" class="btn btn-outline-primary btn-sm set-primary-btn" 
-                            data-email-id="${email.id}" 
-                            data-email="${escapeHtml(email.email)}">
-                        <i class="fas fa-star me-1"></i>Set Primary
-                    </button>` : 
-                    ''
-                }
-                
-                ${!email.is_primary ? 
-                    `<button type="button" class="btn btn-outline-danger btn-sm delete-email-btn" 
-                            data-email-id="${email.id}" 
-                            data-email="${escapeHtml(email.email)}">
-                        <i class="fas fa-trash me-1"></i>Delete
-                    </button>` : 
-                    ''
-                }
-            </div>
-        `;
-        
-        return div;
-    }
-
     // Helper function to escape HTML
     function escapeHtml(unsafe) {
         return unsafe
@@ -496,6 +585,5 @@ document.addEventListener('DOMContentLoaded', function() {
             button.innerHTML = '<i class="fas fa-trash me-1"></i>Delete';
         }
     }
-    
 });
 </script>

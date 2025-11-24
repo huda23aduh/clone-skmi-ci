@@ -314,23 +314,40 @@ class ProfileController extends Controller
         }
 
         $period = $this->request->getGet('period') ?? 30;
-        $daysAgo = date('Y-m-d H:i:s', strtotime("-$period days"));
-        
+        $startDate = $this->request->getGet('start_date');
+        $endDate = $this->request->getGet('end_date');
+
+        // Handle custom date range
+        if ($startDate && $endDate && $period === 'custom') {
+            $startDate = date('Y-m-d 00:00:00', strtotime($startDate));
+            $endDate = date('Y-m-d 23:59:59', strtotime($endDate));
+        } else {
+            // Handle predefined periods
+            $daysAgo = date('Y-m-d H:i:s', strtotime("-$period days"));
+            $startDate = $daysAgo;
+            $endDate = date('Y-m-d H:i:s');
+        }
+
         // Get daily activity count for the period
         $builder = $this->activityLogModel->builder();
         $activities = $builder->select('DATE(created_at) as date, COUNT(*) as count')
                             ->where('user_id', $user['id'])
-                            ->where('created_at >=', $daysAgo)
+                            ->where('created_at >=', $startDate)
+                            ->where('created_at <=', $endDate)
                             ->groupBy('DATE(created_at)')
                             ->orderBy('date', 'ASC')
                             ->get()
                             ->getResultArray();
 
+        // Calculate the date range for filling missing dates
+        $start = strtotime($startDate);
+        $end = strtotime($endDate);
+        $daysDiff = floor(($end - $start) / (60 * 60 * 24)) + 1;
+
         // Fill in missing dates with zero counts
         $chartData = [];
-        $currentDate = date('Y-m-d');
-        for ($i = $period - 1; $i >= 0; $i--) {
-            $date = date('Y-m-d', strtotime("-$i days"));
+        for ($i = 0; $i < $daysDiff; $i++) {
+            $date = date('Y-m-d', strtotime("+$i days", $start));
             $found = false;
             
             foreach ($activities as $activity) {
@@ -346,17 +363,39 @@ class ProfileController extends Controller
             }
         }
 
-        $stats = $this->getActivityStatistics($user['id']);
+        // Get statistics for the same period
+        $stats = $this->getActivityStatisticsForPeriod($user['id'], $startDate, $endDate);
         
         return $this->response->setJSON([
             'success' => true,
             'chart_data' => $chartData,
-            'summary' => [
-                'total' => $stats['total_activities'],
-                'last_30_days' => $stats['last_30_days'],
-                'file_uploads' => $stats['file_uploads'],
-                'file_downloads' => $stats['file_downloads']
-            ]
+            'summary' => $stats
         ]);
+    }
+
+    /**
+     * Get activity statistics for specific period
+     */
+    private function getActivityStatisticsForPeriod($userId, $startDate, $endDate)
+    {
+        return [
+            'total_activities' => $this->activityLogModel
+                ->where('user_id', $userId)
+                ->where('created_at >=', $startDate)
+                ->where('created_at <=', $endDate)
+                ->countAllResults(),
+            'file_uploads' => $this->activityLogModel
+                ->where('user_id', $userId)
+                ->where('activity_type', ActivityLogModel::TYPE_FILE_UPLOAD)
+                ->where('created_at >=', $startDate)
+                ->where('created_at <=', $endDate)
+                ->countAllResults(),
+            'file_downloads' => $this->activityLogModel
+                ->where('user_id', $userId)
+                ->where('activity_type', ActivityLogModel::TYPE_FILE_DOWNLOAD)
+                ->where('created_at >=', $startDate)
+                ->where('created_at <=', $endDate)
+                ->countAllResults(),
+        ];
     }
 }
