@@ -4,10 +4,9 @@ namespace App\Controllers;
 
 use App\Models\UserModel;
 use App\Models\ActivityLogModel;
-use CodeIgniter\Controller;
 use App\Traits\Authenticable;
 
-class ProfileController extends Controller
+class ProfileController extends BaseController
 {
     use Authenticable;
 
@@ -50,14 +49,10 @@ class ProfileController extends Controller
             'user' => $userData,
             'userEmails' => $userEmails, // Add this line
             'activityStats' => $activityStats,
-            'recentActivities' => $recentActivities,
-            'languages' => [
-                'english' => 'English',
-                'bahasa' => 'Bahasa Indonesia'
-            ]
+            'recentActivities' => $recentActivities
         ];
 
-        return view('profile/index', $data);
+        return $this->renderView('profile/index', $data);
     }
 
     /**
@@ -237,14 +232,27 @@ class ProfileController extends Controller
             
             if (in_array($language, ['english', 'bahasa'])) {
                 if ($this->userModel->updateLanguage($user['id'], $language)) {
-                    // Set session language
+                    // Get the FULL user session array
+                    $userSession = session()->get('user');
+                    
+                    if (is_array($userSession)) {
+                        // Update the language in the user session
+                        $userSession['language'] = $language;
+                        session()->set('user', $userSession);
+                    } else {
+                        // If user session is not an array, create it
+                        $user['language'] = $language;
+                        session()->set('user', $user);
+                    }
+                    
+                    // Also set separate session variable for backup
                     session()->set('language', $language);
                     
-                    // Set locale for immediate effect
+                    // Set locale
                     $localeCode = $language === 'english' ? 'en' : 'id';
                     $this->request->setLocale($localeCode);
                     
-                    // Log the activity
+                    // Log activity
                     $this->activityLogModel->logActivity([
                         'user_id' => $user['id'],
                         'activity_type' => 'language_update',

@@ -54,5 +54,64 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = service('session');
+        $this->shareLanguagesWithViews();
+    }
+
+    protected function shareLanguagesWithViews()
+    {
+        // Get user from session
+        $user = session()->get('user') ?? [];
+        
+        // Ensure user has a language key
+        if (!isset($user['language'])) {
+            // Try to get from separate session or default
+            $user['language'] = session('language') ?? 'english';
+            
+            // Save back to session
+            session()->set('user', $user);
+        }
+        
+        // Define available languages
+        $languages = [
+            'english' => '🇺🇸 EN',
+            'bahasa' => '🇮🇩 ID'
+        ];
+        
+        // Share with ALL views
+        $view = service('renderer');
+        $view->setVar('languages', $languages);
+        $view->setVar('user', $user);
+    }
+    
+    /**
+     * Render view with common data
+     */
+    protected function renderView(string $view, array $data = [], array $options = [])
+    {
+        // Get current language from session or default
+        $userLanguage = session('user.language') ?? 'english';
+        
+        // Define available languages
+        $languages = [
+            'english' => '🇺🇸 EN',
+            'bahasa' => '🇮🇩 ID'
+        ];
+        
+        // Add languages data to all views
+        $data['languages'] = $languages;
+        $data['currentLanguage'] = $userLanguage;
+        
+        return view($view, $data, $options);
+    }
+    
+    /**
+     * Get languages array (if needed elsewhere)
+     */
+    protected function getLanguages()
+    {
+        return [
+            'english' => '🇺🇸 EN',
+            'bahasa' => '🇮🇩 ID'
+        ];
     }
 }

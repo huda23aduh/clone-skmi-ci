@@ -36,72 +36,91 @@
               </a>
             </li>
             <!--end::Fullscreen Toggle-->
+            <!--begin::language-->
+            <div class="card-body">
+                <form action="<?= base_url('profile/update-language') ?>" method="post" id="languageForm">
+                    <?= csrf_field() ?>
+                    <div class="mb-0">
+                        <select name="language" class="form-select" onchange="document.getElementById('languageForm').submit()">
+                            <?php foreach ($languages as $value => $label): ?>
+                                <?php
+                                // Get language directly from session, not from $user variable
+                                // Priority: 1. user session language, 2. general session language, 3. default
+                                $currentLanguage = 'english'; // default
+                                
+                                // Check user session first
+                                $userSession = session()->get('user');
+                                if (isset($userSession['language'])) {
+                                    $currentLanguage = $userSession['language'];
+                                }
+                                // Fallback to general session
+                                elseif (session()->has('language')) {
+                                    $currentLanguage = session('language');
+                                }
+                                ?>
+                                <option value="<?= $value ?>" <?= $currentLanguage === $value ? 'selected' : '' ?>>
+                                    <?= $label ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <!--end::language-->
             <!--begin::User Menu Dropdown-->
             <li class="nav-item dropdown user-menu">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <?php 
-                // Get user data from session safely
-                $userSession = session()->get('user') ?? [];
-                $profileImage = $userSession['profile_image'] ?? '';
-                $userName = $userSession['name'] ?? 'Guest';
-                
-                // Check if profile image exists and is accessible
-                $imageExists = !empty($profileImage) && file_exists(FCPATH . $profileImage);
-                ?>
-                
-                <?php if ($imageExists): ?>
-                    <img
-                        src="<?= base_url($profileImage) ?>" 
-                        class="user-image rounded-circle shadow"
-                        alt="User Image"
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                    />
-                    <div class="user-image-placeholder rounded-circle bg-secondary d-none" style="width: 32px; height: 32px;">
-                        <i class="fas fa-user text-white small"></i>
-                    </div>
-                <?php else: ?>
-                    <div class="user-image-placeholder rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                        <i class="fas fa-user text-white small"></i>
-                    </div>
-                <?php endif; ?>
-                
-                <span class="d-none d-md-inline"><?= esc($userName) ?></span>
-            </a>
-              <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                <!--begin::User Image-->
-                <li class="user-header text-bg-primary">
-                  <img
-                    src="./assets/img/user2-160x160.jpg"
-                    class="rounded-circle shadow"
-                    alt="User Image"
-                  />
-                  <p>
-                  <?= esc(session()->get('user')['name'] ?? 'Guest') ?>
-                  <!-- Alexander Pierce - Web Developer -->
-                    <small>Member since Nov. 2023</small>
-                  </p>
-                </li>
-                <!--end::User Image-->
-                <!--begin::Menu Body-->
-                <li class="user-body">
-                  <!--begin::Row-->
-                  <!-- <div class="row">
-                    <div class="col-4 text-center"><a href="#">Followers</a></div>
-                    <div class="col-4 text-center"><a href="#">Sales</a></div>
-                    <div class="col-4 text-center"><a href="#">Friends</a></div>
-                  </div> -->
-                  <!--end::Row-->
-                </li>
-                <!--end::Menu Body-->
-                <!--begin::Menu Footer-->
-                <li class="user-footer">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
-                  <a  href="<?= base_url('/logout') ?>" class="btn btn-default btn-flat float-end">Sign out</a>
-                </li>
-                <!--end::Menu Footer-->
-              </ul>
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                    <?php 
+                    // Get user data DIRECTLY from session
+                    $userSession = session()->get('user') ?? [];
+                    $profileImage = $userSession['profile_image'] ?? '';
+                    $userName = $userSession['name'] ?? 'Guest';
+                    
+                    // Check if profile image exists and is accessible
+                    $imageExists = !empty($profileImage) && file_exists(FCPATH . $profileImage);
+                    ?>
+                    
+                    <?php if ($imageExists): ?>
+                        <img
+                            src="<?= base_url($profileImage) ?>" 
+                            class="user-image rounded-circle shadow"
+                            alt="User Image"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                        />
+                        <div class="user-image-placeholder rounded-circle bg-secondary d-none" style="width: 32px; height: 32px;">
+                            <i class="fas fa-user text-white small"></i>
+                        </div>
+                    <?php else: ?>
+                        <div class="user-image-placeholder rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                            <i class="fas fa-user text-white small"></i>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <span class="d-none d-md-inline"><?= esc($userName) ?></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+                    <!--begin::User Image-->
+                    <li class="user-header text-bg-primary">
+                        <img
+                            src="./assets/img/user2-160x160.jpg"
+                            class="rounded-circle shadow"
+                            alt="User Image"
+                        />
+                        <p>
+                            <?= esc($userSession['name'] ?? 'Guest') ?>
+                            <small>Member since Nov. 2023</small>
+                        </p>
+                    </li>
+                    <!--end::User Image-->
+                    <!--begin::Menu Footer-->
+                    <li class="user-footer">
+                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                        <a href="<?= base_url('/logout') ?>" class="btn btn-default btn-flat float-end">Sign out</a>
+                    </li>
+                    <!--end::Menu Footer-->
+                </ul>
             </li>
-            <!--end::User Menu Dropdown-->
+<!--end::User Menu Dropdown-->
           </ul>
           <!--end::End Navbar Links-->
         </div>

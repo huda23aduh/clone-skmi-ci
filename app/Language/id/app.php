@@ -40,6 +40,7 @@ return [
     'to' => 'ke',
     'of' => 'dari',
     'entries' => 'entries',
+    'supportedFormat' => 'Format yang didukung : JPG, PNG, GIF, WebP. Max size: 2MB',
     
     // Navigation
     'dashboard' => 'Dasbor',
@@ -83,6 +84,11 @@ return [
     'file_downloads' => 'Unduh File',
     'edit_profile_info' => 'Edit Informasi Profil',
     'change_password_optional' => 'Ubah Password (Opsional)',
+    'add_backup_email' => 'Tambah Email Cadangan',
+    'add_email' => 'Tambah Email',
+    'enter_backup_email_address' => 'Masukkan email cadangan',
+    'email_management' => 'Manajemen Email',
+    'your_email_addresses' => 'Alamat emailmu',
     
     // Activity Log
     'activity_log' => 'Log Aktivitas',

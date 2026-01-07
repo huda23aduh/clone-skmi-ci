@@ -39,6 +39,7 @@ return [
     'to' => 'to',
     'of' => 'of',
     'entries' => 'entries',
+    'supportedFormat' => 'Supported Format : JPG, PNG, GIF, WebP. Max size: 2MB',
     
     // Navigation
     'dashboard' => 'Dashboard',
@@ -96,6 +97,11 @@ return [
     'file_downloads' => 'File Downloads',
     'edit_profile_info' => 'Edit Profile Information',
     'change_password_optional' => 'Change Password (Optional)',
+    'add_backup_email' => 'Add Backup Email',
+    'add_email' => 'Add Email',
+    'enter_backup_email_address' => 'Enter backup email address',
+    'email_management' => 'Email Management',
+    'your_email_addresses' => 'Your Email Addresses',
     
     // Activity Log
     'activity_log' => 'Activity Log',

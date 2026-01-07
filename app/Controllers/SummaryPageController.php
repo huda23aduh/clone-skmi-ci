@@ -3,11 +3,12 @@
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
+use CodeIgniter\Controllers\BaseControlller;
 use App\Traits\Authenticable;
 use App\Models\FileModel;
 use App\Models\FolderModel;
 
-class SummaryPageController extends Controller
+class SummaryPageController extends BaseController
 {
     use Authenticable;
 
@@ -35,7 +36,7 @@ class SummaryPageController extends Controller
             'user' => $user
         ];
 
-        return view('summary/index', $data);
+        return $this->renderView('summary/index', $data);
     }
 
     /**

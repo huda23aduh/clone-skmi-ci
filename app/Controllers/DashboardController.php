@@ -2,10 +2,9 @@
 
 use App\Models\FolderModel;
 use App\Models\FileModel;
-use CodeIgniter\Controller;
 use App\Traits\Authenticable;
 
-class DashboardController extends Controller
+class DashboardController extends BaseController
 {
     use Authenticable;
     
@@ -47,15 +46,11 @@ class DashboardController extends Controller
                     ->where('folder_id IS NULL OR folder_id = 0')
                     ->findAll();
     
-        return view('dashboard/index', [
+        return $this->renderView('dashboard/index', [
             'title' => 'MY Drive',
             'user' => $user,
             'folders' => $folders,
             'files' => $files,
-            'languages' => [
-                'english' => 'English',
-                'bahasa' => 'Bahasa Indonesia'
-            ]
         ]);
     }
 
@@ -93,6 +88,6 @@ class DashboardController extends Controller
             'files' => $fileModel->where('user_id', $user["id"])->where('is_deleted', 1)->findAll(),
         ];
 
-        return view('recycle_bin/index', $data);
+        return $this->renderView('recycle_bin/index', $data);
     }
 }

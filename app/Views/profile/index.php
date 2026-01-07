@@ -55,7 +55,8 @@
                                   id="profileImageInput" style="display: none;"
                                   onchange="handleImageSelection(this)">
                             <button type="button" class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="document.getElementById('profileImageInput').click()">
-                                <i class="fas fa-camera me-1"></i>Change Photo
+                                <i class="fas fa-camera me-1"></i>
+                                <?= app_lang('app.change_photo') ?>
                             </button>
                             <div id="imagePreview" class="mt-2" style="display: none;">
                                 <small class="text-muted">Selected: <span id="fileName"></span></small>
@@ -69,13 +70,14 @@
                     <!-- Image Requirements -->
                     <small class="text-muted mt-2 d-block">
                         <i class="fas fa-info-circle me-1"></i>
-                        Supported formats: JPG, PNG, GIF, WebP. Max size: 2MB
+                        <?= app_lang('app.supportedFormat') ?>
+                        <!-- Supported formats: JPG, PNG, GIF, WebP. Max size: 2MB -->
                     </small>
                 </div>
             </div>
 
             <!-- Language Settings -->
-            <div class="card shadow-sm mb-4">
+            <!-- <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light py-3">
                     <h5 class="card-title mb-0 d-flex align-items-center">
                         <i class="fas fa-globe me-2"></i><?= lang('app.language_preference') ?>
@@ -87,7 +89,22 @@
                         <div class="mb-0">
                             <select name="language" class="form-select" onchange="document.getElementById('languageForm').submit()">
                                 <?php foreach ($languages as $value => $label): ?>
-                                    <option value="<?= $value ?>" <?= ($user['language'] ?? 'english') === $value ? 'selected' : '' ?>>
+                                    <?php
+                                    // Get language directly from session, not from $user variable
+                                    // Priority: 1. user session language, 2. general session language, 3. default
+                                    $currentLanguage = 'english'; // default
+                                    
+                                    // Check user session first
+                                    $userSession = session()->get('user');
+                                    if (isset($userSession['language'])) {
+                                        $currentLanguage = $userSession['language'];
+                                    }
+                                    // Fallback to general session
+                                    elseif (session()->has('language')) {
+                                        $currentLanguage = session('language');
+                                    }
+                                    ?>
+                                    <option value="<?= $value ?>" <?= $currentLanguage === $value ? 'selected' : '' ?>>
                                         <?= $label ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -95,7 +112,7 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Activity Stats -->
             <div class="card shadow-sm">
@@ -141,23 +158,27 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light py-3">
                     <h5 class="card-title mb-0 d-flex align-items-center">
-                        <i class="fas fa-envelope me-2"></i>Email Management
+                        <i class="fas fa-envelope me-2"></i>
+                        <?= app_lang('app.email_management') ?>
                     </h5>
                 </div>
                 <div class="card-body">
                     <!-- Add New Email Form -->
                     <div class="mb-4">
-                        <h6 class="mb-3">Add Backup Email</h6>
+                        <h6 class="mb-3">
+                            <?= app_lang('app.add_backup_email') ?>
+                        </h6>
                         <form action="<?= base_url('profile/email/add') ?>" method="post" id="addEmailForm">
                             <?= csrf_field() ?>
                             <div class="row g-2">
                                 <div class="col-md-8">
                                     <input type="email" class="form-control" name="email" 
-                                           placeholder="Enter backup email address" required>
+                                           placeholder="<?= app_lang('app.enter_backup_email_address') ?>" required>
                                 </div>
                                 <div class="col-md-4">
                                     <button type="submit" class="btn btn-primary w-100">
-                                        <i class="fas fa-plus me-1"></i>Add Email
+                                        <i class="fas fa-plus me-1"></i>
+                                        <?= app_lang('app.add_email') ?>
                                     </button>
                                 </div>
                             </div>
@@ -168,7 +189,7 @@
                     </div>
 
                     <!-- Email List -->
-                    <h6 class="mb-3">Your Email Addresses</h6>
+                    <h6 class="mb-3"><?= app_lang('app.your_email_addresses') ?></h6>
                     <div id="emailList">
                         <?php if (!empty($userEmails)): ?>
                             <div class="list-group">
