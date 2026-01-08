@@ -72,17 +72,20 @@
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li>
                                             <a class="dropdown-item" href="<?= base_url('/folder/view/' . $folder['id']) ?>">
-                                                <i class="fas fa-folder-open me-2"></i>Open
+                                                <i class="fas fa-folder-open me-2"></i>
+                                                <?= app_lang('app.open') ?>
                                             </a>
                                         </li>
                                         <li>
                                             <a class="dropdown-item" href="javascript:void(0)" onclick="uploadToFolder(<?= $folder['id'] ?>)">
-                                                <i class="fas fa-upload me-2"></i>Upload Here
+                                                <i class="fas fa-upload me-2"></i>
+                                                <?= app_lang('app.upload_here') ?>
                                             </a>
                                         </li>
                                         <li>
                                             <a class="dropdown-item" href="javascript:void(0)" onclick="createSubfolder(<?= $folder['id'] ?>)">
-                                                <i class="fas fa-folder-plus me-2"></i>Create Subfolder
+                                                <i class="fas fa-folder-plus me-2"></i>
+                                                <?= app_lang('app.create_subfolder') ?>
                                             </a>
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
@@ -91,7 +94,8 @@
                                             data-item-id="<?= $folder['id'] ?>" 
                                             data-item-type="folder"
                                             data-item-name="<?= esc($folder['name']) ?>">
-                                                <i class="fas fa-edit me-2"></i>Rename
+                                                <i class="fas fa-edit me-2"></i>
+                                                <?= app_lang('app.rename') ?>
                                             </a>
                                         </li>
                                         <li>
@@ -101,7 +105,7 @@
                                             data-item-name="<?= esc($folder['name']) ?>"
                                             data-is-public="<?= $folder['is_public'] ?? 0 ?>">
                                                 <i class="fas <?= ($folder['is_public'] ?? 0) == 1 ? 'fa-lock-open' : 'fa-link' ?> me-2"></i>
-                                                <?= ($folder['is_public'] ?? 0) == 1 ? 'Make Private' : 'Make Public' ?>
+                                                <?= ($folder['is_public'] ?? 0) == 1 ? app_lang('app.make_private') : app_lang('app.make_public') ?>
                                             </a>
                                         </li>
                                         <?php if (($folder['is_public'] ?? 0) == 1 && !empty($folder['public_token'])): ?>
@@ -116,7 +120,8 @@
                                         <li>
                                             <form method="post" action="<?= base_url('/folder/delete/' . $folder['id']) ?>" class="d-inline">
                                                 <button type="submit" class="dropdown-item text-danger">
-                                                    <i class="fas fa-trash me-2"></i>Move to Trash
+                                                    <i class="fas fa-trash me-2"></i>
+                                                    <?=app_lang('app.move_to_trash') ?>
                                                 </button>
                                             </form>
                                         </li>

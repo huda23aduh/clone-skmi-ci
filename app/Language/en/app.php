@@ -112,6 +112,9 @@ return [
     'enter_backup_email_address' => 'Enter backup email address',
     'email_management' => 'Email Management',
     'your_email_addresses' => 'Your Email Addresses',
+    'a_verification_email_will_be_sent' => 'A verification email will be sent to this address.',
+    'no_backup_email_added_yet' => 'No backup emails added yet.',
+    'primary_email_cannot_be_changed' => 'Primary email cannot be changed here. Use email management above',
     
     // Activity Log
     'activity_log' => 'Activity Log',
@@ -143,12 +146,18 @@ return [
     'download' => 'Download',
     'share' => 'Share',
     'rename' => 'Rename',
+    'make_public' => 'Make Public',
+    'make_private' => 'Make Private',
     'move' => 'Move',
     'copy' => 'Copy',
+    'open' => 'Open',
+    'move_to_trash' => 'Move to trash',
+    'create_subfolder' => 'Create Subfolder',
     'zip' => 'Zip',
     'extract' => 'Extract',
     'star' => 'Star',
     'unstar' => 'Unstar',
+    'upload_here' => 'Upload here',
     
     // Control Center
     'control_center' => 'Control Center',

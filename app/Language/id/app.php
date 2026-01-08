@@ -99,6 +99,9 @@ return [
     'enter_backup_email_address' => 'Masukkan email cadangan',
     'email_management' => 'Manajemen Email',
     'your_email_addresses' => 'Alamat emailmu',
+    'a_verification_email_will_be_sent' => 'verifikasi email akan dikirimkan ke email ini',
+    'no_backup_email_added_yet' => 'email cadangan belum ditambahkan',
+    'primary_email_cannot_be_changed' => 'Email utama tidak bisa diganti. gunakan email cadangan di atas',
     
     // Activity Log
     'activity_log' => 'Log Aktivitas',
@@ -142,12 +145,18 @@ return [
     'download' => 'Unduh',
     'share' => 'Bagikan',
     'rename' => 'Ubah Nama',
+    'make_public' => 'Atur Menjadi Publik',
+    'make_private' => 'Atur Menjadi Private',
     'move' => 'Pindahkan',
     'copy' => 'Salin',
+    'open' => 'Buka',
+    'move_to_trash' => 'Pindahkan ke sampah',
+    'create_subfolder' => 'Buat Subfolder',
     'zip' => 'Zip',
     'extract' => 'Ekstrak',
     'star' => 'Bintangi',
     'unstar' => 'Hapus Bintang',
+    'upload_here' => 'Upload disini',
     
     // Control Center
     'control_center' => 'Pusat Kontrol',

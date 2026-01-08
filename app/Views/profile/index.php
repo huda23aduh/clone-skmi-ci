@@ -183,7 +183,7 @@
                                 </div>
                             </div>
                             <small class="text-muted">
-                                A verification email will be sent to this address.
+                                <?= app_lang('app.a_verification_email_will_be_sent') ?>
                             </small>
                         </form>
                     </div>
@@ -235,7 +235,9 @@
                         <?php else: ?>
                             <div class="text-center py-4 text-muted">
                                 <i class="fas fa-envelope fa-2x mb-2"></i>
-                                <p>No backup emails added yet.</p>
+                                <p>
+                                    <?= app_lang('app.no_backup_email_added_yet') ?>
+                                </p>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -265,7 +267,9 @@
                                 <input type="email" class="form-control" id="email" name="email" 
                                        value="<?= old('email', $user['email'] ?? '') ?>" 
                                        placeholder="Enter your email address" readonly>
-                                <small class="text-muted">Primary email cannot be changed here. Use email management above.</small>
+                                <small class="text-muted">
+                                    <?= app_lang('app.primary_email_cannot_be_changed') ?>
+                                </small>
                             </div>
                         </div>
 
