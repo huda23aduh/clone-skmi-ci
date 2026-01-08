@@ -38,32 +38,32 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-light py-3">
                     <h5 class="card-title mb-0 d-flex align-items-center">
-                        <i class="fas fa-info-circle me-2"></i>File Details
+                        <i class="fas fa-info-circle me-2"></i><?= lang('app.file_details') ?>
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">File Name</label>
+                        <label class="form-label fw-semibold"><?= lang('app.name') ?></label>
                         <p class="form-control bg-light"><?= esc($file['original_name']) ?></p>
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">File Size</label>
+                        <label class="form-label fw-semibold"><?= lang('app.size') ?></label>
                         <p class="form-control bg-light"><?= format_file_size($file['size']) ?></p>
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">File Type</label>
+                        <label class="form-label fw-semibold"><?= lang('app.type') ?></label>
                         <p class="form-control bg-light"><?= strtoupper($fileExtension) ?> Video</p>
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Uploaded At</label>
+                        <label class="form-label fw-semibold"><?= lang('app.uploaded_at') ?></label>
                         <p class="form-control bg-light"><?= date('M j, Y g:i A', strtotime($file['created_at'])) ?></p>
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Last Modified</label>
+                        <label class="form-label fw-semibold"><?= lang('app.last_modified') ?></label>
                         <p class="form-control bg-light"><?= date('M j, Y g:i A', strtotime($file['updated_at'])) ?></p>
                     </div>
                     
@@ -72,7 +72,7 @@
                             <i class="fas fa-download me-1"></i>Download Video
                         </a>
                         <a href="<?= base_url('/') ?>" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                            <i class="fas fa-arrow-left me-1"></i><?= lang('app.back_to_dashboard') ?>
                         </a>
                     </div>
                 </div>

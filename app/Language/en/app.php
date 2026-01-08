@@ -240,4 +240,10 @@ return [
     'no_starred_items' => 'no starred items',
     'star_important_files_and_folder' => 'Star important files and folders to see them here',
 
+    //preview page
+    'file_details' => 'file details',
+    'file_preview' => 'file preview',
+    'uploaded_at' => 'Uploaded at',
+    'last_modified' => 'Last modified at',
+
 ];

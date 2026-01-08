@@ -238,4 +238,10 @@ return [
     'starred_date' => 'Tanggal Difavoritkan',
     'no_starred_items' => 'tidak ada item yang difavoritkan',
     'star_important_files_and_folder' => 'Tandai folder atau file favorit dan akan muncul di halaman ini',
+
+    //preview page
+    'file_details' => 'file informasi detail',
+    'file_preview' => 'pratinjau file',
+    'uploaded_at' => 'Diupload Pada',
+    'last_modified' => 'Terakhir diubah pada',
 ];

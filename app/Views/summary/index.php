@@ -15,7 +15,7 @@
         </div>
         <div class="btn-group">
             <a href="<?= base_url('/') ?>" class="btn btn-outline-primary">
-                <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                <i class="fas fa-arrow-left me-1"></i><?= lang('app.back_to_dashboard') ?>
             </a>
         </div>
     </div>
