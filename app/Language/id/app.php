@@ -40,6 +40,7 @@ return [
     'to' => 'ke',
     'of' => 'dari',
     'modified' => 'Diubah',
+    'deletedAt' => 'Dihapus pada',
     'entries' => 'entries',
     'submit' => 'kirim',
     'nameAZ' => 'Nama (A-Z)',
@@ -71,6 +72,7 @@ return [
     // Recycle bin Page
     'emptyrecyclebin' => 'Kosongkan Tempat Sampah',
     'deletepermanently' => 'Hapus Permanen',
+    'restore' => 'Pulihkan',
     'restoreselected' => 'Pulihkan Terpilih',
     'recyclebinisempty' => 'Tempat sampah kosong',
     

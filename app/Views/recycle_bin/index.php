@@ -65,7 +65,7 @@
           <th><?= app_lang('app.name') ?></th>
           <th><?= app_lang('app.type') ?></th>
           <th><?= app_lang('app.size') ?></th>
-          <th>Deleted At</th>
+          <th><?= app_lang('app.deletedAt') ?></th>
           <th><?= app_lang('app.actions') ?></th>
         </tr>
       </thead>
@@ -84,11 +84,11 @@
               <div class="btn-group btn-group-sm">
                 <button type="button" class="btn btn-outline-success restore-single" 
                         data-id="<?= $item['id'] ?>" data-type="folder" data-name="<?= esc($item['name']) ?>">
-                  <i class="fas fa-undo"></i> Restore
+                  <i class="fas fa-undo"></i> <?= app_lang('app.restore') ?>
                 </button>
                 <button type="button" class="btn btn-outline-danger delete-single"
                         data-id="<?= $item['id'] ?>" data-type="folder" data-name="<?= esc($item['name']) ?>">
-                  <i class="fas fa-trash"></i> Delete
+                  <i class="fas fa-trash"></i> <?= app_lang('app.delete') ?>
                 </button>
               </div>
             </td>
@@ -119,11 +119,11 @@
               <div class="btn-group btn-group-sm">
                 <button type="button" class="btn btn-outline-success restore-single"
                         data-id="<?= $item['id'] ?>" data-type="file" data-name="<?= esc($item['original_name']) ?>">
-                  <i class="fas fa-undo"></i> Restore
+                  <i class="fas fa-undo"></i> <?= app_lang('app.restore') ?>
                 </button>
                 <button type="button" class="btn btn-outline-danger delete-single"
                         data-id="<?= $item['id'] ?>" data-type="file" data-name="<?= esc($item['original_name']) ?>">
-                  <i class="fas fa-trash"></i> Delete
+                  <i class="fas fa-trash"></i> <?= app_lang('app.delete') ?>
                 </button>
               </div>
             </td>

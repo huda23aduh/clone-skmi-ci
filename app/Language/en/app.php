@@ -38,6 +38,7 @@ return [
     'showing' => 'Showing',
     'to' => 'to',
     'of' => 'of',
+    'deletedAt' => 'Deleted At',
     'modified' => 'modified',
     'entries' => 'entries',
     'submit' => 'submit',
@@ -70,6 +71,7 @@ return [
     // Recycle bin Page
     'emptyrecyclebin' => 'Empty Recycle Bin',
     'deletepermanently' => 'Delete Permanently',
+    'restore' => 'Restore',
     'restoreselected' => 'Restore Selected',
     'recyclebinisempty' => 'Recycle bin is empty',
 
