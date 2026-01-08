@@ -72,6 +72,7 @@ return [
     'back_to_dashboard' => 'kembali ke Dasbor',
     'back_to_login' => 'kembali ke Halaman Login',
     'go_to_forgotpassword' => 'Ke halaman lupa password',
+    'forgotpassword' => 'Lupa Password',
    
     // Recycle bin Page
     'emptyrecyclebin' => 'Kosongkan Tempat Sampah',

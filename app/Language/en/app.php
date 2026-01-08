@@ -71,6 +71,7 @@ return [
     'back_to_dashboard' => 'back to dashboard',
     'back_to_login' => 'Back to login',
     'go_to_forgotpassword' => 'go to forgot password page',
+    'forgotpassword' => 'Forgot Password',
     
     // Recycle bin Page
     'emptyrecyclebin' => 'Empty Recycle Bin',
