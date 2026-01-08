@@ -19,11 +19,21 @@
                         <th width="40" class="ps-3">
                             <input type="checkbox" id="selectAllCheckboxMain">
                         </th>
-                        <th>Name</th>
-                        <th width="120">Type</th>
-                        <th width="120">Size</th>
-                        <th width="180">Modified</th>
-                        <th width="120" class="text-center">Actions</th>
+                        <th>
+                            <?= app_lang('app.name') ?>
+                        </th>
+                        <th width="120">
+                            <?= app_lang('app.type') ?>
+                        </th>
+                        <th width="120">
+                            <?= app_lang('app.size') ?>
+                        </th>
+                        <th width="180">
+                            <?= app_lang('app.modified') ?>
+                        </th>
+                        <th width="120" class="text-center">
+                            <?= app_lang('app.actions') ?>
+                        </th>
                     </tr>
                 </thead>
                 <tbody id="contentTable">

@@ -38,8 +38,15 @@ return [
     'showing' => 'Showing',
     'to' => 'to',
     'of' => 'of',
+    'modified' => 'modified',
     'entries' => 'entries',
     'submit' => 'submit',
+    'nameAZ' => 'Name (A-Z)',
+    'nameZA' => 'Name (Z-A)',
+    'dateOldest' => 'Date (Oldest)',
+    'dateNewest' => 'Date (Newest)',
+    'sizeSmallest' => 'Size (Smallest)',
+    'sizeLargest' => 'Size (Largest)',
     'supportedFormat' => 'Supported Format : JPG, PNG, GIF, WebP. Max size: 2MB',
     
     // Navigation

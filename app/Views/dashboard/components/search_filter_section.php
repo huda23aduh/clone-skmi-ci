@@ -8,7 +8,8 @@
             </div>
             <div class="col-md-2">
                 <button class="btn btn-outline-secondary w-100" id="selectAllBtn">
-                    <i class="fas fa-check-square me-1"></i> Select All
+                    <i class="fas fa-check-square me-1"></i> 
+                    <?= app_lang('app.selectall') ?>
                 </button>
             </div>
             <div class="col-md-4">
@@ -21,19 +22,37 @@
             </div>
             <div class="col-md-2">
                 <select class="form-select" id="typeFilter">
-                    <option value="all">All Items</option>
-                    <option value="folder">Folders Only</option>
-                    <option value="file">Files Only</option>
+                    <option value="all">
+                        <?= app_lang('app.allitems') ?>
+                    </option>
+                    <option value="folder">
+                        <?= app_lang('app.folderonly') ?>
+                    </option>
+                    <option value="file">
+                        <?= app_lang('app.fileonly') ?>
+                    </option>
                 </select>
             </div>
             <div class="col-md-2">
                 <select class="form-select" id="sortBy">
-                    <option value="name_asc">Name (A-Z)</option>
-                    <option value="name_desc">Name (Z-A)</option>
-                    <option value="date_asc">Date (Oldest)</option>
-                    <option value="date_desc">Date (Newest)</option>
-                    <option value="size_asc">Size (Smallest)</option>
-                    <option value="size_desc">Size (Largest)</option>
+                    <option value="name_asc">
+                        <?= app_lang('app.nameAZ') ?>
+                    </option>
+                    <option value="name_desc">
+                        <?= app_lang('app.nameZA') ?>
+                    </option>
+                    <option value="date_asc">
+                        <?= app_lang('app.dateOldest') ?>
+                    </option>
+                    <option value="date_desc">
+                        <?= app_lang('app.dateNewest') ?>
+                    </option>
+                    <option value="size_asc">
+                        <?= app_lang('app.sizeSmallest') ?>
+                    </option>
+                    <option value="size_desc">
+                        <?= app_lang('app.sizeLargest') ?>
+                    </option>
                 </select>
             </div>
         </div>
