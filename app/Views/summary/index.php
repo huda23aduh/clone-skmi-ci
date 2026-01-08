@@ -97,7 +97,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Storage Used
+                                    <?= lang('app.storage_used') ?>
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800" id="storagePercentage">0%</div>
                                 <div class="progress mt-2" style="height: 4px;">

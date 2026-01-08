@@ -29,6 +29,7 @@ return [
     'fileonly' => 'File Only',
     'selectall' => 'Select All',
     'nodata' => 'no data',
+    'total_files' => 'Total Files',
     'export' => 'Export',
     'exportascsv' => 'Export as CSV',
     'exportasjson' => 'Export as JSON',
@@ -211,6 +212,8 @@ return [
     'across_all_members' => 'Across all members',
     'avg_storage_per_member' => 'Avg Storage Per Member',
     'average_usage' => 'Average usage',
+    'storage_used' => 'storage used',
+    'number_of_uploads' => 'number of upload',
     
     // Members Page
     'member_management' => 'Member Management',

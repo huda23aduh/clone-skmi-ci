@@ -29,6 +29,7 @@ return [
     'fileonly' => 'File Saja',
     'selectall' => 'Pilih Semua',
     'nodata' => 'Tidak ada data',
+    'total_files' => 'Total Files',
     'export' => 'Ekspor',
     'exportascsv' => 'Ekspor sebagai CSV',
     'exportasjson' => 'Ekspor sebagai JSON',
@@ -210,6 +211,8 @@ return [
     'across_all_members' => 'Di semua anggota',
     'avg_storage_per_member' => 'Rata-rata Penyimpanan per Anggota',
     'average_usage' => 'Penggunaan rata-rata',
+    'storage_used' => 'Penyimpanan digunakan',
+    'number_of_uploads' => 'Jumlah upload',
     
     // Members Page
     'member_management' => 'Manajemen Anggota',
