@@ -62,14 +62,27 @@ abstract class BaseController extends Controller
         // Get user from session
         $user = session()->get('user') ?? [];
         
-        // Ensure user has a language key
-        if (!isset($user['language'])) {
-            // Try to get from separate session or default
-            $user['language'] = session('language') ?? 'english';
-            
-            // Save back to session
-            session()->set('user', $user);
+        // Determine current language
+        $currentLanguage = 'english'; // default
+        
+        // Priority: 1. logged-in user preference, 2. guest session, 3. cookie, 4. browser
+        if (isset($user['language'])) {
+            $currentLanguage = $user['language'];
+        } elseif (session()->has('guest_language')) {
+            $currentLanguage = session('guest_language');
+        } elseif (isset($_COOKIE['language_preference'])) {
+            $cookieLang = $_COOKIE['language_preference'];
+            $currentLanguage = $cookieLang === 'id' ? 'bahasa' : 'english';
         }
+        
+        // Ensure user array has language key for views
+        if (!isset($user['language'])) {
+            $user['language'] = $currentLanguage;
+        }
+        
+        // Set locale for this request
+        $locale = $currentLanguage === 'bahasa' ? 'id' : 'en';
+        $this->request->setLocale($locale);
         
         // Define available languages
         $languages = [
@@ -81,6 +94,7 @@ abstract class BaseController extends Controller
         $view = service('renderer');
         $view->setVar('languages', $languages);
         $view->setVar('user', $user);
+        $view->setVar('currentLocale', $currentLanguage); // Add this line
     }
     
     /**
@@ -89,7 +103,7 @@ abstract class BaseController extends Controller
     protected function renderView(string $view, array $data = [], array $options = [])
     {
         // Get current language from session or default
-        $userLanguage = session('user.language') ?? 'english';
+        $userLanguage = session('user.language') ?? 'bahasa';
         
         // Define available languages
         $languages = [

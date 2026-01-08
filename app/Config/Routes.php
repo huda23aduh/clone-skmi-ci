@@ -2,6 +2,10 @@
 
 use CodeIgniter\Router\RouteCollection;
 
+// Language routes
+$routes->match(['get', 'post'], 'auth/set-language', 'AuthController::setLanguage');
+$routes->match(['get', 'post'], 'auth/set-language/(:segment)', 'AuthController::setLanguage/$1');
+
 $routes->get('/login','AuthController::loginForm');
 $routes->post('/login','AuthController::login');
 $routes->post('/register','AuthController::register');

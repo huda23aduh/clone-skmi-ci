@@ -40,6 +40,7 @@ return [
     'to' => 'ke',
     'of' => 'dari',
     'entries' => 'entries',
+    'submit' => 'kirim',
     'supportedFormat' => 'Format yang didukung : JPG, PNG, GIF, WebP. Max size: 2MB',
     
     // Navigation
@@ -57,6 +58,8 @@ return [
     'login' => 'Masuk',
     'register' => 'Daftar',
     'back_to_dashboard' => 'kembali ke Dasbor',
+    'back_to_login' => 'kembali ke Halaman Login',
+    'go_to_forgotpassword' => 'Ke halaman lupa password',
    
     // Recycle bin Page
     'emptyrecyclebin' => 'Kosongkan Tempat Sampah',
@@ -146,7 +149,7 @@ return [
     'add_member' => 'Tambah Anggota',
     'member_name' => 'Nama',
     'member_email' => 'Email',
-    'member_password' => 'Password',
+    'member_password' => 'Kata Sandi',
     'member_role' => 'Peran',
     'admin' => 'Administrator',
     'user' => 'Pengguna',

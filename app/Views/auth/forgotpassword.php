@@ -36,10 +36,35 @@
     <!--begin::Required Plugin(AdminLTE)-->
     <link rel="stylesheet" href="<?= base_url('adminlte/css/adminlte.css') ?>" />
     <!--end::Required Plugin(AdminLTE)-->
+
+    <style>
+        .language-switcher {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+        .language-switcher .btn-sm {
+            padding: 0.15rem 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
   </head>
   <!--end::Head-->
   <!--begin::Body-->
   <body class="login-page bg-body-secondary">
+    <div class="language-switcher">
+          <div class="btn-group" role="group">
+              <a href="<?= base_url('auth/set-language/english') ?>" 
+                class="btn btn-sm btn-outline-secondary">
+                  🇺🇸 EN
+              </a>
+              <a href="<?= base_url('auth/set-language/bahasa') ?>" 
+                class="btn btn-sm btn-outline-secondary">
+                  🇮🇩 ID
+              </a>
+          </div>
+      </div>
+      
     <div class="login-box">
       <div class="card card-outline card-primary">
         <div class="card-header text-center">
@@ -61,22 +86,26 @@
             <div class="input-group mb-1">
               <div class="form-floating">
                 <input id="loginEmail" type="email" name="email" class="form-control" value="admin@example.com" placeholder="" />
-                <label for="loginEmail">Email</label>
+                <label for="loginEmail">
+                  <?= app_lang('app.email_address') ?>
+                </label>
               </div>
               <div class="input-group-text"><span class="bi bi-envelope"></span></div>
             </div>
             <!--begin::Row-->
             <div class="row">
-              <!-- <div class="col-8 d-inline-flex align-items-center">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                  <label class="form-check-label" for="flexCheckDefault"> Remember Me </label>
-                </div>
-              </div> -->
-              <!-- /.col -->
+              <div class="row mb-3">
+                  <div class="col-8">
+                    <a href="/login"> <?= app_lang('app.back_to_login') ?></a>
+                  </div>
+              </div>
+              
+
               <div class="col-4">
                 <div class="d-grid gap-2">
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" class="btn btn-primary">
+                    <?= app_lang('app.submit') ?>
+                  </button>
                 </div>
               </div>
               <!-- /.col -->

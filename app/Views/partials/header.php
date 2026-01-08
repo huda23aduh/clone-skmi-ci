@@ -46,7 +46,7 @@
                                 <?php
                                 // Get language directly from session, not from $user variable
                                 // Priority: 1. user session language, 2. general session language, 3. default
-                                $currentLanguage = 'english'; // default
+                                $currentLanguage = 'bahasa'; // default
                                 
                                 // Check user session first
                                 $userSession = session()->get('user');

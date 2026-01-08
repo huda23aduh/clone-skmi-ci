@@ -39,6 +39,7 @@ return [
     'to' => 'to',
     'of' => 'of',
     'entries' => 'entries',
+    'submit' => 'submit',
     'supportedFormat' => 'Supported Format : JPG, PNG, GIF, WebP. Max size: 2MB',
     
     // Navigation
@@ -56,6 +57,8 @@ return [
     'login' => 'Login',
     'register' => 'Register',
     'back_to_dashboard' => 'back to dashboard',
+    'back_to_login' => 'Back to login',
+    'go_to_forgotpassword' => 'go to forgot password page',
     
     // Recycle bin Page
     'emptyrecyclebin' => 'Empty Recycle Bin',
