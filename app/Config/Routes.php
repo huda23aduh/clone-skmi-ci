@@ -12,6 +12,10 @@ $routes->post('/register','AuthController::register');
 $routes->get('/forgotpassword','AuthController::forgotPassword');
 $routes->get('/logout','AuthController::logout');
 
+$routes->get('view-file/(:num)', 'PublicFileController::previewPublic/$1');
+$routes->get('view-file/download/(:any)', 'PublicFileController::downloadPublic/$1');
+$routes->get('uploads/(:any)', 'FileController::serveFile/$1');
+
 $routes->group('', ['filter' => 'auth'], function($routes) {
   $routes->get('/', function() {
     return redirect()->to('/dashboard');
@@ -69,7 +73,6 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
   
   $routes->get('preview/(:num)', 'PreviewController::preview/$1');
   $routes->get('preview/info/(:num)', 'PreviewController::getFileInfo/$1');
-  $routes->get('uploads/(:any)', 'FileController::serveFile/$1');
   
   $routes->group('starred', ['namespace' => 'App\Controllers'], function($routes) {
     $routes->get('/', 'DashboardController::starred');

@@ -6,7 +6,7 @@ use CodeIgniter\Controller;
 use App\Traits\Authenticable;
 use App\Models\FileModel;
 
-class PreviewController extends Controller
+class PreviewController extends BaseController
 {
     use Authenticable;
 
@@ -52,7 +52,8 @@ class PreviewController extends Controller
         $fileType = $this->getFileType($fileExtension);
 
         // Log preview activity
-        $this->logPreviewActivity($user['id'], $fileId, $file['original_name']);
+        if ($user) 
+            $this->logPreviewActivity($user['id'], $fileId, $file['original_name']);
 
         // Use dashboard layout instead of preview layout
         $data = [
@@ -71,17 +72,17 @@ class PreviewController extends Controller
         // Return appropriate preview based on file type using dashboard layout
         switch ($fileType) {
             case 'image':
-                return view('preview/image_preview', $data);
+                return $this->renderView('preview/image_preview', $data);
             case 'pdf':
-                return view('preview/pdf_preview', $data);
+                return $this->renderView('preview/pdf_preview', $data);
             case 'text':
-                return view('preview/text_preview', $data);
+                return $this->renderView('preview/text_preview', $data);
             case 'audio':
-                return view('preview/audio_preview', $data);
+                return $this->renderView('preview/audio_preview', $data);
             case 'video':
-                return view('preview/video_preview', $data);
+                return $this->renderView('preview/video_preview', $data);
             case 'document':
-                return view('preview/document_preview', $data);
+                return $this->renderView('preview/document_preview', $data);
             case 'archive':
                 return $this->previewArchive($data);
             case 'code':

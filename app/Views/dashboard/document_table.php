@@ -241,7 +241,7 @@
                                             <?php if (($file['is_public'] ?? 0) == 1 && !empty($file['public_token'])): ?>
                                             <li>
                                                 <a class="dropdown-item copy-public-link" href="javascript:void(0)" 
-                                                data-public-url="<?= base_url("public/file/{$file['public_token']}") ?>">
+                                                data-public-url="<?= base_url("view-file/{$file['id']}") ?>">
                                                     <i class="fas fa-copy me-2"></i>Copy Public Link
                                                 </a>
                                             </li>

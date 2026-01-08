@@ -3,10 +3,9 @@
 use App\Models\FolderModel;
 use App\Models\FileModel;
 use App\Models\UserModel;
-use CodeIgniter\Controller;
 use App\Services\ActivityLogger;
 
-class FolderController extends Controller
+class FolderController extends BaseController
 {
     protected $activityLogger;
 
@@ -68,6 +67,7 @@ class FolderController extends Controller
     public function view($id)
     {
         helper('format');
+        helper('date');
 
         $session = session();
         $user = $session->get('user');
@@ -128,7 +128,7 @@ class FolderController extends Controller
             $breadcrumbs = $this->buildBreadcrumbs($folderModel, $currentFolder);
         }
 
-        return view('folder/view', [
+        return $this->renderView('folder/view', [
             'title' => $currentFolder['name'],
             'user' => $user,
             'currentFolder' => $currentFolder,

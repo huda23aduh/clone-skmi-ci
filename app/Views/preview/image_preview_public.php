@@ -33,9 +33,9 @@
                            download="<?= $file['original_name'] ?>">
                             <i class="fas fa-download me-2"></i>Download Original
                         </a>
-                        <button onclick="window.print()" class="btn btn-outline-secondary">
+                        <!-- <button onclick="window.print()" class="btn btn-outline-secondary">
                             <i class="fas fa-print me-2"></i>Print
-                        </button>
+                        </button> -->
                     </div>
                 </div>
             </div>

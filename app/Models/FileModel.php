@@ -279,4 +279,12 @@ class FileModel extends Model
                     ->where('is_deleted', 0)
                     ->first();
     }
+
+    public function getPublicFileByFileId($fileId)
+    {
+        return $this->where('id', $fileId)
+                    ->where('is_public', true)
+                    ->where('is_deleted', 0)
+                    ->first();
+    }
 }
