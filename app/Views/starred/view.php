@@ -32,7 +32,7 @@
                         <th><?= lang('app.name') ?></th>
                         <th width="120"><?= lang('app.type') ?></th>
                         <th width="120"><?= lang('app.size') ?></th>
-                        <th width="180">Starred Date</th>
+                        <th width="180"><?= lang('app.starred_date') ?></th>
                         <th width="120" class="text-center"><?= lang('app.actions') ?></th>
                     </tr>
                 </thead>
@@ -42,8 +42,8 @@
                             <td colspan="5" class="text-center py-5">
                                 <div class="py-4">
                                     <i class="fas fa-star fa-4x text-muted mb-3"></i>
-                                    <h5 class="text-muted">No starred items</h5>
-                                    <p class="text-muted">Star important files and folders to see them here</p>
+                                    <h5 class="text-muted"><?= lang('app.no_starred_items') ?></h5>
+                                    <p class="text-muted"><?= lang('app.star_important_files_and_folder') ?></p>
                                 </div>
                             </td>
                         </tr>

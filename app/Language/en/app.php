@@ -226,4 +226,10 @@ return [
     'next' => 'Next',
     'never' => 'Never',
     'file_count' => '{count} files',
+
+    //starred page
+    'starred_date' => 'Starred Date',
+    'no_starred_items' => 'no starred items',
+    'star_important_files_and_folder' => 'Star important files and folders to see them here',
+
 ];

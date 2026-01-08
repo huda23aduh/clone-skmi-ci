@@ -225,4 +225,9 @@ return [
     'next' => 'Selanjutnya',
     'never' => 'Tidak Pernah',
     'file_count' => '{count} file',
+
+    //starred page
+    'starred_date' => 'Tanggal Difavoritkan',
+    'no_starred_items' => 'tidak ada item yang difavoritkan',
+    'star_important_files_and_folder' => 'Tandai folder atau file favorit dan akan muncul di halaman ini',
 ];
