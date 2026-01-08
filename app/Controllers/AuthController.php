@@ -90,6 +90,11 @@ class AuthController extends Controller
         return redirect()->to('/dashboard');
     }
 
+    public function forgotPassword() 
+    {
+        return view('auth/forgotpassword', ['title' => 'Forgot Password']);
+    }
+
     public function logout()
     {
         // Log logout activity before destroying session

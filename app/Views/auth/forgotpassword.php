@@ -65,13 +65,6 @@
               </div>
               <div class="input-group-text"><span class="bi bi-envelope"></span></div>
             </div>
-            <div class="input-group mb-1">
-              <div class="form-floating">
-                <input id="loginPassword" name="password" type="password" class="form-control" value="12341234" placeholder="" />
-                <label for="loginPassword">Password</label>
-              </div>
-              <span class="input-group-text" id="togglePassword"><i class="bi bi-eye-slash"></i></span>
-            </div>
             <!--begin::Row-->
             <div class="row">
               <!-- <div class="col-8 d-inline-flex align-items-center">
@@ -81,10 +74,9 @@
                 </div>
               </div> -->
               <!-- /.col -->
-              <p class="mb-1"><a href="/forgotpassword">forgot my password</a></p>
               <div class="col-4">
                 <div class="d-grid gap-2">
-                  <button type="submit" class="btn btn-primary">Sign In</button>
+                  <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
               </div>
               <!-- /.col -->

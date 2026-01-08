@@ -5,6 +5,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/login','AuthController::loginForm');
 $routes->post('/login','AuthController::login');
 $routes->post('/register','AuthController::register');
+$routes->get('/forgotpassword','AuthController::forgotPassword');
 $routes->get('/logout','AuthController::logout');
 
 $routes->group('', ['filter' => 'auth'], function($routes) {
