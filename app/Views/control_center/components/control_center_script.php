@@ -104,11 +104,19 @@ $(document).ready(function() {
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Email</th>
+                                <th>
+                                <?= app_lang('app.name') ?>
+                                </th>
+                                <th>
+                                <?= app_lang('app.email_address') ?>
+                                </th>
                                 <th>Status</th>
-                                <th>Created</th>
-                                <th width="120">Actions</th>
+                                <th>
+                                <?= app_lang('app.date') ?>
+                                </th>
+                                <th width="120">
+                                <?= app_lang('app.actions') ?>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>

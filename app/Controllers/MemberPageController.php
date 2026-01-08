@@ -2,13 +2,12 @@
 
 namespace App\Controllers;
 
-use CodeIgniter\Controller;
 use App\Traits\Authenticable;
 use App\Models\UserModel;
 use App\Models\FileModel;
 use App\Models\ActivityLogModel;
 
-class MemberPageController extends Controller
+class MemberPageController extends BaseController
 {
     use Authenticable;
 
@@ -161,7 +160,7 @@ class MemberPageController extends Controller
     private function getActivityTypes()
     {
         return [
-            'all' => 'All Activities',
+            'all' => lang('app.all_activities'),
             ActivityLogModel::TYPE_FILE_UPLOAD => 'File Uploads',
             ActivityLogModel::TYPE_FILE_DOWNLOAD => 'File Downloads',
             ActivityLogModel::TYPE_FILE_DELETE => 'File Deletions',

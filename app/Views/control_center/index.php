@@ -31,7 +31,7 @@
                             <input type="text" class="form-control" name="name" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label"><?= app_lang('app.email') ?></label>
+                            <label class="form-label"><?= app_lang('app.email_address') ?></label>
                             <input type="email" class="form-control" name="email" required>
                         </div>
                         <div class="col-md-3">
@@ -72,8 +72,8 @@
                         <option value="created_at_asc"><?= app_lang('app.oldestfirst') ?></option>
                         <option value="name_asc"><?= app_lang('app.name') ?> A-Z</option>
                         <option value="name_desc"><?= app_lang('app.name') ?> Z-A</option>
-                        <option value="email_asc"><?= app_lang('app.email') ?> A-Z</option>
-                        <option value="email_desc"><?= app_lang('app.email') ?> Z-A</option>
+                        <option value="email_asc"><?= app_lang('app.email_address') ?> A-Z</option>
+                        <option value="email_desc"><?= app_lang('app.email_address') ?> Z-A</option>
                     </select>
                 </div>
                 <div class="col-md-2">

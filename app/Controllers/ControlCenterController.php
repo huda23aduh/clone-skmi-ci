@@ -2,11 +2,10 @@
 
 namespace App\Controllers;
 
-use CodeIgniter\Controller;
 use App\Models\UserModel;
 use App\Traits\Authenticable;
 
-class ControlCenterController extends Controller
+class ControlCenterController extends BaseController
 {
     use Authenticable;
 

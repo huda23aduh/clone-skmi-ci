@@ -126,25 +126,33 @@
                         <div class="col-6 mb-3">
                             <div class="border rounded p-3 bg-light">
                                 <h3 class="text-primary mb-1"><?= $activityStats['total_activities'] ?></h3>
-                                <small class="text-muted">Total Activities</small>
+                                <small class="text-muted">
+                                    <?= lang('app.all_activities') ?>    
+                                </small>
                             </div>
                         </div>
                         <div class="col-6 mb-3">
                             <div class="border rounded p-3 bg-light">
                                 <h3 class="text-success mb-1"><?= $activityStats['last_30_days'] ?></h3>
-                                <small class="text-muted">Last 30 Days</small>
+                                <small class="text-muted">
+                                    <?= lang('app.last_30_days') ?>
+                                </small>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="border rounded p-3 bg-light">
                                 <h3 class="text-info mb-1"><?= $activityStats['file_uploads'] ?></h3>
-                                <small class="text-muted">File Uploads</small>
+                                <small class="text-muted">
+                                    <?= lang('app.file_uploads') ?>
+                                </small>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="border rounded p-3 bg-light">
                                 <h3 class="text-warning mb-1"><?= $activityStats['file_downloads'] ?></h3>
-                                <small class="text-muted">File Downloads</small>
+                                <small class="text-muted">
+                                    <?= lang('app.file_downloads') ?>
+                                </small>
                             </div>
                         </div>
                     </div>

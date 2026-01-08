@@ -3,6 +3,7 @@
 return [
     // General
     'app_name' => 'Manajer File',
+    'date' => 'Tanggal',
     'welcome' => 'Selamat Datang',
     'today' => 'Hari ini',
     'last30days' => '30 hari terakhir',
@@ -30,6 +31,7 @@ return [
     'selectall' => 'Pilih Semua',
     'nodata' => 'Tidak ada data',
     'total_files' => 'Total Files',
+    'all_activities' => 'Semua Aktifitas',
     'export' => 'Ekspor',
     'exportascsv' => 'Ekspor sebagai CSV',
     'exportasjson' => 'Ekspor sebagai JSON',
@@ -105,6 +107,7 @@ return [
     'a_verification_email_will_be_sent' => 'verifikasi email akan dikirimkan ke email ini',
     'no_backup_email_added_yet' => 'email cadangan belum ditambahkan',
     'primary_email_cannot_be_changed' => 'Email utama tidak bisa diganti. gunakan email cadangan di atas',
+    'last_30_dayss' => '30 hari terakhir',
     
     // Activity Log
     'activity_log' => 'Log Aktivitas',

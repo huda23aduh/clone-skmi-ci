@@ -155,7 +155,7 @@ class ActivityLogController extends Controller
     private function getActivityTypes()
     {
         return [
-            'all' => 'All Activities',
+            'all' => lang('app.all_activities'),
             ActivityLogModel::TYPE_FILE_UPLOAD => 'File Uploads',
             ActivityLogModel::TYPE_FILE_DOWNLOAD => 'File Downloads',
             ActivityLogModel::TYPE_FILE_DELETE => 'File Deletions',

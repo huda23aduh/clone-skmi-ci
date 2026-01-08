@@ -3,6 +3,7 @@
 return [
     // General
     'app_name' => 'File Manager',
+    'date' => 'Date',
     'welcome' => 'Welcome',
     'today' => 'Today',
     'last30days' => 'Last 30 days',
@@ -30,6 +31,7 @@ return [
     'selectall' => 'Select All',
     'nodata' => 'no data',
     'total_files' => 'Total Files',
+    'all_activities' => 'All Activities',
     'export' => 'Export',
     'exportascsv' => 'Export as CSV',
     'exportasjson' => 'Export as JSON',
@@ -118,6 +120,7 @@ return [
     'a_verification_email_will_be_sent' => 'A verification email will be sent to this address.',
     'no_backup_email_added_yet' => 'No backup emails added yet.',
     'primary_email_cannot_be_changed' => 'Primary email cannot be changed here. Use email management above',
+    'last_30_dayss' => 'last 30 days',
     
     // Activity Log
     'activity_log' => 'Activity Log',
