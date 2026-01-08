@@ -53,6 +53,7 @@ return [
     'sizeSmallest' => 'Ukuran (Terkecil)',
     'sizeLargest' => 'Ukuran (Terbesar)',
     'supportedFormat' => 'Format yang didukung : JPG, PNG, GIF, WebP. Max size: 2MB',
+    'please_login_to_continue' => 'Harap masuk terlebih dahulu untuk melanjutkan',
     
     // Navigation
     'dashboard' => 'Dasbor',

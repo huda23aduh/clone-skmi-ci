@@ -52,6 +52,7 @@ return [
     'sizeSmallest' => 'Size (Smallest)',
     'sizeLargest' => 'Size (Largest)',
     'supportedFormat' => 'Supported Format : JPG, PNG, GIF, WebP. Max size: 2MB',
+    'please_login_to_continue' => 'please login to continue',
     
     // Navigation
     'dashboard' => 'Dashboard',

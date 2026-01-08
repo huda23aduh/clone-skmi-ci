@@ -32,7 +32,7 @@ class PublicController extends BaseController
             ]);
         }
 
-        $contents = $folderModel->getPublicContents($folder->id);
+        $contents = $folderModel->getPublicContents($folder["id"]);
 
         return $this->response->setJSON([
             'folder' => $folder,
