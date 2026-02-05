@@ -4,6 +4,7 @@ use CodeIgniter\Controller;
 use App\Models\FileModel;
 use App\Services\ActivityLogger;
 use App\Traits\Authenticable;
+use Config\Mimes;
 
 class FileController extends Controller
 {
@@ -274,8 +275,10 @@ class FileController extends Controller
                     'folder_id' => $parentFolderId,
                     'original_name' => $item,
                     'storage_name' => str_replace(WRITEPATH . 'uploads/', '', $fullPath),
-                    'mime' => mime_content_type($fullPath),
-                    'size' => filesize($fullPath),
+                    // 'mime' => mime_content_type($fullPath),
+                    'mime' => Mimes::guessTypeFromExtension(
+                            pathinfo($fullPath, PATHINFO_EXTENSION)
+                        ) ?? 'application/octet-stream',                    'size' => filesize($fullPath),
                     'created_at' => date('Y-m-d H:i:s'),
                 ]);
             }
@@ -347,7 +350,9 @@ class FileController extends Controller
             return $this->response->setStatusCode(404);
         }
 
-        $mimeType = mime_content_type($filePath);
+        // $mimeType = mime_content_type($filePath);
+        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+        $mimeType = Mimes::guessTypeFromExtension($extension) ?? 'application/octet-stream';
         return $this->response
             ->setContentType($mimeType)
             ->setBody(file_get_contents($filePath));
@@ -423,15 +428,22 @@ class FileController extends Controller
 
     public function getSharedFiles()
     {
+        $user = $this->getAuthenticatedUser();
+        if (!is_array($user)) {
+            return $user;
+        }
+    
         $fileModel = new FileModel();
-        $sharedFiles = $fileModel->where('user_id', $user["id"])
-                                ->where('is_public', 1)
-                                ->where('is_deleted', 0)
-                                ->findAll();
-
+        $sharedFiles = $fileModel
+            ->where('user_id', $user["id"])
+            ->where('is_public', 1)
+            ->where('is_deleted', 0)
+            ->findAll();
+    
         return $this->response->setJSON([
             'files' => $sharedFiles
         ]);
     }
+    
 
 }
